@@ -84,7 +84,7 @@
                <div class="close-menu-line close-menu-line--right"></div>
             </a>
          </div>
-         <div class="cookie-message cookie-message--box">
+         <!-- <div class="cookie-message cookie-message--box">
             <div class="cookie-message-inner">
                <div class="content">
                   <h3>Cookies</h3>
@@ -92,7 +92,7 @@
                </div>
                <div class="buttons"> <a href="#" id="accept-cookies" class="text-button text-button--primary text-primary--dark">Accept all<i class="fal fa-check"></i></a> <a href="#" id="decline-cookies" class="text-button text-button--primary text-primary--dark">Decline<i class="fal fa-times"></i></a> </div>
             </div>
-         </div>
+         </div> -->
       </header>
       <section class="main-body">
          <article class="main-content">
@@ -153,24 +153,36 @@
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
                         <h3>{{ name }}</h3>
                         <p>{{desc}}</p>
+                        <p><strong>NOTE : </strong> Click on the <span>GREEN</span> rooms for booking and on the BLUE rooms for adding your booking in the Waiting Queue. </p>
                         <h4>Vacancies available:</h4>
                         <p>
-                           <strong>AC Single-Beds : </strong>{{ast.0 }}
-                           <p>Cost per room: {{ac_one_bednum_cost}}</p><br>
-                           <strong>Non-AC Single-Beds : </strong>{{ast.1}}
-                           <p>Cost per room: {{nonac_one_bednum_cost}}</p><br>
-                           <strong>AC Two-Beds : </strong>{{ast.2}}
-                           <p>Cost per room: {{ac_two_bednum_cost}}</p><br>
-                           <strong>Non-AC Two-Beds : </strong>{{ast.3}}
-                           <p>Cost per room: {{nonac_two_bednum_cost}}</p><br>
-                           <strong>AC Three-Beds : </strong>{{ast.4}}
-                           <p>Cost per room: {{ac_three_bednum_cost}}</p><br>
-                           <strong>Non-AC Three-Beds : </strong>{{ast.5}}
-                           <p>Cost per room: {{nonac_three_bednum_cost}}</p><br>
-                           <strong>AC Dormatories : </strong>{{ast.6}}
-                           <p>Cost per bed: {{ac_dor_bednum_cost}}</p><br>
-                           <strong>Non-AC Dormatories : </strong>{{ast.7}}
-                           <p>Cost per bed: {{nonac_dor_bednum_cost}}</p><br>
+                            <a href="{% url 'buffer' gh_id=gh_id %}">
+                                <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong> </strong>
+                                <p></p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Single-Beds : </strong>{{ast.0 }}
+                           <p>Cost per room: {{ac_one_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Single-Beds : </strong>{{ast.4}}
+                           <p>Cost per room: {{nonac_one_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Two-Beds : </strong>{{ast.1}}
+                           <p>Cost per room: {{ac_two_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.5%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Two-Beds : </strong>{{ast.5}}
+                           <p>Cost per room: {{nonac_two_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.2%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Three-Beds : </strong>{{ast.2}}
+                           <p>Cost per room: {{ac_three_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.6%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Three-Beds : </strong>{{ast.6}}
+                           <p>Cost per room: {{nonac_three_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.3%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Dormatories : </strong>{{ast.3}}
+                           <p>Cost per bed: {{ac_dor_bednum_cost}}</p></p><br></a>
+                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p style="color: {% if ast.7%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Dormatories : </strong>{{ast.7}}
+                           <p>Cost per bed: {{nonac_dor_bednum_cost}}</p></p><br></a>
                         </p>
                         <br><br>
                         <h4>Food Availability : {% if food%}Yes{%else%}No {% endif%}</h4>
@@ -186,7 +198,7 @@
                <div class="container-fluid container-fluid--sml">
                   <div class="widget-title" data-show data-show-move data-show-percentage="20">
                      <span class="subtitle text-primary">Getting here</span> 
-                     <h3>Visiting {{Name}}</h3>
+                     <h3>Visiting {{name}}</h3>
                   </div>
                   <div class="map">
                      <div class="img-wrap"> <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.8805995140524!2d87.30720551490629!3d22.320354985313138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1d4404e5d56963:0xd26214b4e77057ac!2sIIT Kharagpur Central Library!5e0!3m2!1sen!2sin!4v1616399779550!5m2!1sen!2sin" width="600" height="450" frameborder="0" style="border:0;" aria-hidden="false" tabindex="0"></iframe> </div>

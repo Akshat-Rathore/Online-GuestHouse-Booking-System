@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -165,8 +166,8 @@ def search(request, gh_id):
             ast.append(avl_rooms['DorBed'])
             avl_rooms['NAC1Bed'] = check_availability(guest_house.NAC1Bed, check_in, check_out, gh_id)
             ast.append(avl_rooms['NAC1Bed'])
-            avl_rooms['NAC1Bed'] = check_availability(guest_house.NAC1Bed, check_in, check_out, gh_id)
-            ast.append(avl_rooms['NAC1Bed'])
+            avl_rooms['NAC2Bed'] = check_availability(guest_house.NAC1Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['NAC2Bed'])
             avl_rooms['NAC3Bed'] = check_availability(guest_house.NAC3Bed, check_in, check_out, gh_id)
             ast.append(avl_rooms['NAC3Bed'])
             avl_rooms['NDorBed'] = check_availability(guest_house.NACDormatory, check_in, check_out, gh_id)
@@ -214,11 +215,23 @@ def search(request, gh_id):
         }
         return render(request, 'OGHBS_APP/search/index.html', context)
 
-
+@login_required(login_url='login/')
 def book_room(request, gh_id):
     print(request.GET)
     clear_queue()
-    return HttpResponse("<h1>Hello</h1>")
+    return HttpResponse("<h1>Hello {{gh_id}}+{{a}}</h1>")
+
+def buffer(request,gh_id):
+    context={
+        'gh_id':gh_id
+    }
+    if request.user.is_authenticated:
+        print(request.user)
+        return render(request, 'OGHBS_APP/index.html', context)
+        
+    else:
+        return render(request, 'OGHBS_APP/login/index.html', context)
+
 
 def user_register(request):
     if request.method == 'POST':
