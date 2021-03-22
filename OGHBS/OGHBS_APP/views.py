@@ -14,7 +14,8 @@ from django.forms.models import model_to_dict
 def hall_list(request):
     guest_house = GuestHouse.objects.all().values()
     guest_house = list(guest_house)
-    return JsonResponse(guest_house, safe=False)
+    # return JsonResponse(guest_house, safe=False)
+    return render(request, 'OGHBS_APP/index.html', {})
 
 
 def hall_details(request, pk):
@@ -131,3 +132,6 @@ def book_room(request, gh_id):
     print(request.GET)
     clear_queue()
     return HttpResponse("<h1>Hello</h1>")
+
+def user_register(request):
+    return render(request, 'OGHBS_APP/register/index.html', {})
