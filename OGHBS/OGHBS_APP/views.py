@@ -123,7 +123,10 @@ def clear_queue():
 
 
 def check_availability(room, check_in, check_out, gh_id):
-    booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
+    if room.booked_rooms is not None:
+        booked_rooms = [int(x) for x in room.booked_rooms.split(',') if x is not None or x !=""]
+    else:
+        booked_rooms=[]
     count = 0
     if len(booked_rooms) == 0:
         count = room.total_number
@@ -141,27 +144,62 @@ def check_availability(room, check_in, check_out, gh_id):
 
 
 def search(request, gh_id):
-    print(gh_id)
+    print(str(gh_id)+"ijk")
     guest_house = get_object_or_404(GuestHouse, pk=gh_id)
     if request.method == 'POST':
+        print(str(gh_id)+"ijk")
         form = SearchForm(request.POST)
         if form.is_valid():
             check_in = form.cleaned_data['check_in_date']
             check_out = form.cleaned_data['check_out_date']
             guest_house = GuestHouse.objects.get(pk=gh_id)
             avl_rooms = dict()
-
+            ast=[]
+            avl_rooms['AC1Bed'] = check_availability(guest_house.AC1Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['AC1Bed'])
             avl_rooms['AC2Bed'] = check_availability(guest_house.AC2Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['AC2Bed'])
             avl_rooms['AC3Bed'] = check_availability(guest_house.AC3Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['AC3Bed'])
+            avl_rooms['DorBed'] = check_availability(guest_house.ACDormatory, check_in, check_out, gh_id)
+            ast.append(avl_rooms['DorBed'])
+            avl_rooms['NAC1Bed'] = check_availability(guest_house.NAC1Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['NAC1Bed'])
+            avl_rooms['NAC1Bed'] = check_availability(guest_house.NAC1Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['NAC1Bed'])
+            avl_rooms['NAC3Bed'] = check_availability(guest_house.NAC3Bed, check_in, check_out, gh_id)
+            ast.append(avl_rooms['NAC3Bed'])
+            avl_rooms['NDorBed'] = check_availability(guest_house.NACDormatory, check_in, check_out, gh_id)
+            ast.append(avl_rooms['NDorBed'])
             print("reaches")
             print(avl_rooms.items())
             context = {
                 'form': form,
                 'avl_rooms': avl_rooms,
+                'ast':ast,
                 'gh_id': gh_id,
-                'name':guest_house.name
+                'name':guest_house.name,
+                'desc':guest_house.description,
+                "address":guest_house.address,
+                "description":guest_house.description,
+                "ac_one_bednum":guest_house.AC1Bed.total_number,
+                "ac_two_bednum":guest_house.AC2Bed.total_number,
+                "ac_three_bednum":guest_house.AC3Bed.total_number,
+                "ac_dor_bednum":guest_house.ACDormatory.total_number,
+                "nonac_one_bednum":guest_house.NAC1Bed.total_number,
+                "nonac_two_bednum":guest_house.NAC2Bed.total_number,
+                "nonac_three_bednum":guest_house.NAC3Bed.total_number,
+                "nonac_dor_bednum":guest_house.NACDormatory.total_number,
+                "ac_one_bednum_cost":guest_house.AC1Bed.cost,
+                "ac_two_bednum_cost":guest_house.AC2Bed.cost,
+                "ac_three_bednum_cost":guest_house.AC3Bed.cost,
+                "ac_dor_bednum_cost":guest_house.ACDormatory.cost,
+                "nonac_one_bednum_cost":guest_house.NAC1Bed.cost,
+                "nonac_two_bednum_cost":guest_house.NAC2Bed.cost,
+                "nonac_three_bednum_cost":guest_house.NAC3Bed.cost,
+                "nonac_dor_bednum_cost":guest_house.NACDormatory.cost,
             }
-            return render(request, 'OGHBS_APP/search/index.html', context)
+            return render(request, 'OGHBS_APP/vacancies/index.html', context)
 
         context = {
             'form': form,
