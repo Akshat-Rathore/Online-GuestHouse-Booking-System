@@ -6,6 +6,12 @@ from django.contrib.auth.models import User
 ROOM_TYPES = (
     ('AC 2 Bed', 'AC 2 Bed'),
     ('AC 3 Bed', 'AC 3 Bed'),
+    ('AC 1 Bed','AC 1 Bed'),
+    ('ACDormatory','ACDormatory'),
+    ('NACDormatory','NACDormatory'),
+    ('NAC 2 Bed', 'NAC 2 Bed'),
+    ('NAC 3 Bed', 'NAC 3 Bed'),
+    ('NAC 1 Bed','NAC 1 Bed'),
 )
 
 RATING_CHOICES = (
@@ -64,13 +70,19 @@ class Room(models.Model):
 
 class GuestHouse(models.Model):
     name = models.CharField(max_length=300, null=True)
-    AC2Bed = models.OneToOneField(Room, related_name='AC2Bed_set', on_delete=models.CASCADE)
-    AC3Bed = models.OneToOneField(Room, related_name='AC3Bed_set', on_delete=models.CASCADE)
+    ACDormatory=models.OneToOneField(Room, related_name='ACDormatory_set', on_delete=models.CASCADE,null=True)
+    AC1Bed=models.OneToOneField(Room, related_name='AC1Bed_set', on_delete=models.CASCADE,null=True)
+    AC2Bed = models.OneToOneField(Room, related_name='AC2Bed_set', on_delete=models.CASCADE,null=True)
+    AC3Bed = models.OneToOneField(Room, related_name='AC3Bed_set', on_delete=models.CASCADE,null=True)
+    NACDormatory=models.OneToOneField(Room, related_name='NACDormatory_set', on_delete=models.CASCADE,null=True)
+    NAC1Bed=models.OneToOneField(Room, related_name='NAC1Bed_set', on_delete=models.CASCADE,null=True)
+    NAC2Bed = models.OneToOneField(Room, related_name='NAC2Bed_set', on_delete=models.CASCADE,null=True)
+    NAC3Bed = models.OneToOneField(Room, related_name='NAC3Bed_set', on_delete=models.CASCADE,null=True)
     food_availability = models.BooleanField(default=False)
     cost_of_food = models.IntegerField(null=True, blank=True)
     customer = models.ManyToManyField(User, through='Booking', null=True)
     address = models.CharField(max_length=500, null=True, blank=True)
-
+    description = models.CharField(max_length=500, null=True, blank=True)
     def __str__(self):
         return self.name
 

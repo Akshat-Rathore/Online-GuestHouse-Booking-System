@@ -14,15 +14,60 @@ from django.forms.models import model_to_dict
 
 def hall_list(request):
     guest_house = GuestHouse.objects.all().values()
-    guest_house = list(guest_house)
-    # return JsonResponse(guest_house, safe=False)
-    return render(request, 'OGHBS_APP/index.html', {})
+    cunt=GuestHouse.objects.all().count()
+
+    dta=[]
+    
+
+    for i in range(cunt):
+        dta1=[]
+        dta1.append((i+1))
+        house = get_object_or_404(GuestHouse, pk=(i+1))
+        dta1.append(house.name)
+        dta1.append(house.food_availability)
+        dta1.append(house.cost_of_food)
+        dta1.append(house.description)
+        dta.append(dta1)
+    print(dta)
+    context={
+        'data':dta,
+    }
+    
+    return render(request, 'OGHBS_APP/index.html', context)
 
 
 def hall_details(request, pk):
     guest_house = get_object_or_404(GuestHouse, pk=pk)
-    guest_house = serializers.serialize('json', [guest_house, ])
-    return JsonResponse(json.loads(guest_house), safe=False)
+    
+    guest_house1 = serializers.serialize('json', [guest_house])
+    # return JsonResponse(json.loads(guest_house1), safe=False)
+    context={
+        'pk':pk,
+        'Name':guest_house.name,
+        "food":guest_house.food_availability,
+        "cost_of_food":guest_house.cost_of_food,
+        "address":guest_house.address,
+        "description":guest_house.description,
+        "ac_one_bednum":guest_house.AC1Bed.total_number,
+        "ac_two_bednum":guest_house.AC2Bed.total_number,
+        "ac_three_bednum":guest_house.AC3Bed.total_number,
+        "ac_dor_bednum":guest_house.ACDormatory.total_number,
+        "nonac_one_bednum":guest_house.NAC1Bed.total_number,
+        "nonac_two_bednum":guest_house.NAC2Bed.total_number,
+        "nonac_three_bednum":guest_house.NAC3Bed.total_number,
+        "nonac_dor_bednum":guest_house.NACDormatory.total_number,
+        "ac_one_bednum_cost":guest_house.AC1Bed.cost,
+        "ac_two_bednum_cost":guest_house.AC2Bed.cost,
+        "ac_three_bednum_cost":guest_house.AC3Bed.cost,
+        "ac_dor_bednum_cost":guest_house.ACDormatory.cost,
+        "nonac_one_bednum_cost":guest_house.NAC1Bed.cost,
+        "nonac_two_bednum_cost":guest_house.NAC2Bed.cost,
+        "nonac_three_bednum_cost":guest_house.NAC3Bed.cost,
+        "nonac_dor_bednum_cost":guest_house.NACDormatory.cost,
+
+
+    }
+    return render(request, 'OGHBS_APP/guesthouse_details/index.html', context)
 
 # Function to set the 'In-Queue' status of booking to 'Confirmed' if possible
 def clear_queue():
@@ -157,9 +202,9 @@ def user_register(request):
                 student.roll_no = form1.cleaned_data.get('roll_no')
                 student.user = user
                 student.save()
-                return redirect('home')
+                return redirect('login')
 
-            return render(request, 'OGHBS_APP/login/index.html',
+            return render(request, 'OGHBS_APP/register/index.html',
                           {'form1': form1, 'form2': form2, 'category': category})
         else:
             form2 = ProfessorForm(request.POST)
@@ -177,8 +222,8 @@ def user_register(request):
                 professor.address = form2.cleaned_data.get('address')
                 professor.user = user
                 professor.save()
-                return redirect('home')
-            return render(request, 'OGHBS_APP/login/index.html',
+                return redirect('login')
+            return render(request, 'OGHBS_APP/register/index.html',
                           {'form1': form1, 'form2': form2, 'category': category})
 
     elif request.method == 'GET':
@@ -207,6 +252,10 @@ def user_login(request):
         form = LoginForm()
         return render(request, 'OGHBS_APP/login/index.html', {'form': form})
 
+
 def user_logout(request):
     logout(request)
     return redirect('home')
+
+def halls_list(request):
+    return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})

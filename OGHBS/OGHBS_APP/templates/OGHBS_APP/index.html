@@ -88,30 +88,31 @@
             <div class="widget-container standard-widget" data-show data-show-move data-show-percentage="20">
                <div class="container-fluid container-fluid--sml">
                   <h2 style="text-align: center;">GUEST HOUSE DETAILS</h2>
-                  <!-- <p style="text-align: center;">As we are now in lockdown, we are closed until at least April 12th. You can still book online for dates after this time. We look forward to seeing you again soon.</p> -->
-                  <!-- <p class="p1" style="text-align: center;"><span class="s1">The Oyster &amp; Fish House is arguably the most picturesque spot in Dorset to enjoy locally sourced fish and seafood. </span>A large terrace wraps around the informal, light and airy dining room with floor to ceiling windows offering a view to every guest.</p> -->
                </div>
             </div>
-            <!-- <div class="widget-container button-widget button-widget--center">
-               <div class="container-fluid container-fluid--sml"> <a class="text-button" href="about-us/index.html"> Find out more </a> </div>
-            </div> -->
-
-            <div class="widget-container widget-container--bleed image-text-widget image-text-widget--left bg-secondary">
+            
+            {% for i in data %}
+            <div class="widget-container widget-container--bleed image-text-widget image-text-widget--{% if forloop.counter0|divisibleby:2 %}left{%else%}right{%endif%} bg-secondary">
                <div class="flex-list">
                   <div class="image image-absolute" data-scrollspeed="0.2">
                      <figure class="img" style="background-image:url({% static 'images/uploads/2020/07/279HixLyme180525Matt-Austin-1500x1500.jpg' %});"> <img width="1500" height="1500" src="{% static 'images/uploads/2020/07/279HixLyme180525Matt-Austin-1500x1500.jpg' %}" alt="Lobster claw at The Oyster and fish house"/> </figure>
                   </div>
                   <div class="text flex flex-direction-column flex-justify-center">
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
-                        <span class="subtitle text-primary">Weds-Sat mornings</span> 
-                        <h3>HIX Oyster & Fish Truck</h3>
-                        <p>Selling locally caught wet fish and seafood, Mark’s fish truck, a converted Chevrolet ambulance, pitches up outside Felicity’s Farm Shop in Morcombelake every Weds-Sat 9am till 12pm. Come by and say Hi, choose from fresh fish to cook at home and pick up a recipe or top from Mark at the same time.</p>
-                        <a class="text-button" href="hix-oyster-and-fish-truck/index.html"> Find out more<i class="fal fa-long-arrow-right"></i> </a> 
+                        <span class="subtitle text-primary">{{i.0}}.</span> 
+                        
+                        <h2>{{i.1}}</h2>
+                        <p>{{i.4}}</p>
+                        <h3>Food available : {% if i.2 %}Yes{%else%}No {% endif%} </h3>
+                        {% if i.2%}<p>Food Cost : {{i.3}}</p> {% endif%}
+                        <a class="text-button" href="{% url 'details' pk=i.0 %}"> Find out more </a> 
                      </div>
                   </div>
                </div>
             </div>
-            <div class="widget-container widget-container--bleed image-text-widget image-text-widget--right bg-primary">
+            {% endfor %}
+            
+            <!-- <div class="widget-container widget-container--bleed image-text-widget image-text-widget--right bg-primary">
                <div class="flex-list">
                   <div class="image image-absolute" data-scrollspeed="0.2">
                      <figure class="img" style="background-image:url({% static 'images/uploads/2020/07/De-Beauvoir-smoked-salmon.jpg' %});"> <img width="1500" height="1500" src="{% static 'images/uploads/2020/07/De-Beauvoir-smoked-salmon.jpg' %}" alt="De Beauvoir smoked salmon"/> </figure>
@@ -122,7 +123,7 @@
                         <h2>Flodge smoked salmon 'Hix cure'</h2>
                         <p>Smoked by Mark in his Charmouth home, his famous smoked salmon is now available for home delivery.</p>
                         <p>Order a side of Flodge smoked salmon &#8216;Hix cure&#8217; to enjoy at home.</p>
-                        <a class="text-button" href="https://www.soundseafood.co.uk/hix-at-home"> Find out more<i class="fal fa-long-arrow-right"></i> </a>
+                        <a class="text-button" href="{% url 'details' pk=2 %}"> Find out more<i class="fal fa-long-arrow-right"></i> </a>
                      </div>
                   </div>
                </div>
@@ -138,58 +139,17 @@
                         <h2>Mark's Bar at Home</h2>
                         <p>Missing your favourite Hix cocktails? Mark has teamed up with our friends at Cocktail Market to create fresh, handmade cocktails, ready to shake or stir into your glass with no fuss and no mess. Just quality Mark’s Bar cocktails…with free delivery too.</p>
                         <p>We’ve created the all-time classics for you – a Dorset Donkey, Temperley Sour, Bergameister and of course, it had to be…a Negroni.</p>
-                        <a class="text-button" href="marks-bar-at-home/index.html"> Find out more<i class="fal fa-long-arrow-right"></i> </a> 
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-            <div class="widget-container widget-container--bleed fullwidth-cta-widget">
-                
-               <!-- <a href="news-events/index.html" class="cta-wrap bg-primary--dark bg-pattern bg-pattern--light">
-                  <div class="text">
-                     <div data-show data-show-move data-show-percentage="20">
-                        <span class="subtitle text-secondary"> News & Events </span> 
-                        <h2 class="h1 text-white">The latest from The Oyster & Fish House</h2>
-                     </div>
-                     <div class="arrow">
-                        <div data-show data-show-move data-show-percentage="10"> <i class="fal fa-long-arrow-right long-arrow text-white"></i> </div>
-                     </div>
-                  </div>
-               </a> -->
-            </div>
-            <!-- <div class="widget-container widget-container--bleed widget-container--padding newsletter-widget bg-secondary">
-               <div class="container-fluid container-fluid--sml">
-                  <div class="newsletter-wrap text-center">
-                     <div class="widget-title" data-show data-show-move data-show-percentage="20">
-                        <h2>Sign up to our newsletter</h2>
-                        <p>If you'd like to stay in touch and be the first to know about our news and events, please sign-up to our newsletter. We will only contact you when there's something to say, so we promise not to bombard you. You can opt out at any time by clicking unsubscribe on the newsletter. </p>
-                     </div>
-                     <div class="newsletter-form campaign-monitor-signup" data-show data-show-move data-show-percentage="20">
-                        <form id="signupForm" method="post">
-                           <span class="hide" data-success="Thanks for signing up! We've added you to our mailing list."></span> <input type="hidden" id="signup_form_widget" name="signup_form_widget" value="8b04e9bcbd"/><input type="hidden" name="_wp_http_referer" value="/"/> 
-                           <div class="flex-list">
-                              <div class="form-group border-input" data-required data-fieldtype="tf"> <input id="fieldFirstName" name="fieldFirstName" type="text" placeholder="Your first name..."> </div>
-                              <div class="form-group border-input" data-required data-fieldtype="tf"> <input id="fieldLastName" name="fieldLastName" type="text" placeholder="Your last name..."> </div>
-                              <div class="form-group border-input" data-required data-fieldtype="tf"> <input id="fieldEmail" name="fieldEmail" type="email" placeholder="Your email address..."> </div>
-                              <div class="form-group border-input" data-required data-fieldtype="tf"> <input id="fieldPostcode" name="fieldPostcode" type="text" placeholder="Your postcode..."> </div>
-                           </div>
-                           <div class="form-group form-group-checkbox flex-inline flex-justify-center" data-required data-fieldtype="cb">
-                              <ul class="radio-check-list">
-                                 <li class="checkbox-cont">
-                                    <input id="fieldPrivacy" name="privacy" type="checkbox"> 
-                                    <label for="fieldPrivacy">
-                                       <p>I agree to the <a href="privacy-policy/index.html">Privacy Policy</a></p>
-                                    </label>
-                                 </li>
-                              </ul>
-                              <button name="submit" type="submit" class="text-button text-button--static" formnovalidate><span>Submit</span></button> 
-                           </div>
-                        </form>
+                        <a class="text-button" href="{% url 'list' %}"> Find out more<i class="fal fa-long-arrow-right"></i> </a> 
                      </div>
                   </div>
                </div>
             </div> -->
+
+            <div class="widget-container widget-container--bleed fullwidth-cta-widget">
+                
+               
+            </div>
+            
          </article>
       </section>
       <footer>
@@ -201,11 +161,7 @@
                         <ul>
                            <li id="menu-item-1557" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1557"><a href="careers/index.html">LOGIN</a></li>
                            <li id="menu-item-1897" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1897"><a href="accommodation/index.html">REGISTER</a></li>
-                           <!-- <li id="menu-item-2211" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2211"><a href="https://thefoxinncorscombe.co.uk/">The Fox Inn</a></li> -->
-                           <!-- <li id="menu-item-1644" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1644"><a href="covid-policy/index.html">Covid Policy</a></li> -->
                            <li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267"><a href="privacy-policy/index.html">Privacy Policy</a></li>
-                           <!-- <li id="menu-item-1556" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1556"><a href="recruitment-selection-privacy-notice/index.html">Recruitment &#038; Selection Privacy Notice</a></li> -->
-                           <!-- <li id="menu-item-1350" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1350"><a href="sitemap/index.html">Sitemap</a></li> -->
                         </ul>
                      </nav>
                   </div>
