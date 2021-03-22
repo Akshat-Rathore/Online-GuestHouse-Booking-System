@@ -142,7 +142,7 @@ def check_availability(room, check_in, check_out, gh_id):
 
 def search(request, gh_id):
     print(gh_id)
-
+    guest_house = get_object_or_404(GuestHouse, pk=gh_id)
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
@@ -153,25 +153,28 @@ def search(request, gh_id):
 
             avl_rooms['AC2Bed'] = check_availability(guest_house.AC2Bed, check_in, check_out, gh_id)
             avl_rooms['AC3Bed'] = check_availability(guest_house.AC3Bed, check_in, check_out, gh_id)
-
+            print("reaches")
             print(avl_rooms.items())
             context = {
                 'form': form,
                 'avl_rooms': avl_rooms,
-                'gh_id': gh_id
+                'gh_id': gh_id,
+                'name':guest_house.name
             }
-            return render(request, 'OGHBS_APP/searchform.html', context)
+            return render(request, 'OGHBS_APP/search/index.html', context)
 
         context = {
             'form': form,
+            'name':guest_house.name
         }
-        return render(request, 'OGHBS_APP/searchform.html', context)
+        return render(request, 'OGHBS_APP/search/index.html', context)
     else:
         form = SearchForm()
         context = {
             'form': form,
+            'name':guest_house.name
         }
-        return render(request, 'OGHBS_APP/searchform.html', context)
+        return render(request, 'OGHBS_APP/search/index.html', context)
 
 
 def book_room(request, gh_id):

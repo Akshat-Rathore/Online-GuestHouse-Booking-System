@@ -52,7 +52,7 @@ class Professor(models.Model):
 class Room(models.Model):
     is_AC = models.BooleanField(default=False)
     total_number = models.IntegerField(null=True)
-    booked_rooms = models.CharField(max_length=1000, null=True)
+    booked_rooms = models.CharField(max_length=1000, null=True,blank=True)
     cost = models.IntegerField(null=True)
     capacity = models.IntegerField(null=True)
     room_type = models.CharField(max_length=100, choices=ROOM_TYPES, null=True)
