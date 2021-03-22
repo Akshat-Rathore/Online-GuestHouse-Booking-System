@@ -5,6 +5,14 @@ html {
   height: 100%;
 }
 
+#student-form{
+    display:none;
+}
+
+#professor-form{
+    display:none;
+}
+
 input {
   border: none;
 }
@@ -26,6 +34,14 @@ button:focus {
   font-weight: 400;
   cursor: pointer;
   transition: color .2s ease;
+}
+
+.ani {
+    background-color: #F4736B;
+    color: white;
+    padding: 11px;
+    border-radius: 4px;
+    margin-top:10px;
 }
 
 .highlight:hover {
@@ -82,7 +98,7 @@ button:focus {
 
 .input-line {
   background: none;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   line-height: 2.4em;
   color: #fff;
   font-family: roboto;
@@ -102,6 +118,15 @@ button:focus {
 
 .input-fields {
   margin-top: 25px;
+}
+
+#category{
+    height: 60px;
+    background-color: white;
+    border: none;
+    color: black;
+    font-size: 17px;
+    padding-left: 27px;
 }
 
 .container {

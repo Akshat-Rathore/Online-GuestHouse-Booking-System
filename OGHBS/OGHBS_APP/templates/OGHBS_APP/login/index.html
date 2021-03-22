@@ -36,7 +36,7 @@
          </a>
       </div>
       <header class="header header-narrow bg-secondary bg-pattern">
-        
+        {% include 'OGHBS_APP/header.html' %}
       </header>
       <section class="main-body">
          <article class="main-content">
@@ -62,13 +62,19 @@
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
                         <h3>Enter Details to Login...</h3>
                         <div class='input-fields'>
-                            <input type='text' placeholder='Username' class='input-line full-width'></input><br>
-                            <input type='email' placeholder='Email' class='input-line full-width'></input><br>
-                            <input type='password' placeholder='Password' class='input-line full-width'></input><br>
-                    
-                          </div>
-                          
-                          <div style="border-bottom: 0px!important;" class="text-button text-button--dark text-black">Login</div><br>
+                           <form action="" method="post">
+                              {% csrf_token %}
+                              {% for field in form %}
+                                 {{ field }}
+                              {% endfor %}
+                              {% if error %}
+                                 <div class="alert alert-danger ani">
+                                    <strong>{{ error }}</strong>
+                                 </div>
+                              {% endif %}
+                              <button type="submit" style="border-bottom: 0px!important;" class="text-button text-button--dark text-black">Login</button><br>
+                           </form>
+                        </div>
                         </div>
                   </div>
                </div>

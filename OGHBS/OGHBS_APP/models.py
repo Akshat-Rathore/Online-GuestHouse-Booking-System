@@ -2,11 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
-COURSE_TYPE = (
-    ('B.Tech', 'B.Tech'),
-    ('M.Tech', 'M.Tech'),
-    ('Phd', 'Phd')
-)
 
 ROOM_TYPES = (
     ('AC 2 Bed', 'AC 2 Bed'),
@@ -31,19 +26,22 @@ BOOKING_STATUS = (
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=200, null=True)
     roll_no = models.CharField(max_length=100, null=True)
     department = models.CharField(max_length=200, null=True)
-    course_type = models.CharField(max_length=100, choices=COURSE_TYPE)
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=200, null=True)
     department = models.CharField(max_length=200, null=True)
     address = models.CharField(max_length=1000, null=True)
 
+    def __str__(self):
+        return self.user.username
 
 class Room(models.Model):
     is_AC = models.BooleanField(default=False)

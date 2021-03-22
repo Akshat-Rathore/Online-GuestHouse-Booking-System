@@ -10,7 +10,7 @@
       <link rel="apple-touch-icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/apple-icon-touch.png' %}">
       <link rel="icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/favicon.png' %}">
       <meta content="index,follow" name="robots">
-      <title>Cookbooks | The Oyster & Fish House | Mark Hix</title>
+      <title>OGHBS | Register</title>
       
       <!-- <meta name='robots' content='max-image-preview:large'/> -->
       <link rel='dns-prefetch' href='http://fonts.googleapis.com/'/>
@@ -20,6 +20,41 @@
       <link rel='stylesheet' id='styles-css' href='{% static "css/login.css" %}' type='text/css' media='all'/>
       <link rel='stylesheet' id='wp-block-library-css' href='{% static "wp-includes/css/dist/block-library/style.mine23c.css" %}' type='text/css' media='all'/>
       <link rel="canonical" href="index.html"/>
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+      <script>
+         {% if category == 1%}
+            $(document).ready(function(){
+               document.getElementById(
+                 "category").selectedIndex = "1";
+                displayForm();
+            })
+
+         {% endif %}
+
+         {% if category == 2 %}
+            $(document).ready(function(){
+               document.getElementById(
+                 "category").selectedIndex = "2";
+                displayForm();
+            })
+
+         {% endif %}
+
+         function displayForm(){
+           var category = document.getElementById("category").value;
+           console.log(category)
+           if(category == "Student"){
+               console.log(category);
+               document.getElementById("student-form").style.display = "block";
+               document.getElementById("professor-form").style.display = "none";
+           }
+           else{
+               document.getElementById("student-form").style.display = "none";
+               document.getElementById("professor-form").style.display = "block";
+           }
+         }
+
+      </script>
    </head>
    <body class="page-template-default page page-id-1672 wb-cookbooks subpage" data-siteurl="index.html">
       <div id="wrap">
@@ -56,24 +91,71 @@
              </div>
            
             <div class="widget-container widget-container--bleed image-text-widget image-text-widget--left bg-secondary">
-               <div class="flex-list">
-                 
+               <div class="flex-list flex-justify-center scroll-show">
+
                   <div class="text flex flex-direction-column flex-justify-center">
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
                         <h3>Enter Details to Register...</h3>
                         <div class='input-fields'>
-                            <input type='text' placeholder='Username' class='input-line full-width'></input><br>
-                            <input type='email' placeholder='Email' class='input-line full-width'></input><br>
-                            <input type='password' placeholder='Password' class='input-line full-width'></input><br>
-                    
-                          </div>
-                          
-                          <div style="border-bottom: 0px!important;" class="text-button text-button--dark text-black">Register</div><br>
+                           <select onchange="displayForm()" id="category" name="category" class = 'full-width' style="height: 60px;background-color: white;border: none;color: black;font-size: 17px;padding-left: 27px;margin-bottom:5px">
+                                 <option value="Category" selected="selected">Category</option>
+                                 <option value="Student">Student</option>
+                               <option value="Professor">Professor</option>
+                             </select>
+                           <form method="post" action="" id = "student-form">
+                              {% csrf_token %}
+                              {% for field in form1 %}
+                                 {{ field }}
+                              {% endfor %}
+
+                              {% if form1.errors %}
+                                  {% for field in form1 %}
+                                      {% for error in field.errors %}
+                                          <div class="alert alert-danger ani">
+                                              <strong>{{ error|escape }}</strong>
+                                          </div>
+                                      {% endfor %}
+                                  {% endfor %}
+                                  {% for error in form1.non_field_errors %}
+                                      <div class="alert alert-danger ani">
+                                          <strong>{{ error|escape }}</strong>
+                                      </div>
+                                  {% endfor %}
+                              {% endif %}
+
+                              <button type="submit" style="border-bottom: 0px!important;margin-top: 5px!important" class="text-button text-button--dark text-black">Register</button>
+                           </form>
+
+                           <form method="post" action="" id = "professor-form">
+                              {% csrf_token %}
+                              {% for field in form2 %}
+                                 {{ field }}
+                              {% endfor %}
+
+                              {% if form2.errors %}
+                                  {% for field in form2 %}
+                                      {% for error in field.errors %}
+                                          <div class="alert alert-danger ani">
+                                              <strong>{{ error|escape }}</strong>
+                                          </div>
+                                      {% endfor %}
+                                  {% endfor %}
+                                  {% for error in form2.non_field_errors %}
+                                      <div class="alert alert-danger ani">
+                                          <strong>{{ error|escape }}</strong>
+                                      </div>
+                                  {% endfor %}
+                              {% endif %}
+
+                              <button type="submit" style="border-bottom: 0px!important;margin-top: 5px!important" class="text-button text-button--dark text-black">Register</button>
+                           </form>
+
+                        </div>
                         </div>
                   </div>
                </div>
             </div>
-            
+
             
             
          </article>

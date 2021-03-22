@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import *
 import json
 from django.core import serializers
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from .forms import SearchForm
+from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm
+from django.contrib.auth import authenticate, login, logout
 from django.forms.models import model_to_dict
 
 # Create your views here.
@@ -134,7 +135,78 @@ def book_room(request, gh_id):
     return HttpResponse("<h1>Hello</h1>")
 
 def user_register(request):
-    return render(request, 'OGHBS_APP/register/index.html', {})
+    if request.method == 'POST':
+        print(request.POST)
+        roll_no = request.POST.get('roll_no', -1)
+        category = 1
+        if roll_no == -1:
+            category = 2
+        if category == 1:
+            form1 = StudentForm(request.POST)
+            form2 = ProfessorForm()
+            if form1.is_valid():
+                print(form1.cleaned_data)
+                user = User()
+                user.email = form1.cleaned_data.get('email')
+                user.username = form1.cleaned_data.get('user_name')
+                user.set_password(form1.cleaned_data.get('password1'))
+                user.save()
+                student = Student()
+                student.full_name = form1.cleaned_data.get('full_name')
+                student.department = form1.cleaned_data.get('department')
+                student.roll_no = form1.cleaned_data.get('roll_no')
+                student.user = user
+                student.save()
+                return redirect('home')
+
+            return render(request, 'OGHBS_APP/login/index.html',
+                          {'form1': form1, 'form2': form2, 'category': category})
+        else:
+            form2 = ProfessorForm(request.POST)
+            form1 = StudentForm()
+            if form2.is_valid():
+                print(form2.cleaned_data)
+                user = User()
+                user.email = form2.cleaned_data.get('email')
+                user.username = form2.cleaned_data.get('user_name')
+                user.set_password(form2.cleaned_data.get('password1'))
+                user.save()
+                professor = Professor()
+                professor.full_name = form2.cleaned_data.get('full_name')
+                professor.department = form2.cleaned_data.get('department')
+                professor.address = form2.cleaned_data.get('address')
+                professor.user = user
+                professor.save()
+                return redirect('home')
+            return render(request, 'OGHBS_APP/login/index.html',
+                          {'form1': form1, 'form2': form2, 'category': category})
+
+    elif request.method == 'GET':
+        context = {
+            'form1': StudentForm(),
+            'form2': ProfessorForm(),
+            'category': 0
+        }
+        return render(request, 'OGHBS_APP/register/index.html', context)
 
 def user_login(request):
-    return render(request, 'OGHBS_APP/login/index.html', {})
+    if request.method == 'POST':
+        user_name = request.POST.get('user_name')
+        password = request.POST.get('password')
+        user = authenticate(request, username = user_name, password = password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            context = {
+                'form': LoginForm(request.POST),
+                'error': "Username or password is incorrect"
+            }
+            return render(request, 'OGHBS_APP/login/index.html', context)
+    else:
+        form = LoginForm()
+        return render(request, 'OGHBS_APP/login/index.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    return redirect('home')
