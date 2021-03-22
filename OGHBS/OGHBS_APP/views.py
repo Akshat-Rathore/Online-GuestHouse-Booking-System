@@ -14,8 +14,6 @@ from django.forms.models import model_to_dict
 def hall_list(request):
     guest_house = GuestHouse.objects.all().values()
     cunt=GuestHouse.objects.all().count()
-    # print(cunt)
-    # guest_house = list(guest_house)
 
     dta=[]
     
@@ -30,9 +28,6 @@ def hall_list(request):
         dta1.append(house.description)
         dta.append(dta1)
     print(dta)
-    # print(name)
-    # print(guest_house)
-    # return JsonResponse(guest_house, safe=False)
     context={
         'data':dta,
     }
@@ -46,6 +41,7 @@ def hall_details(request, pk):
     guest_house1 = serializers.serialize('json', [guest_house])
     # return JsonResponse(json.loads(guest_house1), safe=False)
     context={
+        'pk':pk,
         'Name':guest_house.name,
         "food":guest_house.food_availability,
         "cost_of_food":guest_house.cost_of_food,
