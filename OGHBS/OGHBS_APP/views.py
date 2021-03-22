@@ -135,3 +135,6 @@ def book_room(request, gh_id):
 
 def user_register(request):
     return render(request, 'OGHBS_APP/register/index.html', {})
+
+def user_login(request):
+    return render(request, 'OGHBS_APP/login/index.html', {})
