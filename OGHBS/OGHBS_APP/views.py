@@ -245,6 +245,7 @@ def user_register(request):
     if request.method == 'POST':
         print(request.POST)
         roll_no = request.POST.get('roll_no', -1)
+        password =request.POST.get('password1', -1)
         category = 1
         if roll_no == -1:
             category = 2
@@ -266,19 +267,24 @@ def user_register(request):
                 email_subject="[OGBS] : Activate your account"
                 activate_url="http://" +domain+link
                 email_body='Hi' +user.username+ "Click\n"+activate_url
-                 message = render_to_string('email/email_verify.html', {
-                     'user': user,
-                     'userdata': userdata,
-                     'password': password,
-                     'domain': 'reg-ges.ecell-iitkgp.org',
-                     'uid': user.first_name,
-                     'token': user.last_name,
-    })
+                if category == 1:
+                    cat="Student"
+                else:
+                    cat="Professor"
+                message = render_to_string('email/email_verify.html', {
+                    'user': user,
+                    'category': cat,
+                    'password': password,
+                    'domain': domain,
+                    'uid': uidb64,
+                    'token': token_generator.make_token(user),
+                    })
                 email=EmailMessage(
                                     email_subject,
-                                    email_body,
+                                    message,
                                     to=[user.email]
                     )
+                email.content_subtype="html"
                 email.send(fail_silently=False)
                 student = Student()
                 student.full_name = form1.cleaned_data.get('full_name')

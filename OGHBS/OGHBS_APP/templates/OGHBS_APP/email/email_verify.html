@@ -1,0 +1,133 @@
+{# TODO: Upgrade this template include buttons instead of plain links and add css #}
+
+{% autoescape off %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>OGHBS Registration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+    body{
+        font-family: "Helvetica Narrow", sans-serif;
+        font-size: 90%;
+    }
+        a.reg:link, a.reg:visited {
+            background-color: #f44336;
+            color: white;
+            padding: 20px 25px;
+            border-radius: 35px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 120%;
+          }
+          a.reg:hover, a.reg:active {
+            background-color: red;
+          }
+              td{
+                  text-align: center;
+              }
+              .vl {
+                border-left: 4px solid #474444;
+                border-radius: 30px;
+                height: 26%;
+                position: absolute;
+                left: 50%;
+                margin-top: 0.7%;
+                margin-left: -3px;
+              }
+
+              .button5 {
+                background-color: white;
+                color: black;
+                border: 2px solid #555555;
+                margin-left: 10px;
+              }
+              
+              .button5:hover {
+                background-color: #555555;
+                color: white;
+              }
+              .button {
+                background-color: #2d708f; /* Green */
+                border: none;
+                color: white;
+                padding: 12px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 15px 2px;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+                cursor: pointer;    
+                border-radius: 3px;
+              }
+              
+</style>
+</head>
+<body style="margin: 0; padding: 0;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
+        <tr>
+            <td style="padding: 0px 0 30px 0;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 0px 0 0px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;background-color: #f3f3f3;">
+                                <hr style="border: 4px solid #2d708f;margin-top: 0;">
+                                <a href="https://ecell-iitkgp.org"><img src="https://dev.ecell-iitkgp.org/upload/mailimg/ecelllogo.png" style="float: left; width: 40%; height: auto; margin-bottom: 10px;"></a>
+                                <a href="http://ges.ecell-iitkgp.org/comingsoon/"><img src="https://www.ges.ecell-iitkgp.org/comingsoon/Images/logo_ges.png" style="float: right;  width: 20%; height: auto;margin-right: 15px;margin-top: -5px;margin-bottom: 10px;">      </a>      
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="text-align: justify;font-size: 120%;">
+                                            <p style="color: #726e6e!important; "><h4  >Hi {{ user.user_name }},</h4>
+
+                                            <!-- <h3 style="text-align: center;">Announcing Local Startup Meet 2019 !</h3> -->
+                                            
+                                        <p style="color: #726e6e!important; ">
+                                            
+                                            Thank you for registering for the OGHBS,IIT Kharagpur. Please login to continue booking. Follow the official <a href="https://www.facebook.com/ecell.iitkgp/">Facebook</a> and  <a href="https://www.linkedin.com/company/entrepreneurship-cell-iit-kharagpur/">LinkedIn</a> page for more details.Please click on the link to activate your registration:<br>
+                                            <div style="text-align: center;">
+                                            <a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}"  >
+                                                <button class="button button5">Activate</button></a>  <br>      
+                                            </div>                                 
+
+                                        </p>   
+                                        <p style="color: #726e6e!important; ">
+                                            Here are your login credentials:<br>
+                                          <ul style="color: #726e6e!important;">
+                                            <li style="color: #726e6e!important;"  >Category: {{ category }}</li>
+                                            <li style="color: #726e6e!important;"  >Email Address: {{ user.email }}</li>    
+                                            <li style="color: #726e6e!important;"  >Password: {{ password }}</li> <br>    
+                                          </ul>
+                                        
+                                        
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                            
+                        </td>
+                    </tr>
+                    <tr >
+                            <td style="margin-top: 20px;background-color: black;color: white;padding:20px;text-align: center;">
+                                    <span>Thanks & Regards,</span><br><br>
+                                    <!-- <img src="https://dev.ecell-iitkgp.org/upload/mailimg/mail1.png" style="width: 5%; height: auto;color: white;"><br><br> -->
+                                    <span> Group 26, IIT Kharagpur</span><br><br>
+                                    <!-- <img src="https://dev.ecell-iitkgp.org/upload/mailimg/mobile1.png" style="width: 5%; height: auto;"><br><br> -->
+                                    <!-- <span>7667373688</span> -->
+                            </td>
+                    </tr>
+                    
+                   
+                </table>
+            </td>
+        </tr>
+     </table>
+</body>
+</html>
+{% endautoescape %}
