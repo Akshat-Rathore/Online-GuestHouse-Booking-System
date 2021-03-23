@@ -14,6 +14,7 @@ from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes,force_text,DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
 from django.urls import reverse
 from .utils import token_generator
 # Create your views here.
@@ -265,6 +266,14 @@ def user_register(request):
                 email_subject="[OGBS] : Activate your account"
                 activate_url="http://" +domain+link
                 email_body='Hi' +user.username+ "Click\n"+activate_url
+                 message = render_to_string('email/email_verify.html', {
+                     'user': user,
+                     'userdata': userdata,
+                     'password': password,
+                     'domain': 'reg-ges.ecell-iitkgp.org',
+                     'uid': user.first_name,
+                     'token': user.last_name,
+    })
                 email=EmailMessage(
                                     email_subject,
                                     email_body,
