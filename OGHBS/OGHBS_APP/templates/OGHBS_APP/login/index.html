@@ -61,6 +61,13 @@
                   <div class="text flex flex-direction-column flex-justify-center">
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
                         <h3>Enter Details to Login...</h3>
+                        {% if flag%}
+                        <p>
+                        <strong style="color:red">
+                           Please verify your email first by visiting link given in the verification e-mail.
+                           </strong>
+                        </p>
+                        {% endif %}
                         <div class='input-fields'>
                            <form action="" method="post">
                               {% csrf_token %}

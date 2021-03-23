@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.views import View
 from .models import *
 import json
 from django.core import serializers
@@ -9,7 +10,12 @@ from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
-
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes,force_text,DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from .utils import token_generator
 # Create your views here.
 
 
@@ -223,7 +229,8 @@ def book_room(request, gh_id):
 
 def buffer(request,gh_id):
     context={
-        'gh_id':gh_id
+        'gh_id':gh_id,
+        'flag':True
     }
     if request.user.is_authenticated:
         print(request.user)
@@ -249,7 +256,21 @@ def user_register(request):
                 user.email = form1.cleaned_data.get('email')
                 user.username = form1.cleaned_data.get('user_name')
                 user.set_password(form1.cleaned_data.get('password1'))
+                user.is_active=False
                 user.save()
+
+                uidb64= urlsafe_base64_encode(force_bytes(user.pk))
+                domain=get_current_site(request).domain
+                link=reverse('activate',kwargs={'uidb64':uidb64,'token':token_generator.make_token(user)})
+                email_subject="[OGBS] : Activate your account"
+                activate_url="http://" +domain+link
+                email_body='Hi' +user.username+ "Click\n"+activate_url
+                email=EmailMessage(
+                                    email_subject,
+                                    email_body,
+                                    to=[user.email]
+                    )
+                email.send(fail_silently=False)
                 student = Student()
                 student.full_name = form1.cleaned_data.get('full_name')
                 student.department = form1.cleaned_data.get('department')
@@ -269,7 +290,20 @@ def user_register(request):
                 user.email = form2.cleaned_data.get('email')
                 user.username = form2.cleaned_data.get('user_name')
                 user.set_password(form2.cleaned_data.get('password1'))
+                user.is_active=False
                 user.save()
+                uidb64= urlsafe_base64_encode(force_bytes(user.pk))
+                domain=get_current_site(request).domain
+                link=reverse('activate',kwargs={'uidb64':uidb64,'token':token_generator.make_token(user)})
+                email_subject="[OGBS] : Activate your account"
+                activate_url="http://" +domain+link
+                email_body='Hi ' +user.username+ " Click the following Link to activate your OGHBS\n"+activate_url
+                email=EmailMessage(
+                                    email_subject,
+                                    email_body,
+                                    to=[user.email]
+                    )
+                email.send(fail_silently=False)
                 professor = Professor()
                 professor.full_name = form2.cleaned_data.get('full_name')
                 professor.department = form2.cleaned_data.get('department')
@@ -292,19 +326,30 @@ def user_login(request):
     if request.method == 'POST':
         user_name = request.POST.get('user_name')
         password = request.POST.get('password')
+        flag=True
         user = authenticate(request, username = user_name, password = password)
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
+            try:
+                user1 = User.objects.get(username=user_name)
+                if user1.is_active:
+                    s="Username or password is incorrect"
+                else:
+                    s="Please verify your email first by visiting link given in verification mail."
+                    flag=False
+            except User.DoesNotExist:
+                s="Username or password is incorrect"
             context = {
                 'form': LoginForm(request.POST),
-                'error': "Username or password is incorrect"
+                'error': s,
+                'flag':flag
             }
             return render(request, 'OGHBS_APP/login/index.html', context)
     else:
         form = LoginForm()
-        return render(request, 'OGHBS_APP/login/index.html', {'form': form})
+        return render(request, 'OGHBS_APP/login/index.html', {'form': form,'flag':True})
 
 
 def user_logout(request):
@@ -313,3 +358,23 @@ def user_logout(request):
 
 def halls_list(request):
     return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})
+
+
+
+def activate(request,uidb64,token):
+    try:
+        uid=force_text(urlsafe_base64_decode(uidb64))
+        user=User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError,User.DoesNotExist):
+        user=None
+    if user is not None and token_generator.check_token(user,token):
+        user.is_active=True
+        user.save()
+        return redirect('login')
+    else:
+        context = {
+            'form': LoginForm(request.POST),
+            'error': "Verification Link is invalid",
+            'flag': False
+            }
+        return render(request, 'OGHBS_APP/login/index.html', context)
