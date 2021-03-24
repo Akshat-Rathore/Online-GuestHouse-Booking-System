@@ -271,7 +271,7 @@ def user_register(request):
                     cat="Student"
                 else:
                     cat="Professor"
-                message = render_to_string('email/email_verify.html', {
+                message = render_to_string('OGHBS_APP/email/email_verify.html', {
                     'user': user,
                     'category': cat,
                     'password': password,
