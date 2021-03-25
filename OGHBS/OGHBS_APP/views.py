@@ -203,9 +203,9 @@ def search(request, gh_id):
             context = {
                 'form': form,
                 'avl_rooms': avl_rooms,
-                'ast':ast,
+                'ast': ast,
                 'gh_id': gh_id,
-                'name':guest_house.name,
+                'name': guest_house.name,
                 'desc':guest_house.description,
                 "address":guest_house.address,
                 "description":guest_house.description,
