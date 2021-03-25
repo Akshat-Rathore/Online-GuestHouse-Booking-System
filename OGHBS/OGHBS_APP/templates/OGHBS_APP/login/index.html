@@ -10,7 +10,7 @@
       <link rel="apple-touch-icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/apple-icon-touch.png' %}">
       <link rel="icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/favicon.png' %}">
       <meta content="index,follow" name="robots">
-      <title>Cookbooks | The Oyster & Fish House | Mark Hix</title>
+      <title>OGHBS | LOGIN</title>
       
       <!-- <meta name='robots' content='max-image-preview:large'/> -->
       <link rel='dns-prefetch' href='http://fonts.googleapis.com/'/>
@@ -61,6 +61,13 @@
                   <div class="text flex flex-direction-column flex-justify-center">
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
                         <h3>Enter Details to Login...</h3>
+                        {% if flag%}
+                        <p>
+                        <strong style="color:red">
+                           Please verify your email first by visiting link given in the verification e-mail.
+                           </strong>
+                        </p>
+                        {% endif %}
                         <div class='input-fields'>
                            <form action="" method="post">
                               {% csrf_token %}
@@ -113,7 +120,7 @@
          </div>
          <div class="footer-bottom">
             <div class="container-fluid">
-               <div class="flex-list flex-space-between"> <span>&copy; Coastal Marks Ltd</span> <span><a href="https://thehideout.co.uk/" target="_blank">Created at The Hideout</a></span> </div>
+               <div class="flex-list flex-space-between"> <span>&copy; OGHBS</span> <span>Created by Treadstone Cyborgs</span> </div>
             </div>
          </div>
       </footer>

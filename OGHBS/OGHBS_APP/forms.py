@@ -6,8 +6,8 @@ import datetime
 
 
 class SearchForm(forms.Form):
-    check_in_date = forms.DateField(label="Enter check-in Date", required=True, widget=forms.SelectDateWidget())
-    check_out_date = forms.DateField(label="Enter check-in Date", required=True, widget=forms.SelectDateWidget())
+    check_in_date = forms.DateField(label="Enter check-in Date ", required=True, widget=forms.SelectDateWidget())
+    check_out_date = forms.DateField(label="Enter check-out Date ", required=True, widget=forms.SelectDateWidget())
 
     def clean_check_in_date(self):
         data = self.cleaned_data['check_in_date']
