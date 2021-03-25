@@ -83,6 +83,8 @@ class GuestHouse(models.Model):
     customer = models.ManyToManyField(User, through='Booking', null=True)
     address = models.CharField(max_length=500, null=True, blank=True)
     description = models.CharField(max_length=500, null=True, blank=True)
+    last_update = models.DateField(null=True)
+
     def __str__(self):
         return self.name
 

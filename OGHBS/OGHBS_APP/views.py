@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
+import datetime
 from django.forms.models import model_to_dict
 
 # Create your views here.
@@ -35,6 +36,13 @@ def hall_list(request):
     
     return render(request, 'OGHBS_APP/index.html', context)
 
+def update_booking(gh_id):
+    guest_house = GuestHouse.objects.get(pk=gh_id)
+    if guest_house.last_update == datetime.date.today():
+        print("OKAY")
+    else:
+        print("NOT-OKAY")
+    return HttpResponse("<h1>HH</h1>")
 
 def hall_details(request, pk):
     guest_house = get_object_or_404(GuestHouse, pk=pk)

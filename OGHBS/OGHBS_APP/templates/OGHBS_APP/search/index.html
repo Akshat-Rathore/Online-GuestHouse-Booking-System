@@ -195,12 +195,12 @@
                               <button type="submit" style="border-bottom: 0px!important;margin-top: 5px!important" class="text-button text-button--dark text-black">Check</button>
                           </form>
                            {% for key,value in avl_rooms.items %}
-        <div>
-            <span>{{ key }}</span>
-            <span>{{ value }}</span>
-            <a href = "{% url 'book_room' gh_id %}?room={{key}}"><button>Book</button></a>
-        </div>
-    {% endfor %}
+                                <div>
+                                    <span>{{ key }}</span>
+                                    <span>{{ value }}</span>
+                                    <a href = "{% url 'book_room' gh_id %}?room={{key}}"><button>Book</button></a>
+                                </div>
+                            {% endfor %}
                            </div>
                         </div>
                         <!-- <div class="form-footer bg-secondary--alt">
