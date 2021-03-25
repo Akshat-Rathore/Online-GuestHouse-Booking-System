@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +145,7 @@ EMAIL_HOST_USER = 'contact@ecell-iitkgp.org'
 EMAIL_HOST_PASSWORD = 'contact-ecell'
 EMAIL_PORT = 587
 DEFAULT_FROM_MAIL= 'contact-ecell'
+CELERY_BROKER_URL = 'amqp://localhost'
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
