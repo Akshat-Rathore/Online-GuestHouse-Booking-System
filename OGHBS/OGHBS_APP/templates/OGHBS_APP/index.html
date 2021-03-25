@@ -58,40 +58,9 @@
          <div class="image image-absolute" data-scrollspeed="0.2">
             <figure class="img" style="background-image:url({% static 'images/uploads/2020/07/326HixLyme180525Matt-Austin-home-2500x1500.jpg' %});"> <img width="2500" height="1500" src="{% static 'images/uploads/2020/07/326HixLyme180525Matt-Austin-home-2500x1500.jpg' %}" alt="Coastal setting overlooking the ocean"/> </figure>
          </div>
-         <!-- <a class="button book-table-btn bg-pattern"> <span class="hidden-xs">Login</span>  </a>
-         <a class="button book-table-btn bg-pattern1"> <span>Reg</span></a> -->
-         <!-- <a class="button book-table-btn bg-pattern"> <span class="hidden-xs">Register</span> <i class="fal fa-calendar-alt visible-xs-inline-block"></i> </a>  -->
-         <a class="open-menu-btn flex flex-align-center flex-justify-center">
-            <div class="menu-btn-waves">
-               <div class="waves"></div>
-            </div>
-         </a>
-         <div class="drawer">
-            <div class="drawer-inner bg-secondary bg-pattern">
-               <div class="drawer-inner-content">
-                  <span class="subtitle text-primary">OGHBS</span>
-                  <nav class="main-nav">
-                     <ul>
-                        <li id="menu-item-1528" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1528"><a href="{% url 'home' %}">Hall Details</a></li><br>
-                        <li id="menu-item-1510" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1510"><a href="{% url 'login' %}">Login</a></li><br>
-                        <li id="menu-item-1511" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1511"><a href="{% url 'register' %}">Register</a></li><br>
-                        
-                        <li id="menu-item-1549" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1549"><a href="contact-us/index.html">Contact us</a></li>
-                        <!-- <li id="menu-item-2001" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2001"><a href="careers/index.html">Careers</a></li> -->
-                     </ul>
-                  </nav>
-                  <ul class='social-media'>
-                     <li><a href="#" target="_blank"><i class=" fab fa-facebook"></i></a></li>
-                     <li><a href="#" target="_blank"><i class=" fab fa-instagram"></i></a></li>
-                     <li><a href="#" target="_blank"><i class=" fab fa-youtube"></i></a></li>
-                  </ul>
-               </div>
-            </div>
-            <a class="close-btn close-menu-btn flex flex-align-center flex-justify-center">
-               <div class="close-menu-line close-menu-line--left"></div>
-               <div class="close-menu-line close-menu-line--right"></div>
-            </a>
-         </div>
+
+         {% include 'OGHBS_APP/header.html' %}
+
          <div class="cookie-message cookie-message--box">
             <div class="cookie-message-inner">
                <div class="content">

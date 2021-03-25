@@ -2,27 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5bebc383-2a78-400f-8390-56874afc4308" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/images/hideout-app/themes/the-hideout-theme/img/apple-icon-touch.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/images/hideout-app/themes/the-hideout-theme/img/favicon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/images/hideout-app/themes/the-hideout-theme/img/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/burger-waves.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/divider.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/fancybox_loading.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/fancybox_overlay.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/fancybox_sprite.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/fancybox_sprite@2x.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/loader.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/pattern.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/wave-dark.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/wave-light.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/img/wave-primary.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/js/js/js.cookied9c4.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OGHBS/static/js/js/scriptsd9c4.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/hix-art-2/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/hix-art-2/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/login/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/register/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/templates/OGHBS_APP/register/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OGHBS/OGHBS_APP/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/OGHBS_APP/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OGHBS/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/static/css/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/static/css/login.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OGHBS/static/css/stylesb4c8.css" beforeDir="false" afterPath="$PROJECT_DIR$/OGHBS/static/css/stylesb4c8.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -47,6 +40,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/OGHBS/static" />
     <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
@@ -84,17 +78,17 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1616121123869" />
-    <state x="277" y="55" key="SettingsEditor" timestamp="1616382614662">
+    <state x="277" y="55" key="SettingsEditor" timestamp="1616423164917">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1616382614662" />
+    <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1616423164917" />
     <state x="465" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1616208037295">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="465" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1616208037295" />
-    <state x="333" y="15" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1616210471993">
+    <state x="333" y="15" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1616438483550">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="333" y="15" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1536.824@0.0.1536.824" timestamp="1616210471993" />
+    <state x="333" y="15" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1536.824@0.0.1536.824" timestamp="1616438483550" />
   </component>
 </project>

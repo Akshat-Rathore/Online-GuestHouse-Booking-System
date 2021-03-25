@@ -10,7 +10,7 @@
       <link rel="apple-touch-icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/apple-icon-touch.png' %}">
       <link rel="icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/favicon.png' %}">
       <meta content="index,follow" name="robots">
-      <title>Cookbooks | The Oyster & Fish House | Mark Hix</title>
+      <title>OGHBS | LOGIN</title>
       
       <!-- <meta name='robots' content='max-image-preview:large'/> -->
       <link rel='dns-prefetch' href='http://fonts.googleapis.com/'/>
@@ -36,7 +36,7 @@
          </a>
       </div>
       <header class="header header-narrow bg-secondary bg-pattern">
-        
+        {% include 'OGHBS_APP/header.html' %}
       </header>
       <section class="main-body">
          <article class="main-content">
@@ -61,14 +61,27 @@
                   <div class="text flex flex-direction-column flex-justify-center">
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
                         <h3>Enter Details to Login...</h3>
+                        {% if flag%}
+                        <p>
+                        <strong style="color:red">
+                           Please verify your email first by visiting link given in the verification e-mail.
+                           </strong>
+                        </p>
+                        {% endif %}
                         <div class='input-fields'>
-                            <input type='text' placeholder='Username' class='input-line full-width'></input><br>
-                            <input type='email' placeholder='Email' class='input-line full-width'></input><br>
-                            <input type='password' placeholder='Password' class='input-line full-width'></input><br>
-                    
-                          </div>
-                          
-                          <div style="border-bottom: 0px!important;" class="text-button text-button--dark text-black">Login</div><br>
+                           <form action="" method="post">
+                              {% csrf_token %}
+                              {% for field in form %}
+                                 {{ field }}
+                              {% endfor %}
+                              {% if error %}
+                                 <div class="alert alert-danger ani">
+                                    <strong>{{ error }}</strong>
+                                 </div>
+                              {% endif %}
+                              <button type="submit" style="border-bottom: 0px!important;" class="text-button text-button--dark text-black">Login</button><br>
+                           </form>
+                        </div>
                         </div>
                   </div>
                </div>
