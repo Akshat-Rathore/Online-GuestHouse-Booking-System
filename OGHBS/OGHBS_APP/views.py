@@ -66,19 +66,19 @@ def hall_details(request, pk):  #displays details of hall with id=pk
         "ac_one_bednum":guest_house.AC1Bed.total_number,
         "ac_two_bednum":guest_house.AC2Bed.total_number,
         "ac_three_bednum":guest_house.AC3Bed.total_number,
-        "ac_dor_bednum":guest_house.ACDormatory.total_number,
+        "ac_dor_bednum":guest_house.ACDormitory.total_number,
         "nonac_one_bednum":guest_house.NAC1Bed.total_number,
         "nonac_two_bednum":guest_house.NAC2Bed.total_number,
         "nonac_three_bednum":guest_house.NAC3Bed.total_number,
-        "nonac_dor_bednum":guest_house.NACDormatory.total_number,
+        "nonac_dor_bednum":guest_house.NACDormitory.total_number,
         "ac_one_bednum_cost":guest_house.AC1Bed.cost,
         "ac_two_bednum_cost":guest_house.AC2Bed.cost,
         "ac_three_bednum_cost":guest_house.AC3Bed.cost,
-        "ac_dor_bednum_cost":guest_house.ACDormatory.cost,
+        "ac_dor_bednum_cost":guest_house.ACDormitory.cost,
         "nonac_one_bednum_cost":guest_house.NAC1Bed.cost,
         "nonac_two_bednum_cost":guest_house.NAC2Bed.cost,
         "nonac_three_bednum_cost":guest_house.NAC3Bed.cost,
-        "nonac_dor_bednum_cost":guest_house.NACDormatory.cost,
+        "nonac_dor_bednum_cost":guest_house.NACDormitory.cost,
 
 
     }
@@ -393,8 +393,8 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
-def halls_list(request):
-    return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})
+# def halls_list(request):
+#     return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})
 
 
 
