@@ -13,7 +13,7 @@ def update_bookings():
         # 2. guest house id of the current guest house
         # 3. bookings that aren't checkout out till yesterday
         # 4. The booking status should be confirmed
-        past_bookings = Booking.objects.filter(guest_house__id=guest_house.id, check_out_date__lt=datetime.today(), checked_out=0, booking_status=0)
+        past_bookings = Booking.objects.filter(guest_house__id=guest_house.id, check_out_date__lte=datetime.today(), checked_out=0, booking_status=0)
         print(guest_house, end='')
         print(past_bookings)
         for booking in past_bookings:
@@ -21,6 +21,12 @@ def update_bookings():
             if booking.room_type == "AC 1 Bed":
                 # The booking is checked out
                 booking.checked_out = 1
+                # Get all the active bookings for this room
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id, check_out_date__gt=datetime.today(), booking_status=0)
+                # If the active_bookings list if non empty then don't remove this room from booked_rooms
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 # Get the allotted room for this booking
                 room = guest_house.AC1Bed
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
@@ -36,6 +42,13 @@ def update_bookings():
             elif booking.room_type == "AC 2 Bed":
                 booking.checked_out = 1
                 room = guest_house.AC2Bed
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                print("$$$$")
+                print(active_bookings)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:
@@ -48,6 +61,11 @@ def update_bookings():
             elif booking.room_type == "AC 3 Bed":
                 booking.checked_out = 1
                 room = guest_house.AC3Bed
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:
@@ -60,6 +78,11 @@ def update_bookings():
             elif booking.room_type == "NAC 1 Bed":
                 booking.checked_out = 1
                 room = guest_house.NAC1Bed
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:
@@ -72,6 +95,11 @@ def update_bookings():
             elif booking.room_type == "NAC 2 Bed":
                 booking.checked_out = 1
                 room = guest_house.NAC2Bed
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:
@@ -84,6 +112,11 @@ def update_bookings():
             elif booking.room_type == "NAC 3 Bed":
                 booking.checked_out = 1
                 room = guest_house.NAC3Bed
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:
@@ -96,6 +129,11 @@ def update_bookings():
             elif booking.room_type == "ACDormitory":
                 booking.checked_out = 1
                 room = guest_house.ACDormitory
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:
@@ -108,6 +146,11 @@ def update_bookings():
             else:
                 booking.checked_out = 1
                 room = guest_house.NACDormitory
+                active_bookings = Booking.objects.filter(guest_house__id=guest_house.id, room_id=booking.room_id,
+                                                         check_out_date__gt=datetime.today(), booking_status=0)
+                if len(active_bookings) != 0:
+                    booking.save()
+                    continue
                 booked_rooms = [int(x) for x in room.booked_rooms.split(',')]
                 booked_rooms.remove(booking.room_id)
                 if len(booked_rooms) == 0:

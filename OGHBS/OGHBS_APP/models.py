@@ -32,9 +32,9 @@ BOOKING_STATUS = (
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=200, null=True)
-    roll_no = models.CharField(max_length=100, null=True)
-    department = models.CharField(max_length=200, null=True)
+    full_name = models.CharField(max_length=200, null=True, help_text="Enter the full name of the student")
+    roll_no = models.CharField(max_length=100, null=True, help_text="Enter the Roll No in DDXXDDDDD format (e.g-19CS10010)")
+    department = models.CharField(max_length=200, null=True, help_text="Enter the department of the student")
 
     def __str__(self):
         return self.user.username
@@ -42,9 +42,9 @@ class Student(models.Model):
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=200, null=True)
-    department = models.CharField(max_length=200, null=True)
-    address = models.CharField(max_length=1000, null=True)
+    full_name = models.CharField(max_length=200, null=True, help_text="Enter the full name of the professor")
+    department = models.CharField(max_length=200, null=True, help_text="Enter the department of the professor")
+    address = models.CharField(max_length=1000, null=True, help_text="Enter the address of the professor")
 
     def __str__(self):
         return self.user.username
