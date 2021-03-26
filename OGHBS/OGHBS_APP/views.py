@@ -6,7 +6,7 @@ import json
 from django.core import serializers
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm
+from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm, EditProfessorForm, EditStudentForm
 from django.contrib.auth import authenticate, login, logout
 import datetime
 from django.forms.models import model_to_dict
@@ -21,25 +21,24 @@ from .utils import token_generator
 # Create your views here.
 
 
-def hall_list(request):
+def hall_list(request): #displays all the guest houses in the home page
     guest_house = GuestHouse.objects.all().values()
-    cunt=GuestHouse.objects.all().count()
-
-    dta=[]
+    count=GuestHouse.objects.all().count()
+    data=[]
     
 
-    for i in range(cunt):
-        dta1=[]
-        dta1.append((i+1))
+    for i in range(count):
+        data1=[]
+        data1.append((i+1))
         house = get_object_or_404(GuestHouse, pk=(i+1))
-        dta1.append(house.name)
-        dta1.append(house.food_availability)
-        dta1.append(house.cost_of_food)
-        dta1.append(house.description)
-        dta.append(dta1)
-    print(dta)
+        data1.append(house.name)
+        data1.append(house.food_availability)
+        data1.append(house.cost_of_food)
+        data1.append(house.description)
+        data.append(data1)
+    print(data)
     context={
-        'data':dta,
+        'data':data,
     }
     
     return render(request, 'OGHBS_APP/index.html', context)
@@ -52,7 +51,7 @@ def update_booking(gh_id):
         print("NOT-OKAY")
     return HttpResponse("<h1>HH</h1>")
 
-def hall_details(request, pk):
+def hall_details(request, pk):  #displays details of hall with id=pk
     guest_house = get_object_or_404(GuestHouse, pk=pk)
     
     guest_house1 = serializers.serialize('json', [guest_house])
@@ -364,6 +363,8 @@ def user_login(request):
         user = authenticate(request, username=user_name, password=password)
         if user is not None:
             login(request, user)
+           
+            print("printed")
             return redirect('home')
         else:
             try:
@@ -380,6 +381,8 @@ def user_login(request):
                 'error': error_msg,
                 'flag': flag
             }
+            print(request.user)
+            print("printed")
             return render(request, 'OGHBS_APP/login/index.html', context)
     else:
         form = LoginForm()
@@ -394,20 +397,180 @@ def halls_list(request):
     return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})
 
 
-def activate(request, uidb64, token):
+
+def activate(request,uidb64,token): #view for activating accounts after email verification
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    if user is not None and token_generator.check_token(user, token):
-        user.is_active = True
+        uid=force_text(urlsafe_base64_decode(uidb64))
+        user=User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError,User.DoesNotExist):
+        user=None
+    if user is not None and token_generator.check_token(user,token):    #user is activated if token from link is correct
+        user.is_active=True
         user.save()
         return redirect('login')
-    else:
+    else:   #else error is returned
         context = {
             'form': LoginForm(),
             'error': "Verification Link is invalid",
             'flag': False
             }
         return render(request, 'OGHBS_APP/login/index.html', context)
+
+def dashboard(request,pk):
+    user = User.objects.get(pk=pk)
+    num1=Student.objects.filter(user=user).count()
+    num2=Professor.objects.filter(user=user).count()
+    if(num1==1):
+        stud=Student.objects.filter(user=user).first()
+        category=0
+        if stud is not None:
+            dif=stud.roll_no
+            full_name=stud.full_name
+            department=stud.department
+        else:
+            dif=" "
+            full_name=" "
+            department=" "
+        
+    else:
+        prof=Professor.objects.filter(user=user).first()
+        category=1
+        if prof is not None:
+            dif=prof.address
+            full_name=prof.full_name
+            department=prof.department
+        else:
+            dif=" "
+            full_name=" "
+            department=" "
+    context={
+        'name':user.username,
+        'fullname':full_name,
+        'different':dif,
+        'department':department,
+        'password':user.password,
+        'pk':pk,
+        'category':category
+    }
+    return render(request, 'OGHBS_APP/dashboard/index.html', context)
+
+def booking_history(request,pk):
+    user=get_object_or_404(User, pk=pk)
+    bookings = Booking.objects.filter(customer=user)
+    count=Booking.objects.all().count()
+    data=[]
+    s=""
+    s1=""
+    s2=""
+    feedback=[]
+    for i in bookings:
+        data1=[]
+        if i.booking_status == 0:
+            s="Confirmed"
+        elif i.booking_status==1:
+            s="queued"
+        elif i.booking_status==2:
+            s="refunded"
+        else:
+            s="cancelled"
+        if i.payment_status==0:
+            s1="No"
+        else:
+            s1="Yes"
+        if i.food:
+            s2="Yes"
+        else:
+            s2="No"
+        # data1.append(i.pk)
+        house = i.guest_house
+        data1.append(house.name)
+        data1.append(i.payment_status)
+        data1.append(i.visitors_name)
+        data1.append(s)
+        data1.append(i.paid_amount)
+        data1.append(i.room_id)
+        data1.append(s2)
+        data1.append(i.refund_amount)
+        data1.append(str(i.check_in_date))
+        data1.append(str(i.check_out_date))
+        if i.feedback is not None:
+            feedback.append(i.feedback.comfort_of_stay)
+            feedback.append(i.feedback.room_cleanliness)
+            feedback.append(i.feedback.service_quality)
+            feedback.append(i.feedback.additional_feedback)
+        else:
+            feedback.append(" ")
+            feedback.append(" ")
+            feedback.append(" ")
+            feedback.append(" ")
+        data1.append(feedback)
+        data1.append(str(i.check_in_date))
+        data1.append(str(i.check_out_date))
+        data.append(data1)
+    context={
+        'datas':data,
+        'name': user.username,
+    }
+    return render(request, 'OGHBS_APP/booking_history/index.html', context)
+
+def edit_profile(request,pk,cat):
+    if request.method == 'POST':
+        print(request.POST)
+        password =request.POST.get('password1', -1)
+        if cat == 0:
+            form1 = EditStudentForm(request.POST)
+            form2 = EditProfessorForm()
+            if form1.is_valid():
+                print(form1.cleaned_data)
+                user =  get_object_or_404(User, pk=pk)
+                # user.email = form1.cleaned_data.get('email')
+                user.username = form1.cleaned_data.get('user_name')
+                user.set_password(form1.cleaned_data.get('password1'))
+                user.save()
+                student = get_object_or_404(Student, user=user)
+                student.full_name = form1.cleaned_data.get('full_name')
+                student.department = form1.cleaned_data.get('department')
+                student.roll_no = form1.cleaned_data.get('roll_no')
+                student.user = user
+                student.save()
+                return redirect('dashboard',pk=pk)
+
+            return render(request, 'OGHBS_APP/profile/index.html',
+                          {'form1': form1, 'form2': form2, 'category': cat})
+        else:
+            form2 = EditProfessorForm(request.POST)
+            form1 = EditStudentForm()
+            if form2.is_valid():
+                print(form2.cleaned_data)
+                user = get_object_or_404(User, pk=pk)
+                # user.email = form2.cleaned_data.get('email')
+                user.username = form2.cleaned_data.get('user_name')
+                user.set_password(form2.cleaned_data.get('password1'))
+                user.save()
+                professor = get_object_or_404(Professor, user=user)
+                professor.full_name = form2.cleaned_data.get('full_name')
+                professor.department = form2.cleaned_data.get('department')
+                professor.address = form2.cleaned_data.get('address')
+                professor.user = user
+                professor.save()
+                return redirect('dashboard',pk=pk)
+            return render(request, 'OGHBS_APP/profile/index.html',
+                          {'form1': form1, 'form2': form2, 'category': cat})
+
+    elif request.method == 'GET':
+        user=get_object_or_404(User, pk=pk)
+        if cat==0:
+            parentuser=get_object_or_404(Student, user=user)
+        else:
+            parentuser=get_object_or_404(Professor,user=user)
+        context = {
+            'form1': EditStudentForm(),
+            'form2': EditProfessorForm(),
+            'category': cat,
+            'name':user.username,
+            'full_name':parentuser.full_name,
+            'email':user.email,
+            'pk':pk
+
+        }
+    return render(request, 'OGHBS_APP/profile/index.html', context)
