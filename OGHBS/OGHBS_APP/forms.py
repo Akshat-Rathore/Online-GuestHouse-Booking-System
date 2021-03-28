@@ -9,6 +9,14 @@ class SearchForm(forms.Form):
     check_in_date = forms.DateField(label="Enter check-in Date ", required=True, widget=forms.SelectDateWidget())
     check_out_date = forms.DateField(label="Enter check-out Date ", required=True, widget=forms.SelectDateWidget())
 
+    def clean(self):
+        cleaned_data = super().clean()
+        date1 = cleaned_data['check_in_date']
+        date2 = cleaned_data['check_out_date']
+
+        if date1 > date2:
+            raise ValidationError(_('Invalid date - Check-out date cannot be before Check-in Date'))
+
     def clean_check_in_date(self):
         data = self.cleaned_data['check_in_date']
 
@@ -20,9 +28,9 @@ class SearchForm(forms.Form):
         data = self.cleaned_data['check_out_date']
         if data < datetime.date.today():
             raise ValidationError(_('Invalid date - Check-out date cannot be in the past'))
-        if data < self.cleaned_data['check_in_date']:
-            raise ValidationError(_('Invalid Date- Check out date cannot be before check-in date'))
         return data
+
+
 
 class StudentForm(forms.Form):
     user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))

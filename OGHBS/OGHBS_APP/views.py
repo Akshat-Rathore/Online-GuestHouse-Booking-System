@@ -19,15 +19,14 @@ from .utils import token_generator
 from django.utils.timezone import datetime
 # Create your views here.
 
-
-def hall_list(request): #displays all the guest houses in the home page
+# displays all the guest houses in the home page
+def hall_list(request):
     guest_house = GuestHouse.objects.all().values()
-    count=GuestHouse.objects.all().count()
-    data=[]
-    
+    count = GuestHouse.objects.all().count()
+    data = []
 
     for i in range(count):
-        data1=[]
+        data1 = []
         data1.append((i+1))
         house = get_object_or_404(GuestHouse, pk=(i+1))
         data1.append(house.name)
@@ -35,9 +34,10 @@ def hall_list(request): #displays all the guest houses in the home page
         data1.append(house.cost_of_food)
         data1.append(house.description)
         data.append(data1)
+
     print(data)
-    context={
-        'data':data,
+    context = {
+        'data': data,
     }
     
     return render(request, 'OGHBS_APP/index.html', context)
@@ -50,7 +50,9 @@ def update_booking(gh_id):
         print("NOT-OKAY")
     return HttpResponse("<h1>HH</h1>")
 
-def hall_details(request, pk):  #displays details of hall with id=pk
+# displays details of hall with id=pk
+
+def hall_details(request, pk):
     guest_house = get_object_or_404(GuestHouse, pk=pk)
     
     guest_house1 = serializers.serialize('json', [guest_house])
@@ -86,253 +88,88 @@ def hall_details(request, pk):  #displays details of hall with id=pk
 # Function to set the 'In-Queue' status of booking to 'Confirmed' if possible
 def clear_queue():
     # Get all the queued bookings and order them by their ID (temporal ordering)
-    queued_bookings = Booking.objects.filter(booking_status=1).order_by('pk')
+    queued_bookings = Booking.objects.filter(booking_status=1,check_in_date__gte=datetime.today()).order_by('pk')
     print("&&&")
     print(queued_bookings)
     # Check for each queued booking
     for booking in queued_bookings:
         if booking.room_type == 'AC 1 Bed':
-            AC1BedBooking(booking)
+            room_booking(booking, booking.guest_house.AC1Bed)
         elif booking.room_type == 'AC 2 Bed':
-            AC2BedBooking(booking)
+            room_booking(booking, booking.guest_house.AC2Bed)
         elif booking.room_type == 'AC 3 Bed':
-            AC3BedBooking(booking)
-
-def AC1BedBooking(booking):
-    booked_rooms = booking.guest_house.AC1Bed.booked_rooms
-    if booked_rooms is not None:
-        booked_rooms = [int(x) for x in booked_rooms.split(',')]
-        room_start_id = booking.guest_house.AC1Bed.initial_room_id
-        room_end_id = room_start_id + booking.guest_house.AC1Bed.total_number - 1
-        # Case when all rooms of this type are booked => No confirmation possible
-        if len(booked_rooms) == booking.guest_house.AC2Bed.total_number:
-            for room_id in booked_rooms:
-                feasibility = Booking.objects.filter(guest_house__id=booking.guest_house.id, booking_status=0,
-                                                     room_type=booking.room_type, room_id=room_id).exclude(
-                    check_in_date__gt=booking.check_out_date).exclude(check_out_date__lt=booking.check_in_date)
-                # Booking is only possible if for some room_id there is no booking that clashes
-                if len(feasibility) == 0:
-                    booking.booking_status = 0
-                    booking.checked_out = 0
-                    booking.room_id = room_id
-                    booking.save()
-                    return
-            # Booking not possible
-            booking.booking_status = 1
-            booking.checked_out = 0
-            booking.room_id = None
-            booking.save()
-            return
-
-        for i in range(room_start_id, min(room_end_id + 1, room_start_id + len(booked_rooms))):
-            # Get the smallest room no not present in the booked_rooms array (MEX)
-            if i != booked_rooms[i - room_start_id]:
-                booking.room_id = i
-                booked_rooms.insert(i - room_start_id, i)
-                # Update and save the booked_rooms string of the selected room type
-                booking.guest_house.AC1Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-                booking.guest_house.AC1Bed.save()
-                booking.booking_status = 0
-                booking.save()
-                break
+            room_booking(booking, booking.guest_house.AC3Bed)
+        elif booking.room_type == "NAC 1 Bed":
+            room_booking(booking, booking.guest_house.NAC1Bed)
+        elif booking.room_type == "NAC 2 Bed":
+            room_booking(booking, booking.guest_house.NAC2Bed)
+        elif booking.room_type == "NAC 3 Bed":
+            room_booking(booking, booking.guest_house.NAC3Bed)
+        elif booking.room_type == "ACDormitory":
+            room_booking(booking, booking.guest_house.ACDormitory)
         else:
-            booking.room_id = room_start_id + len(booked_rooms)
-            booked_rooms.append(booking.room_id)
-            # Update and save the booked_rooms string of the selected room type
-            booking.guest_house.AC1Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-            booking.guest_house.AC1Bed.save()
-            booking.booking_status = 0
-            booking.checked_out = 0
-            booking.save()
-    else:
-        booking.guest_house.AC1Bed.booked_rooms = str(booking.guest_house.AC1Bed.initial_room_id)
-        booking.guest_house.AC1Bed.save()
+            room_booking(booking, booking.guest_house.NACDormitory)
+
+
+def room_booking(booking, room):
+    booked_room_ids = Booking.objects.filter(guest_house__id=booking.guest_house.id,
+                                             room_type=booking.room_type,
+                                             booking_status=0
+                                             ).exclude(check_in_date__gt=booking.check_out_date
+                                                       ).exclude(check_out_date__lt=booking.check_in_date
+                                                                 ).order_by('room_id').values_list('room_id').distinct()
+
+    booked_room_ids = [x[0] for x in booked_room_ids]
+    start_id = room.initial_room_id
+    end_id = room.initial_room_id + room.total_number - 1
+    print(booked_room_ids)
+    if len(booked_room_ids) == 0:
         booking.booking_status = 0
-        booking.room_id = booking.guest_house.AC1Bed.initial_room_id
+        booking.room_id = start_id
+        booking.checked_out = 0
         booking.save()
-
-
-def AC2BedBooking(booking):
-    booked_rooms = booking.guest_house.AC2Bed.booked_rooms
-    if booked_rooms is not None:
-        booked_rooms = [int(x) for x in booked_rooms.split(',')]
-        room_start_id = booking.guest_house.AC2Bed.initial_room_id
-        room_end_id = room_start_id + booking.guest_house.AC2Bed.total_number - 1
-        # Case when all rooms of this type are booked
-        if len(booked_rooms) == booking.guest_house.AC2Bed.total_number:
-            for room_id in booked_rooms:
-                feasibility = Booking.objects.filter(guest_house__id=booking.guest_house.id, booking_status=0, room_type=booking.room_type, room_id=room_id).exclude(check_in_date__gt=booking.check_out_date).exclude(check_out_date__lt=booking.check_in_date)
-                # Booking is only possible if for some room_id there is no booking that clashes
-                if len(feasibility) == 0:
-                    booking.booking_status = 0
-                    booking.checked_out = 0
-                    booking.room_id = room_id
-                    booking.save()
-                    return
-            # Booking not possible
-            booking.booking_status = 1
-            booking.checked_out = 0
-            booking.room_id = None
-            booking.save()
-            return
-
-        for i in range(room_start_id, min(room_end_id + 1, room_start_id + len(booked_rooms))):
-            # Get the smallest room no not present in the booked_rooms array (MEX)
-            if i != booked_rooms[i - room_start_id]:
-                booking.room_id = i
-                booked_rooms.insert(i - room_start_id, i)
-                # Update and save the booked_rooms string of the selected room type
-                booking.guest_house.AC2Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-                booking.guest_house.AC2Bed.save()
+    elif len(booked_room_ids) == room.total_number:
+        booking.booking_status = 1
+        booking.room_id = None
+        booking.checked_out = 0
+        booking.save()
+    else:
+        for _id in range(start_id, end_id+1):
+            if _id not in booked_room_ids:
                 booking.booking_status = 0
+                booking.room_id = _id
+                booking.checked_out = 0
                 booking.save()
-                break
-        else:
-            booking.room_id = room_start_id + len(booked_rooms)
-            booked_rooms.append(booking.room_id)
-            # Update and save the booked_rooms string of the selected room type
-            booking.guest_house.AC2Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-            booking.guest_house.AC2Bed.save()
-            booking.booking_status = 0
-            booking.checked_out = 0
-            booking.save()
-    else:
-        booking.guest_house.AC2Bed.booked_rooms = str(booking.guest_house.AC2Bed.initial_room_id)
-        booking.guest_house.AC2Bed.save()
-        booking.booking_status = 0
-        booking.room_id = booking.guest_house.AC2Bed.initial_room_id
-        booking.save()
+                return
 
-def AC3BedBooking(booking):
-    # Get the booked_rooms for the desired room in queued booking
-    booked_rooms = booking.guest_house.AC3Bed.booked_rooms
-    if booked_rooms is not None:
-        booked_rooms = [int(x) for x in booked_rooms.split(',')]
-        room_start_id = booking.guest_house.AC3Bed.initial_room_id
-        room_end_id = room_start_id + booking.guest_house.AC3Bed.total_number - 1
-        # Case when all rooms of this type are booked
-        if len(booked_rooms) == booking.guest_house.AC2Bed.total_number:
-            for room_id in booked_rooms:
-                feasibility = Booking.objects.filter(guest_house__id=booking.guest_house.id, booking_status=0,
-                                                     room_type=booking.room_type, room_id=room_id).exclude(
-                    check_in_date__gt=booking.check_out_date).exclude(check_out_date__lt=booking.check_in_date)
-                # Booking is only possible if for some room_id there is no booking that clashes
-                if len(feasibility) == 0:
-                    booking.booking_status = 0
-                    booking.checked_out = 0
-                    booking.room_id = room_id
-                    booking.save()
-                    return
-            # Booking not possible
-            booking.booking_status = 1
-            booking.checked_out = 0
-            booking.room_id = None
-            booking.save()
-            return
 
-        for i in range(room_start_id, min(room_end_id + 1, room_start_id + len(booked_rooms))):
-            # Get the smallest room no not present in the booked_rooms array (MEX)
-            if i != booked_rooms[i - room_start_id]:
-                booking.room_id = i
-                booked_rooms.insert(i - room_start_id, i)
-                # Update and save the booked_rooms string of the selected room type
-                booking.guest_house.AC3Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-                booking.guest_house.AC3Bed.save()
-                booking.booking_status = 0
-                booking.save()
-                break
-        else:
-            booking.guest_house.AC2Bed.booked_rooms = str(booking.guest_house.AC2Bed.initial_room_id)
-            booking.guest_house.AC2Bed.save()
-            booking.booking_status = 0
-            booking.room_id = booking.guest_house.AC2Bed.initial_room_id
-            booking.save()
-    else:
-        booking.guest_house.AC3Bed.booked_rooms = str(booking.guest_house.AC3Bed.initial_room_id)
-        booking.guest_house.AC3Bed.save()
-        booking.booking_status = 0
-        booking.room_id = booking.guest_house.AC3Bed.initial_room_id
-        booking.save()
-
-def AC1CancelBooking(booking):
+def cancel_room_booking(booking):
     booking.booking_status = 3
     booking.checked_out = 0
-    active_bookings = Booking.objects.filter(guest_house__id=booking.guest_house.id, room_id=booking.room_id,
-                                             check_out_date__gt=datetime.today(), booking_status=0)
-    # If the active_bookings list if non empty then don't remove this room from booked_rooms
-    if len(active_bookings) != 0:
-        booking.save()
-        return
-    booked_rooms = booking.guest_house.AC1Bed.booked_rooms
-    booked_rooms = [int(x) for x in booked_rooms.split(',')]
-    booked_rooms.remove(booking.room_id)
-    booking.guest_house.AC1Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-    booking.guest_house.AC1Bed.save()
-    booking.room_id = None
     booking.save()
-
-def AC2CancelBooking(booking):
-    booking.booking_status = 3
-    booking.checked_out = 0
-    active_bookings = Booking.objects.filter(guest_house__id=booking.guest_house.id, room_id=booking.room_id,
-                                             check_out_date__gt=datetime.today(), booking_status=0)
-    # If the active_bookings list if non empty then don't remove this room from booked_rooms
-    if len(active_bookings) != 0:
-        booking.save()
-        return
-
-    booked_rooms = booking.guest_house.AC2Bed.booked_rooms
-    booked_rooms = [int(x) for x in booked_rooms.split(',')]
-    booked_rooms.remove(booking.room_id)
-    booking.guest_house.AC2Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-    booking.guest_house.AC2Bed.save()
-    booking.room_id = None
-    booking.save()
-
-def AC3CancelBooking(booking):
-    booking.booking_status = 3
-    booking.checked_out = 0
-    active_bookings = Booking.objects.filter(guest_house__id=booking.guest_house.id, room_id=booking.room_id,
-                                             check_out_date__gt=datetime.today(), booking_status=0)
-    # If the active_bookings list if non empty then don't remove this room from booked_rooms
-    if len(active_bookings) != 0:
-        booking.save()
-        return
-
-    booked_rooms = booking.guest_house.AC3Bed.booked_rooms
-    booked_rooms = [int(x) for x in booked_rooms.split(',')]
-    booked_rooms.remove(booking.room_id)
-    booking.guest_house.AC3Bed.booked_rooms = ','.join([str(x) for x in booked_rooms])
-    booking.guest_house.AC3Bed.save()
-    booking.room_id = None
-    booking.save()
+    clear_queue()
 
 
 def check_availability(room, check_in, check_out, gh_id):
-    if room.booked_rooms is not None:
-        booked_rooms = [int(x) for x in room.booked_rooms.split(',') if x is not None or x !=""]
-    else:
-        booked_rooms = []
-    count = 0
-    if len(booked_rooms) == 0:
-        count = room.total_number
-    else:
-        count = room.total_number - len(booked_rooms)
-        for room_id in booked_rooms:
-            bookings = Booking.objects.filter(room_id=room_id, guest_house=gh_id, booking_status=0)
-            is_avl = True
-            for booking in bookings:
-                if not (booking.check_in_date > check_out or booking.check_out_date < check_in):
-                    is_avl = False
-            if is_avl:
-                count += 1
-    return count
+    booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
+                                             room_type=room.room_type,
+                                             booking_status=0
+                                             ).exclude(check_in_date__gt=check_out
+                                                       ).exclude(check_out_date__lt=check_in
+                                                                 ).order_by('room_id').values_list('room_id').distinct()
+
+    booked_room_ids = [x[0] for x in booked_room_ids]
+    print(booked_room_ids, room.room_type)
+    return room.total_number - len(booked_room_ids)
 
 
 def search(request, gh_id):
     print(str(gh_id)+"ijk")
+    print(request)
     guest_house = get_object_or_404(GuestHouse, pk=gh_id)
     if request.method == 'POST':
+        print("****")
+        print(request.POST)
         print(str(gh_id)+"ijk")
         form = SearchForm(request.POST)
         if form.is_valid():
@@ -462,7 +299,7 @@ def user_register(request):
                                     message,
                                     to=[user.email]
                     )
-                email.content_subtype=  "html"
+                email.content_subtype = "html"
                 email.send(fail_silently=False)
                 student = Student()
                 student.full_name = form1.cleaned_data.get('full_name')
@@ -548,7 +385,7 @@ def user_login(request):
         form = LoginForm()
         return render(request, 'OGHBS_APP/login/index.html', {'form': form, 'flag':True})
 
-
+@login_required(login_url='login/')
 def user_logout(request):
     logout(request)
     return redirect('home')
@@ -557,18 +394,21 @@ def user_logout(request):
 #     return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})
 
 
+# view for activating accounts after email verification
 
-def activate(request,uidb64,token): #view for activating accounts after email verification
+def activate(request, uidb64, token):
     try:
-        uid=force_text(urlsafe_base64_decode(uidb64))
-        user=User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError,User.DoesNotExist):
-        user=None
-    if user is not None and token_generator.check_token(user,token):    #user is activated if token from link is correct
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    # user is activated if token from link is correct
+    if user is not None and token_generator.check_token(user, token):
         user.is_active=True
         user.save()
         return redirect('login')
-    else:   #else error is returned
+    # else error is returned
+    else:
         context = {
             'form': LoginForm(),
             'error': "Verification Link is invalid",

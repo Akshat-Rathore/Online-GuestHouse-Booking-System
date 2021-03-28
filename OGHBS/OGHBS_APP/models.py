@@ -50,34 +50,88 @@ class Professor(models.Model):
         return self.user.username
 
 class Room(models.Model):
-    is_AC = models.BooleanField(default=False)
     total_number = models.IntegerField(null=True)
-    booked_rooms = models.CharField(max_length=1000, null=True,blank=True)
     cost = models.IntegerField(null=True)
     capacity = models.IntegerField(null=True)
-    room_type = models.CharField(max_length=100, choices=ROOM_TYPES, null=True)
     initial_room_id = models.IntegerField(null=True)
 
-    def __str__(self):
-        s = ''
-        if self.is_AC:
-            s += "AC "
-        else:
-            s += "Non-AC "
-        s += (str(self.capacity) + " Bed Room")
-        return s
+    class Meta:
+        abstract = True
 
+class AC1Bed(Room):
+    is_AC = models.BooleanField(default=True)
+    capacity = models.IntegerField(null=True, default=1)
+    room_type = models.CharField(max_length=100, default="AC 1 Bed", null=True)
+
+    class Meta:
+        verbose_name = 'AC 1 Bed'
+
+class AC2Bed(Room):
+    is_AC = models.BooleanField(default=True)
+    capacity = models.IntegerField(null=True, default=2)
+    room_type = models.CharField(max_length=100, default="AC 2 Bed", null=True)
+
+    class Meta:
+        verbose_name = 'AC 2 Bed'
+
+class AC3Bed(Room):
+    is_AC = models.BooleanField(default=True)
+    capacity = models.IntegerField(null=True, default=3)
+    room_type = models.CharField(max_length=100, default="AC 3 Bed", null=True)
+
+    class Meta:
+        verbose_name = 'AC 3 Bed'
+
+class NAC1Bed(Room):
+    is_AC = models.BooleanField(default=False)
+    capacity = models.IntegerField(null=True, default=1)
+    room_type = models.CharField(max_length=100, default="NAC 1 Bed", null=True)
+
+    class Meta:
+        verbose_name = 'Non-AC 1 Bed'
+
+class NAC2Bed(Room):
+    is_AC = models.BooleanField(default=False)
+    capacity = models.IntegerField(null=True, default=2)
+    room_type = models.CharField(max_length=100, default="NAC 2 Bed", null=True)
+
+    class Meta:
+        verbose_name = 'Non-AC 2 Bed'
+
+class NAC3Bed(Room):
+    is_AC = models.BooleanField(default=False)
+    capacity = models.IntegerField(null=True, default=3)
+    room_type = models.CharField(max_length=100, default="NAC 3 Bed", null=True)
+
+    class Meta:
+        verbose_name = 'Non-AC 3 Bed'
+
+class ACDormitory(Room):
+    is_AC = models.BooleanField(default=True)
+    capacity = models.IntegerField(null=True, default=15)
+    room_type = models.CharField(max_length=100, default="ACDormitory", null=True)
+
+    class Meta:
+        verbose_name = 'AC Dormitory'
+
+class NACDormitory(Room):
+    is_AC = models.BooleanField(default=False)
+    capacity = models.IntegerField(null=True, default=15)
+    room_type = models.CharField(max_length=100, default="NACDormitory", null=True)
+
+    class Meta:
+        verbose_name = 'Non-AC Dormitory'
 
 class GuestHouse(models.Model):
     name = models.CharField(max_length=300, null=True)
-    ACDormitory = models.OneToOneField(Room, related_name='ACDormatory_set', on_delete=models.CASCADE,null=True)
-    AC1Bed = models.OneToOneField(Room, related_name='AC1Bed_set', on_delete=models.CASCADE, null=True)
-    AC2Bed = models.OneToOneField(Room, related_name='AC2Bed_set', on_delete=models.CASCADE, null=True)
-    AC3Bed = models.OneToOneField(Room, related_name='AC3Bed_set', on_delete=models.CASCADE, null=True)
-    NACDormitory = models.OneToOneField(Room, related_name='NACDormatory_set', on_delete=models.CASCADE, null=True)
-    NAC1Bed = models.OneToOneField(Room, related_name='NAC1Bed_set', on_delete=models.CASCADE, null=True)
-    NAC2Bed = models.OneToOneField(Room, related_name='NAC2Bed_set', on_delete=models.CASCADE, null=True)
-    NAC3Bed = models.OneToOneField(Room, related_name='NAC3Bed_set', on_delete=models.CASCADE, null=True)
+    AC1Bed = models.OneToOneField(AC1Bed, on_delete=models.CASCADE, null=True)
+    AC2Bed = models.OneToOneField(AC2Bed, on_delete=models.CASCADE, null=True)
+    AC3Bed = models.OneToOneField(AC3Bed, on_delete=models.CASCADE, null=True)
+    NAC1Bed = models.OneToOneField(NAC1Bed, on_delete=models.CASCADE, null=True)
+    NAC2Bed = models.OneToOneField(NAC2Bed, on_delete=models.CASCADE, null=True)
+    NAC3Bed = models.OneToOneField(NAC3Bed, on_delete=models.CASCADE, null=True)
+    ACDormitory = models.OneToOneField(ACDormitory, on_delete=models.CASCADE, null=True)
+    NACDormitory = models.OneToOneField(NACDormitory, on_delete=models.CASCADE, null=True)
     food_availability = models.BooleanField(default=False)
     cost_of_food = models.IntegerField(null=True, blank=True)
     customer = models.ManyToManyField(User, through='Booking', null=True)
@@ -116,7 +170,7 @@ class Booking(models.Model):
     feedback = models.OneToOneField(Feedback, null=True, on_delete=models.CASCADE, blank=True)
 
     def __str__(self):
-        return self.guest_house.name + '_' + self.room_type + '_' + self.customer.username + '_' + str(self.id)
+        return f"Booking-{self.id}"
 
 
 
