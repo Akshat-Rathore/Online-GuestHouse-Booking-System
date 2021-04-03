@@ -478,7 +478,7 @@ def booking_history(request,pk):
         else:
             s1="Yes"
         if i.food:
-            s2="Yes"
+            s2 = "Yes"
         else:
             s2="No"
         # data1.append(i.pk)
@@ -513,7 +513,7 @@ def booking_history(request,pk):
     }
     return render(request, 'OGHBS_APP/booking_history/index.html', context)
 
-def edit_profile(request,pk,cat):
+def edit_profile(request, pk, cat):
     if request.method == 'POST':
         print(request.POST)
         password =request.POST.get('password1', -1)
