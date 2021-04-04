@@ -643,7 +643,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.visitors_count=form.cleaned_data.get('visitor_num')
             booking.visitors_name=form.cleaned_data.get('visitor_names')
             print(form.cleaned_data.get('visitor_names'))
-            if form.cleaned_data.get('food')=='YES':
+            if form.cleaned_data.get('food')=='1':
                 booking.food=True
             else:
                 booking.food=False
