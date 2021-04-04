@@ -31,5 +31,6 @@ urlpatterns = [
     path('booking_history/<int:pk>', booking_history, name='booking_history'),
     path('edit_profile/<int:pk>/<int:cat>', edit_profile, name='edit_profile'),
     path('book/<int:pk>/<str:room_type>/<yyyy:check_in_date>/<yyyy:check_out_date>/<int:booking_status>',make_booking,name='book'),
-    path('payment/<yyyy:check_in_date>/<yyyy:check_out_date>/',payment,name='payment')
+    path('payment/<yyyy:check_in_date>/<yyyy:check_out_date>/',payment,name='payment'),
+    path('cancel_booking/<int:pk>',cancel_booking,name='cancel'),
 ]

@@ -150,6 +150,19 @@ def cancel_room_booking(booking):
     booking.save()
     clear_queue()
 
+@login_required(login_url='login/')
+def cancel_booking(request, ):
+    booking = get_object_or_404(Booking, pk=pk)
+    if booking.booking_status == 1:
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount
+        booking.booking_status = 2
+        booking.save()
+    else:
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount/2
+        booking.save()
+
 
 def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
