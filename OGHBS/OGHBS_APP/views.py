@@ -281,6 +281,7 @@ def branching(request,check_in_date,check_out_date,booking_status):
         booking.payment_status=False
     else:
         booking.payment_status=True
+    
     booking.save()
     return redirect('home')
     
@@ -619,6 +620,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
         POST['check_out_date']=check_out_date
         form=BookingForm(room_type=room_type,data=POST)
         if form.is_valid():
+            print(form.cleaned_data)
             booking=Booking()
             booking.guest_house=get_object_or_404(GuestHouse,pk=pk)
             booking.customer=request.user
@@ -627,6 +629,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.check_out_date=check_out_date
             booking.visitors_count=form.cleaned_data.get('visitor_num')
             booking.visitors_name=form.cleaned_data.get('visitor_names')
+            print(form.cleaned_data.get('visitor_names'))
             if form.cleaned_data.get('food')=='YES':
                 booking.food=True
             else:
@@ -641,7 +644,10 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.paid_amount=0
             booking.feedback=None
             booking.room_id=None
+            cost=calculate_cost(booking)
+            booking.paid_amount=cost
             booking.save()
+            print(booking.visitors_name)
             guest_house=get_object_or_404(GuestHouse,pk=pk)
             # user=User.objects.get(username=request.user)
             user=get_object_or_404(User,username=request.user)
