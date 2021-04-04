@@ -264,6 +264,7 @@ def book_room(request, gh_id):
     return HttpResponse("<h1>Hello {{gh_id}}+{{a}}</h1>")
 
 def branching(request,check_in_date,check_out_date,booking_status):
+    print("Hello")
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
     print(booking)
     if booking_status==3:
@@ -429,16 +430,12 @@ def user_login(request):
         form = LoginForm()
         return render(request, 'OGHBS_APP/login/index.html', {'form': form, 'flag':True})
 
+
 @login_required(login_url='login/')
 def user_logout(request):
     logout(request)
     return redirect('home')
 
-# def halls_list(request):
-#     return render(request, 'OGHBS_APP/guesthouse_details/index.html', {})
-
-
-# view for activating accounts after email verification
 
 def activate(request, uidb64, token):
     try:
@@ -642,7 +639,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.check_out_date=check_out_date
             booking.visitors_count=form.cleaned_data.get('visitor_num')
             booking.visitors_name=form.cleaned_data.get('visitor_names')
-            print(form.cleaned_data.get('visitor_names'))
+
             if form.cleaned_data.get('food')=='1':
                 booking.food=True
             else:
@@ -666,7 +663,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             user=get_object_or_404(User,username=request.user)
             # booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
             data=[]
-            data.append(booking.customer)
+            data.append(booking.customer.username)
             data.append(booking.guest_house.name)
             data.append(booking.room_type)
             data.append(booking.visitors_count)
@@ -683,6 +680,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             print(data[6])
             print(check_in_date)
             print(booking.check_in_date)
+            print(data,"&&&&&&");
             return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
     elif request.method == 'GET':
         guest_house=get_object_or_404(GuestHouse,pk=pk)
