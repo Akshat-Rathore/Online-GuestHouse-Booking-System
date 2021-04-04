@@ -20,6 +20,109 @@
       <!-- <link rel='stylesheet' id='styles-css' href='css/modal.css' type='text/css' media='all'/> -->
       <link rel='stylesheet' id='wp-block-library-css' href='{% static "css/wp-includes/css/dist/block-library/style.mine23c.css" %}' type='text/css' media='all'/>
       <link rel="canonical" href="index.html"/>
+      <style>
+         <style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Set a style for all buttons */
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .deletebtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+  background-color: #ccc;
+  color: black;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+  background-color: #f44336;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+ 
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .deletebtn {
+     width: 100%;
+  }
+}
+</style>
+      </style>
    </head>
    <body class="home page-template-default page page-id-1425 wb-homepage subpage" data-siteurl="index.html">
       <div id="wrap">
@@ -84,6 +187,7 @@
                   <div class="doc-list">
                      <div class="doc-item " data-show data-show-move data-show-percentage="10" >
                         {%for data in datas%}
+                        <div>
                         <a href="#"  class="bg-pattern">
                            <table>
                               <tr>
@@ -95,7 +199,7 @@
                                     Check-In Date :
                                  </td>
                                  <td>
-                                    {{data.9}}
+                                    {{data.8}}
                                  </td>
                               </tr>
                               <tr>
@@ -103,7 +207,7 @@
                                     Check-Out Date :
                                  </td>
                                  <td>
-                                    {{data.10}}
+                                    {{data.9}}
                                  </td>
                               </tr>
                               <tr>
@@ -145,29 +249,49 @@
                                  </td>
                               </tr>
                               <tr></tr>
-                              <tr>
+                              <!-- <tr>
                                  <td><strong>Feedback :</strong></td>
                               </tr>
                               <tr>
                                  <td>
                                     Comfort of Stay:
                                  </td>
-                                 <td>{{data.8.0}}</td>
+                                 <td>{{data.10.0}}</td>
                               </tr>
                               <tr>
                                  <td>Room Cleanliness</td>
-                                 <td>{{data.8.1}}</td>
+                                 <td>{{data.10.1}}</td>
                               </tr>
                               <tr>
                                  <td>Service Quality</td>
-                                 <td>{{data.8.2}}</td>
+                                 <td>{{data.10.2}}</td>
                               </tr>
                               <tr>
                                  <td>Additional Feedback</td>
-                                 <td>{{data.8.3}}</td>
-                              </tr>
+                                 <td>{{data.10.3}}</td>
+                              </tr> -->
                            </table>
                         </a>
+                        <table>
+                           <tr>
+                              {% if data.11 %}
+                              <td>
+                                 <a href="{% url 'feedback' pk=data.13 userid=data.12  %}"  class="bg-pattern">
+                                    GIVE FEEDBACK
+                                 </a>
+                              </td>
+                              {%endif%}
+                              <td>
+                                 <a  onclick="document.getElementById('id01').style.display='block'" href=""  class="bg-pattern">
+                                    CANCEL BOOKING
+                                 </a>
+                              </td>
+                           </tr>
+                           
+                           
+                          
+                        </table>
+                     </div>
                         {%endfor%}
                      </div>
                   </div>
@@ -175,6 +299,20 @@
             </div>
          </article>
       </section>
+      <div id="id01" class="modal">
+         <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
+         <form class="modal-content" action="/action_page.php">
+           <div class="container">
+             <h1>Delete Account</h1>
+             <p>Are you sure you want to delete your account?</p>
+           
+             <div class="clearfix">
+               <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+               <button type="button" onclick="document.getElementById('id01').style.display='none'" class="deletebtn">Delete</button>
+             </div>
+           </div>
+         </form>
+       </div>
       <footer>
          <div class="footer-top bg-secondary bg-pattern">
             <div class="container-fluid">
@@ -208,6 +346,17 @@
             </div>
          </div>
       </footer>
+      <script>
+         // Get the modal
+         var modal = document.getElementById('id01');
+         
+         // When the user clicks anywhere outside of the modal, close it
+         window.onclick = function(event) {
+           if (event.target == modal) {
+             modal.style.display = "none";
+           }
+         }
+         </script>
       <script type='text/javascript' src='{% static "js/js/js.cookied9c4.js" %}' id='cookies-js'></script><script type='text/javascript' src='{% static "js/js/scriptsd9c4.js" %}' id='scripts-js'></script> 
    </body>
    <!-- Mirrored from theoysterandfishhouse.co.uk/menus/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 21 Mar 2021 14:27:15 GMT -->
