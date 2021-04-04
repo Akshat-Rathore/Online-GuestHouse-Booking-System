@@ -151,7 +151,7 @@ def cancel_room_booking(booking):
     clear_queue()
 
 @login_required(login_url='login/')
-def cancel_booking(request, ):
+def cancel_booking(request,pk ):
     booking = get_object_or_404(Booking, pk=pk)
     if booking.booking_status == 1:
         cancel_room_booking(booking)

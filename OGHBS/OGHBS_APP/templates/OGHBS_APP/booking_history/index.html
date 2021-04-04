@@ -22,8 +22,8 @@
       <link rel="canonical" href="index.html"/>
       <style>
          <style>
-body {font-family: Arial, Helvetica, sans-serif;}
-* {box-sizing: border-box;}
+/* body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;} */
 
 /* Set a style for all buttons */
 button {
@@ -215,10 +215,10 @@ hr {
                                  <td>{{data.1}}</td>
                               </tr>
                               <tr>
-                                 {% ifequal data.1 1  %}
+                                
                                  <td> Booking Status : </td>
                                  <td>{{ data.3 }}</td>
-                                 {%endifequal%}
+                                 
                               </tr>
                               <tr>
                                  <td>Name of visitors:</td>
@@ -303,8 +303,8 @@ hr {
          <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
          <form class="modal-content" action="/action_page.php">
            <div class="container">
-             <h1>Delete Account</h1>
-             <p>Are you sure you want to delete your account?</p>
+             <h1>Cancel Booking</h1>
+             <p>Are you sure you want to calcel your booking?</p>
            
              <div class="clearfix">
                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
