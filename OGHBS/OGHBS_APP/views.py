@@ -256,23 +256,23 @@ def branching(request,check_in_date,check_out_date,booking_status):
     else:
         booking.booking_status='Confirmed'
         room_type=booking.room_type
-        # if room_type == 'AC 1 Bed':
-        #     room=guest_house.AC1Bed
-        # elif room_type == 'AC 2 Bed':
-        #     room=guest_house.AC2Bed
-        # elif room_type == 'AC 3 Bed':
-        #     room=guest_house.AC3Bed
-        # elif room_type == 'NAC 1 Bed':
-        #     room=guest_house.NAC1Bed
-        # elif room_type == 'NAC 2 Bed':
-        #     room=guest_house.NAC2Bed
-        # elif room_type == 'NAC 3 Bed':
-        #     room=guest_house.NAC3Bed
-        # elif room_type == 'ACDormitory':
-        #     room=guest_house.ACDormitory
-        # elif room_type == 'NACDormitory':
-        #     room=guest_house.NACDormitory
-        # room_booking(booking,room)
+        if room_type == 'AC 1 Bed':
+            room=booking.guest_house.AC1Bed
+        elif room_type == 'AC 2 Bed':
+            room=booking.guest_house.AC2Bed
+        elif room_type == 'AC 3 Bed':
+            room=booking.guest_house.AC3Bed
+        elif room_type == 'NAC 1 Bed':
+            room=booking.guest_house.NAC1Bed
+        elif room_type == 'NAC 2 Bed':
+            room=booking.guest_house.NAC2Bed
+        elif room_type == 'NAC 3 Bed':
+            room=booking.guest_house.NAC3Bed
+        elif room_type == 'ACDormitory':
+            room=booking.guest_house.ACDormitory
+        elif room_type == 'NACDormitory':
+            room=booking.guest_house.NACDormitory
+        room_booking(booking,room)
     if booking_status==3:
         booking.payment_status=False
     else:
@@ -517,6 +517,8 @@ def booking_history(request,pk):
         data1.append(i.room_id)
         data1.append(s2)
         data1.append(i.refund_amount)
+        i.check_in_date=i.check_in_date.strftime('%Y-%m-%d')
+        i.check_out_date=i.check_out_date.strftime('%Y-%m-%d')
         data1.append(str(i.check_in_date))
         data1.append(str(i.check_out_date))
         if i.feedback is not None:
