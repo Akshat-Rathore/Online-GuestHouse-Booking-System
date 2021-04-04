@@ -204,3 +204,4 @@ class BookingForm(forms.Form):
         cnt=names.count(",") + 1
         if cnt>num:
             raise ValidationError(_("Number of vistors cannot be more than "+str(num)+" for this booking"))
+        return names
