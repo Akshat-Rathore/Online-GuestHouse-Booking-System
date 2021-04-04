@@ -114,7 +114,8 @@ def clear_queue():
 def room_booking(booking, room):
     booked_room_ids = Booking.objects.filter(guest_house__id=booking.guest_house.id,
                                              room_type=booking.room_type,
-                                             booking_status=0
+                                             booking_status=0,
+                                             checked_out=0
                                              ).exclude(check_in_date__gt=booking.check_out_date
                                                        ).exclude(check_out_date__lt=booking.check_in_date
                                                                  ).order_by('room_id').values_list('room_id').distinct()
@@ -153,7 +154,8 @@ def cancel_room_booking(booking):
 def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
-                                             booking_status=0
+                                             booking_status=0,
+                                             checked_out=0
                                              ).exclude(check_in_date__gt=check_out
                                                        ).exclude(check_out_date__lt=check_in
                                                                  ).order_by('room_id').values_list('room_id').distinct()
@@ -175,6 +177,8 @@ def search(request, gh_id):
         if form.is_valid():
             check_in = form.cleaned_data['check_in_date']
             check_out = form.cleaned_data['check_out_date']
+            print("^^^^")
+            print(form)
             guest_house = GuestHouse.objects.get(pk=gh_id)
             avl_rooms = dict()
             ast=[]
@@ -478,7 +482,7 @@ def booking_history(request,pk):
         else:
             s1="Yes"
         if i.food:
-            s2="Yes"
+            s2 = "Yes"
         else:
             s2="No"
         # data1.append(i.pk)
@@ -513,7 +517,7 @@ def booking_history(request,pk):
     }
     return render(request, 'OGHBS_APP/booking_history/index.html', context)
 
-def edit_profile(request,pk,cat):
+def edit_profile(request, pk, cat):
     if request.method == 'POST':
         print(request.POST)
         password =request.POST.get('password1', -1)

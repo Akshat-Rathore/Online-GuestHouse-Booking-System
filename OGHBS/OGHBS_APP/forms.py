@@ -6,16 +6,8 @@ import datetime
 
 
 class SearchForm(forms.Form):
-    check_in_date = forms.DateField(label="Enter check-in Date ", required=True, widget=forms.SelectDateWidget())
-    check_out_date = forms.DateField(label="Enter check-out Date ", required=True, widget=forms.SelectDateWidget())
-
-    def clean(self):
-        cleaned_data = super().clean()
-        date1 = cleaned_data['check_in_date']
-        date2 = cleaned_data['check_out_date']
-
-        if date1 > date2:
-            raise ValidationError(_('Invalid date - Check-out date cannot be before Check-in Date'))
+    check_in_date = forms.DateField(label="Enter check-in Date ", required=True, widget=forms.DateInput(attrs={'class': 'datepicker', 'placeholder': '', 'required': 'true'}))
+    check_out_date = forms.DateField(label="Enter check-out Date ", required=True, widget=forms.DateInput(attrs={'class': 'datepicker', 'placeholder': '', 'required': 'true'}))
 
     def clean_check_in_date(self):
         data = self.cleaned_data['check_in_date']
@@ -30,6 +22,13 @@ class SearchForm(forms.Form):
             raise ValidationError(_('Invalid date - Check-out date cannot be in the past'))
         return data
 
+    def clean(self):
+        cleaned_data = super(SearchForm, self).clean()
+        date1 = cleaned_data.get('check_in_date')
+        date2 = cleaned_data.get('check_out_date')
+
+        if date1 and date2 and date1 > date2:
+            raise ValidationError(_('Invalid date - Check-out date cannot be before Check-in Date'))
 
 
 class StudentForm(forms.Form):
