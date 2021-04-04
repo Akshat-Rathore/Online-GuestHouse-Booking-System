@@ -5,7 +5,7 @@ import json
 from django.core import serializers
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm, EditProfessorForm, EditStudentForm
+from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm, EditProfessorForm, EditStudentForm,BookingForm
 from django.contrib.auth import authenticate, login, logout
 import datetime
 from django.contrib.auth.decorators import login_required
@@ -199,20 +199,22 @@ def search(request, gh_id):
             context = {
                 'form': form,
                 'avl_rooms': avl_rooms,
+                'check_in': check_in,
+                'check_out' : check_out,
                 'ast': ast,
                 'gh_id': gh_id,
                 'name': guest_house.name,
                 'desc':guest_house.description,
                 "address":guest_house.address,
                 "description":guest_house.description,
-                "ac_one_bednum":guest_house.AC1Bed.total_number,
-                "ac_two_bednum":guest_house.AC2Bed.total_number,
-                "ac_three_bednum":guest_house.AC3Bed.total_number,
-                "ac_dor_bednum":guest_house.ACDormitory.total_number,
-                "nonac_one_bednum":guest_house.NAC1Bed.total_number,
-                "nonac_two_bednum":guest_house.NAC2Bed.total_number,
-                "nonac_three_bednum":guest_house.NAC3Bed.total_number,
-                "nonac_dor_bednum":guest_house.NACDormitory.total_number,
+                "ac_one_bed":guest_house.AC1Bed,
+                "ac_two_bed":guest_house.AC2Bed,
+                "ac_three_bed":guest_house.AC3Bed,
+                "ac_dor_bed":guest_house.ACDormitory,
+                "nonac_one_bed":guest_house.NAC1Bed,
+                "nonac_two_bed":guest_house.NAC2Bed,
+                "nonac_three_bed":guest_house.NAC3Bed,
+                "nonac_dor_bed":guest_house.NACDormitory,
                 "ac_one_bednum_cost":guest_house.AC1Bed.cost,
                 "ac_two_bednum_cost":guest_house.AC2Bed.cost,
                 "ac_three_bednum_cost":guest_house.AC3Bed.cost,
@@ -222,6 +224,7 @@ def search(request, gh_id):
                 "nonac_three_bednum_cost":guest_house.NAC3Bed.cost,
                 "nonac_dor_bednum_cost":guest_house.NACDormitory.cost,
             }
+            print(check_in)
             return render(request, 'OGHBS_APP/vacancies/index.html', context)
 
         context = {
@@ -243,17 +246,40 @@ def book_room(request, gh_id):
     clear_queue()
     return HttpResponse("<h1>Hello {{gh_id}}+{{a}}</h1>")
 
-def buffer(request,gh_id):
-    context={
-        'gh_id':gh_id,
-        'flag':True
-    }
-    if request.user.is_authenticated:
-        print(request.user)
-        return render(request, 'OGHBS_APP/index.html', context)
-        
+def branching(request,check_in_date,check_out_date,booking_status):
+    booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
+    print(booking)
+    if booking_status==3:
+        booking.booking_status='Cancelled'
+    elif booking.booking_status=='In-Queue':
+        booking.booking_status=='In-Queue'
     else:
-        return render(request, 'OGHBS_APP/login/index.html', context)
+        booking.booking_status='Confirmed'
+        room_type=booking.room_type
+        # if room_type == 'AC 1 Bed':
+        #     room=guest_house.AC1Bed
+        # elif room_type == 'AC 2 Bed':
+        #     room=guest_house.AC2Bed
+        # elif room_type == 'AC 3 Bed':
+        #     room=guest_house.AC3Bed
+        # elif room_type == 'NAC 1 Bed':
+        #     room=guest_house.NAC1Bed
+        # elif room_type == 'NAC 2 Bed':
+        #     room=guest_house.NAC2Bed
+        # elif room_type == 'NAC 3 Bed':
+        #     room=guest_house.NAC3Bed
+        # elif room_type == 'ACDormitory':
+        #     room=guest_house.ACDormitory
+        # elif room_type == 'NACDormitory':
+        #     room=guest_house.NACDormitory
+        # room_booking(booking,room)
+    if booking_status==3:
+        booking.payment_status=False
+    else:
+        booking.payment_status=True
+    booking.save()
+    return redirect('home')
+    
 
 
 def user_register(request):
@@ -574,3 +600,148 @@ def edit_profile(request, pk, cat):
 
         }
     return render(request, 'OGHBS_APP/profile/index.html', context)
+
+def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
+    if request.method == 'POST':
+        print(request.POST)
+        POST=request.POST.copy()
+        print("check")
+        print(check_in_date)
+        check_in_date=check_in_date.strftime('%Y-%m-%d')
+        check_out_date=check_out_date.strftime('%Y-%m-%d')
+        POST['check_in_date']=check_in_date
+        POST['check_out_date']=check_out_date
+        form=BookingForm(room_type=room_type,data=POST)
+        if form.is_valid():
+            booking=Booking()
+            booking.guest_house=get_object_or_404(GuestHouse,pk=pk)
+            booking.customer=request.user
+            booking.room_type=room_type
+            booking.check_in_date=check_in_date
+            booking.check_out_date=check_out_date
+            booking.visitors_count=form.cleaned_data.get('visitor_num')
+            booking.visitors_name=form.cleaned_data.get('visitor_names')
+            if form.cleaned_data.get('food')=='YES':
+                booking.food=True
+            else:
+                booking.food=False
+            booking.checked_out=False
+            booking.payment_status=False
+            if booking_status==0:
+                booking.booking_status='Confirmed'
+            elif booking_status==1:
+                booking.booking_status='In-Queue'
+            booking.refund_amount=0
+            booking.paid_amount=0
+            booking.feedback=None
+            booking.room_id=None
+            booking.save()
+            guest_house=get_object_or_404(GuestHouse,pk=pk)
+            # user=User.objects.get(username=request.user)
+            user=get_object_or_404(User,username=request.user)
+            # booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
+            data=[]
+            data.append(booking.customer)
+            data.append(booking.guest_house.name)
+            data.append(booking.room_type)
+            data.append(booking.visitors_count)
+            data.append(booking.visitors_name)
+            if booking.food is True:
+                data.append("Yes")
+            else:
+                data.append("No")
+            cost=calculate_cost(booking)
+            data.append(check_in_date)
+            data.append(check_out_date)
+            data.append(cost)
+            print("data.6")
+            print(data[6])
+            print(check_in_date)
+            print(booking.check_in_date)
+            return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
+    elif request.method == 'GET':
+        guest_house=get_object_or_404(GuestHouse,pk=pk)
+        user=User.objects.get(username=request.user)
+        print("get")
+        print(check_in_date)
+        check_in_date=check_in_date.strftime('%Y-%m-%d')
+        check_out_date=check_out_date.strftime('%Y-%m-%d')
+        print(check_in_date)
+        initial_dict={
+            'user_name':user.username,
+            'guesthouse':guest_house.name,
+            'room_type':room_type,
+            'check_in_date':check_in_date,
+            'check_out_date':check_out_date,
+
+
+        }
+
+        print(initial_dict)
+        form = BookingForm(request.POST or None, initial = initial_dict)
+        
+    return render(request, 'OGHBS_APP/book/index.html', {'form':form})
+
+def payment(request,check_in_date,check_out_date):
+    check_in_date=check_in_date.strftime('%Y-%m-%d')
+    check_out_date=check_out_date.strftime('%Y-%m-%d')
+    context={
+        'check_in_date':check_in_date,
+        'check_out_date':check_out_date
+    }
+    return render(request, 'OGHBS_APP/payment/index.html',context)
+
+def calculate_cost(booking):
+    food_cost=0
+    rent=0
+    guest_house=booking.guest_house
+    room_type=booking.room_type
+    if room_type == 'AC 1 Bed':
+        rent=guest_house.AC1Bed.cost
+    elif room_type == 'AC 2 Bed':
+        rent=guest_house.AC2Bed.cost
+    elif room_type == 'AC 3 Bed':
+        rent=guest_house.AC3Bed.cost
+    elif room_type == 'NAC 1 Bed':
+        rent=guest_house.NAC1Bed.cost
+    elif room_type == 'NAC 2 Bed':
+        rent=guest_house.NAC2Bed.cost
+    elif room_type == 'NAC 3 Bed':
+        rent=guest_house.NAC3Bed.cost
+    elif room_type == 'ACDormitory':
+        rent=guest_house.ACDormitory.cost
+    elif room_type == 'NACDormitory':
+        rent=guest_house.NACDormitory.cost
+    if booking.food is True:
+        food_cost=guest_house.cost_of_food
+    check_in = datetime.strptime(booking.check_in_date, '%Y-%m-%d')
+    check_out = datetime.strptime(booking.check_out_date, '%Y-%m-%d')
+    no_of_days=check_out-check_in
+    total_rent=rent*int(no_of_days.days)+food_cost
+    return total_rent
+
+
+def booking_details(request,check_in_date,check_out_date):
+    user=get_object_or_404(User,username=request.user)
+    booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
+    data=[]
+    data.append(booking.customer)
+    data.append(booking.guest_house.name)
+    data.append(booking.room_type)
+    data.append(booking.visitors_count)
+    data.append(booking.visitors_name)
+    if booking.food is True:
+        data.append("Yes")
+    else:
+        data.append("No")
+    cost=calculate_cost(booking)
+    data.append(booking.check_in_date)
+    data.append(booking.check_out_date)
+    data.append(cost)
+    return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
+    
+
+
+
+
+

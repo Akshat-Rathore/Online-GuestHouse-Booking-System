@@ -11,7 +11,7 @@
       <link rel="apple-touch-icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/apple-icon-touch.png' %}">
       <link rel="icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/favicon.png' %}">
       <meta content="index,follow" name="robots">
-      <title>HIX Oyster & Fish Truck | The Oyster & Fish House | Mark Hix</title>
+      <title>OGHBS | VACANCIES</title>
       <meta content="Selling locally caught wet fish and seafood, Mark’s fish truck pitches up outside Felicity’s Farm Shop in Morcombelake Weds-Sat 9am till 12noon." name="description">
       <meta content="en-GB" property="og:locale">
       <meta content="website" property="og:type">
@@ -156,31 +156,67 @@
                         <p><strong>NOTE : </strong> Click on the <span style="color: #16a63c;" >GREEN</span> rooms for booking and on the <span style="color: #3da2e0 ;">BLUE </span>rooms for adding your booking in the Waiting Queue. </p>
                         <h4>Vacancies available:</h4>
                         <p>
-                            <a href="{% url 'buffer' gh_id=gh_id %}">
+                            <a href="">
                                 <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong> </strong>
                                 <p></p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+
+                           {% if ast.0%}
+                           <a href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Single-Beds : </strong>{{ast.0 }}
-                           <p>Cost per room: {{ac_one_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p>Cost per room: {{ac_one_bednum_cost}}</p>
+                           <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}" target="_blank">
+                               <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
+                           <br></a>
+                           {% else %}
+                           <a href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
+                              <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Single-Beds : </strong>{{ast.0 }}
+                              <p>Cost per room: {{ac_one_bednum_cost}}</p>
+                              <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}" target="_blank">
+                                  <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE </p></a> </p>
+                              <br></a>
+                           {% endif %}
+                           <br>
+                           
+                           {% if ast.4 %}
+                           <a href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}">
                            <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Single-Beds : </strong>{{ast.4}}
-                           <p>Cost per room: {{nonac_one_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <p>Cost per room: {{nonac_one_bednum_cost}}</p>
+                           <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
+                              <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
+                          <br></a>
+                           {%else%}
+                           <a href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}">
+                              <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Single-Beds : </strong>{{ast.4}}
+                              <p>Cost per room: {{nonac_one_bednum_cost}}</p></p>
+                              <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
+                                 <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> 
+                             <br></a>
+                           {%endif%}
+
+                           <br>
+                           
+                           <a href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Two-Beds : </strong>{{ast.1}}
-                           <p>Cost per room: {{ac_two_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                              <br>
+                           Cost per room: {{ac_two_bednum_cost}}
+                           <br>
+                           <a  class="text-button"  >{% if ast.1%}BOOK A ROOM{%else%}>BOOK IN WAITING QUEUE{%endif%}</a>
+                        </p>
+                           
+                           <br></a>
+                           <a href="{% url 'book' pk=gh_id room_type=nonac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.5%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Two-Beds : </strong>{{ast.5}}
                            <p>Cost per room: {{nonac_two_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <a href="{% url 'book' pk=gh_id room_type=ac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.2%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Three-Beds : </strong>{{ast.2}}
                            <p>Cost per room: {{ac_three_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <a href="{% url 'book' pk=gh_id room_type=nonac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.6%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Three-Beds : </strong>{{ast.6}}
                            <p>Cost per room: {{nonac_three_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <a href="{% url 'book' pk=gh_id room_type=ac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.3%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Dormatories : </strong>{{ast.3}}
                            <p>Cost per bed: {{ac_dor_bednum_cost}}</p></p><br></a>
-                           <a href="{% url 'buffer' gh_id=gh_id %}">
+                           <a href="{% url 'book' pk=gh_id room_type=nonac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.7%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Dormatories : </strong>{{ast.7}}
                            <p>Cost per bed: {{nonac_dor_bednum_cost}}</p></p><br></a>
                         </p>
@@ -222,11 +258,11 @@
                </div>
             </div>
             
-            <div class="widget-container widget-container--bleed fullwidth-cta-widget">
+            <!-- <div class="widget-container widget-container--bleed fullwidth-cta-widget">
                <a href="{% url 'search_room' gh_id=gh_id %}" class="cta-wrap bg-primary--dark bg-pattern bg-pattern--light">
                   <div class="text">
                      <div data-show data-show-move data-show-percentage="20">
-                        <!-- <span class="subtitle text-secondary"> British seasonal food </span>  -->
+                        
                         <h2 class="h1 text-white">Check Availability</h2>
                      </div>
                      <div class="arrow">
@@ -234,7 +270,7 @@
                      </div>
                   </div>
                </a>
-            </div>
+            </div> -->
          </article>
       </section>
       <footer>

@@ -4,18 +4,17 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 import datetime
 
+FOOD_CHOICE = (
+  (1, 'Yes'),
+  (0,'No')
+)
+
 
 class SearchForm(forms.Form):
     check_in_date = forms.DateField(label="Enter check-in Date ", required=True, widget=forms.SelectDateWidget())
     check_out_date = forms.DateField(label="Enter check-out Date ", required=True, widget=forms.SelectDateWidget())
 
-    def clean(self):
-        cleaned_data = super().clean()
-        date1 = cleaned_data['check_in_date']
-        date2 = cleaned_data['check_out_date']
-
-        if date1 > date2:
-            raise ValidationError(_('Invalid date - Check-out date cannot be before Check-in Date'))
+    
 
     def clean_check_in_date(self):
         data = self.cleaned_data['check_in_date']
@@ -30,6 +29,13 @@ class SearchForm(forms.Form):
             raise ValidationError(_('Invalid date - Check-out date cannot be in the past'))
         return data
 
+    def clean(self):
+        cleaned_data = super().clean()
+        date1 = cleaned_data['check_in_date']
+        date2 = cleaned_data['check_out_date']
+
+        if date1 > date2:
+            raise ValidationError(_('Invalid date - Check-out date cannot be before Check-in Date'))
 
 
 class StudentForm(forms.Form):
@@ -165,3 +171,38 @@ class EditProfessorForm(forms.Form):
         if len(user) != 0:
             raise ValidationError(_("Username is already taken"))
         return data
+
+class BookingForm(forms.Form):
+    user_name = forms.CharField(label="User Name ",widget=forms.TextInput(attrs={'class': 'input-line full-width','readonly':'true'}))
+    guesthouse=forms.CharField(label="Guesthouse ",widget=forms.TextInput(attrs={'class': 'input-line full-width','readonly':'true'}))
+    room_type=forms.CharField(label="Type of room ",widget=forms.TextInput(attrs={'class': 'input-line full-width','readonly':'true'}))
+    check_in_date = forms.DateField(label="Check-in Date ", required=True, widget=forms.SelectDateWidget(attrs={'class': 'form-control', 'placeholder': 'Check-in Date', 'readonly': 'true','disabled':'true'}))
+    check_out_date = forms.DateField(label="Check-out Date ", required=True, widget=forms.SelectDateWidget(attrs={'class': 'form-control', 'placeholder': 'Check-out Date', 'readonly': 'true','disabled':'true'}))
+    visitor_num=forms.IntegerField(label="Enter no. of visitors ",widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Number of Visitors', 'required': 'true'}))
+    food=forms.ChoiceField(initial=(1,"Yes"),choices=FOOD_CHOICE, widget=forms.Select(attrs={'class': 'custom-select category', 'required': 'false'}))
+    visitor_names=forms.CharField(label="Enter name of vistors",widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Separated by \' , \'','required':'true'}))
+    
+    def __init__(self,room_type, *args, **kwargs):
+        super(BookingForm, self).__init__(*args, **kwargs)
+        if room_type=="AC 1 Bed" or room_type=='Non-AC 1 Bed':
+            self.n=1
+        elif room_type=="AC 2 Bed" or room_type=='Non-AC 2 Bed':
+            self.n=2
+        elif room_type=="AC 3 Bed" or room_type=='Non-AC 3 Bed':
+            self.n=3
+        else:
+            self.n=1
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        visitor_num = self.cleaned_data.get('visitor_num')
+        if visitor_num>self.n:
+            raise ValidationError(_("Number of vistors cannot be more than "+str(self.n)+" for one booking"))
+    
+    def clean_visitor_names(self):
+        names = self.cleaned_data.get('visitor_names')
+        num = int(self.cleaned_data.get('visitor_num'))
+        cnt=names.count(",") + 1
+        if cnt>num:
+            raise ValidationError(_("Number of vistors cannot be more than "+str(num)+" for this booking"))

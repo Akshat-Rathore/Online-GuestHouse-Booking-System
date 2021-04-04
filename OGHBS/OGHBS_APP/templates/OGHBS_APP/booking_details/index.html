@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+   <!-- Mirrored from theoysterandfishhouse.co.uk/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 21 Mar 2021 14:26:39 GMT -->
+   <!-- Added by HTTrack -->
+   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+   <!-- /Added by HTTrack -->
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <link rel="apple-touch-icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/apple-icon-touch.png' %}">
+      <link rel="icon" href="{% static 'images/hideout-app/themes/the-hideout-theme/img/favicon.png' %}">
+      <meta content="index,follow" name="robots">
+      <title>OGHBS | BOOKING DETAILS</title>
+      <meta name='robots' content='max-image-preview:large'/>
+      <link rel='dns-prefetch' href='http://fonts.googleapis.com/'/>
+      <link rel='dns-prefetch' href='http://s.w.org/'/>
+      <link rel='stylesheet' id='googlefont-css' href='https://fonts.googleapis.com/css2?family=Lora&amp;display=swap&amp;ver=5.7' type='text/css' media='all'/>
+      <link rel='stylesheet' id='styles-css' href='{% static "css/stylesb4c8.css" %}' type='text/css' media='all'/>
+      <!-- <link rel='stylesheet' id='styles-css' href='css/modal.css' type='text/css' media='all'/> -->
+      <link rel='stylesheet' id='wp-block-library-css' href='{% static "css/wp-includes/css/dist/block-library/style.mine23c.css" %}' type='text/css' media='all'/>
+      <link rel="canonical" href="index.html"/>
+   </head>
+   <body class="home page-template-default page page-id-1425 wb-homepage subpage" data-siteurl="index.html">
+      <div id="wrap">
+      <div class="page-loader show">
+         <div class="loader bg-pattern flex flex-align-center flex-justify-center">
+            <h1> OGHBS </h1>
+         </div>
+      </div>
+      <div class="booking-widget booking-widget--modal bg-primary--alt bg-pattern bg-pattern--light">
+         <div class="container-fluid flex flex-direction-column flex-justify-center h-100">
+            <div class="booking-widget-wrap"></div>
+         </div>
+         <a class="close-btn close-book-btn flex flex-align-center flex-justify-center">
+            <div class="close-menu-line close-menu-line--left"></div>
+            <div class="close-menu-line close-menu-line--right"></div>
+         </a>
+      </div>
+      <header class="header flex header-fullscreen bg-secondary bg-pattern">
+         <div class="text flex flex-direction-column">
+            <a href="index.html" class="logo">
+               <h1 style="">OGHBS</h1>
+            </a>
+            <div class="text-inner mt-auto">
+               <span class="subtitle text-primary">OGHBS</span></span> 
+               <h1>{{name}}'s Dashboard  -  Booking Details</h1>
+            </div>
+         </div>
+         <div class="image image-absolute" data-scrollspeed="0.2">
+            <figure class="img" style="background-image:url({% static 'images/guesthouse/gymkhana.jpg' %});"> <img width="2500" height="1500" src="{% static 'images/guesthouse/gymkhana.jpg' %}" alt="Coastal setting overlooking the ocean"/> </figure>
+         </div>
+         {% include 'OGHBS_APP/header.html' %}
+         <!-- <div class="cookie-message cookie-message--box">
+            <div class="cookie-message-inner">
+               <div class="content">
+                  <h3>Cookies</h3>
+                  <p>This website uses cookies as explained in our <a href="privacy-policy/index.html">cookie policy</a>. If you agree to our use of cookies, please accept all, alternatively you can change your settings and decline.</p>
+               </div>
+               <div class="buttons"> <a href="#" id="accept-cookies" class="text-button text-button--primary text-primary--dark">Accept all<i class="fal fa-check"></i></a> <a href="#" id="decline-cookies" class="text-button text-button--primary text-primary--dark">Decline<i class="fal fa-times"></i></a> </div>
+            </div>
+            </div> -->
+      </header>
+      <section class="main-body">
+         <article class="main-content">
+            <div class="widget-container widget-container--bleed booking-widget booking-widget--center bg-primary--alt ">
+               <div class="container-fluid" data-show data-show-move data-show-percentage="20">
+                  <div class="booking-widget-wrap">
+                     <div class="booking-widget-inner">
+                        <script type='text/javascript' src='http://www.opentable.com/widget/reservation/loader?rid=213807&amp;type=standard&amp;theme=standard&amp;iframe=false&amp;domain=com&amp;lang=en-US&amp;newtab=false&amp;ot_source=Restaurant%20website'></script> 
+                        <div class="large-groups-text">
+                           <p><strong>Phone bookings:</strong> +44 (0)1297 446910  / Please note we can only accept 2 households or 6 people per booking until 20th June. / HIX gift vouchers are not valid at The Oyster &amp; Fish House / For our Covid-19 dining policy please <a href="../news-events/covid-19-dining-policy/index.html">click here</a></p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="widget-container widget-container--bleed widget-container--padding doc-down-widget bg-neutral">
+               <div class="container-fluid container-fluid--sml">
+                  <div class="widget-title" data-show data-show-move data-show-percentage="20">
+                     <h2>Booking Details</h2>
+                     <!-- <p>The best of local produce, sustainable fish and seafood caught off the South West coast. Our menus change twice daily depending on what the fishermen have brought in to us, so please bear in mind these menus are only a sample of what you might expect on your visit to the Fish House.</p> -->
+                  </div>
+                  <div class="doc-list">
+                     <div class="doc-item " data-show data-show-move data-show-percentage="10" >
+                        {%if data%}
+                        <a href="#"  class="bg-pattern">
+                           <table>
+                              <tr>
+                                 <td>Username :</td>
+                                 <td>{{data.0}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Guest House :</td>
+                                 <td>{{data.1}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Room Type:</td>
+                                 <td>{{data.2}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Number of Visitors :</td>
+                                 <td>{{data.3}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Name of Visitors :</td>
+                                 <td>{{data.4}}</td>
+                              </tr>
+                              <tr>
+                                 <td>Food :</td>
+                                 <td>{{data.5}}</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    Check-In Date :
+                                 </td>
+                                 <td>
+                                    {{data.6}}
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    Check-Out Date :
+                                 </td>
+                                 <td>
+                                    {{data.7}}
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>Total Bill :</td>
+                                 <td>Rs {{data.8}}.00</td>
+                              </tr>
+                              
+                             
+                           </table>
+                        </a>
+                        {%endif%}
+                     </div>
+                  </div>
+                  <div class="doc-list">
+                     <div class="doc-item " data-show data-show-move data-show-percentage="10" >
+                       
+                        
+                           <table>
+                              <tr>
+                                 <td>
+                                    <a href="{% url 'payment' check_in_date=data.6 check_out_date=data.7  %}"  class="bg-pattern">
+                                       CONTINUE TO PAYMENT
+                                    </a>
+                                 </td>
+                                 <td>
+                                    <a href="{% url 'buffer' check_in_date=data.6 check_out_date=data.7 booking_status=3 %}"  class="bg-pattern">
+                                       CANCEL BOOKING
+                                    </a>
+                                 </td>
+                              </tr>
+                              
+                              
+                             
+                           </table>
+                      
+                       
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </article>
+      </section>
+      <footer>
+         <div class="footer-top bg-secondary bg-pattern">
+            <div class="container-fluid">
+               <div class="flex-list flex-space-between">
+                  <div class="flex-col footer-nav">
+                     <nav>
+                        <ul>
+                           <li id="menu-item-1557" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1557"><a href="../careers/index.html">Careers</a></li>
+                           <li id="menu-item-1897" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1897"><a href="../accommodation/index.html">Accommodation</a></li>
+                           <li id="menu-item-2211" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2211"><a href="https://thefoxinncorscombe.co.uk/">The Fox Inn</a></li>
+                           <li id="menu-item-1644" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1644"><a href="../covid-policy/index.html">Covid Policy</a></li>
+                           <li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267"><a href="../privacy-policy/index.html">Privacy Policy</a></li>
+                           <li id="menu-item-1556" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1556"><a href="../recruitment-selection-privacy-notice/index.html">Recruitment &#038; Selection Privacy Notice</a></li>
+                           <li id="menu-item-1350" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1350"><a href="../sitemap/index.html">Sitemap</a></li>
+                        </ul>
+                     </nav>
+                  </div>
+                  <div class="flex-col footer-social">
+                     <ul class='social-media'>
+                        <li><a href="https://www.facebook.com/oysterandfishhouse" target="_blank"><i class=" fab fa-facebook"></i></a></li>
+                        <li><a href="https://www.instagram.com/theoysterandfishhouse/" target="_blank"><i class=" fab fa-instagram"></i></a></li>
+                        <li><a href="https://www.youtube.com/channel/UCS0QB3Q2hsM0pg01q2zKVGg" target="_blank"><i class=" fab fa-youtube"></i></a></li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="footer-bottom">
+            <div class="container-fluid">
+               <div class="flex-list flex-space-between"> <span>&copy; OGHBS</span> <span>Created by Treadstone Cyborgs</span> </div>
+            </div>
+         </div>
+      </footer>
+      <script type='text/javascript' src='{% static "js/js/js.cookied9c4.js" %}' id='cookies-js'></script><script type='text/javascript' src='{% static "js/js/scriptsd9c4.js" %}' id='scripts-js'></script> 
+   </body>
+   <!-- Mirrored from theoysterandfishhouse.co.uk/menus/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 21 Mar 2021 14:27:15 GMT -->
+</html>
