@@ -498,7 +498,7 @@ form ::selection {
 form ::-moz-selection {
   background: rgba(253, 218, 134, 0.6);
 }
-form button {
+form .button1 {
   position: relative;
   overflow: hidden;
   padding: 10px;
@@ -774,9 +774,9 @@ input[type="text"], input[type="email"], input[type="number"], input[type="tel"]
                                     </div>
                                   </div>
                                 </div>
-                                <span><a href = "{% url 'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=0 %}">PAY </a></span>
+                                <span class="button1"><a href = "{% url 'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=0 %}">PAY </a></span>
                                 <br>
-                                <button><span><a href = "{% url  'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=3 %}">Cancel Process </a></span></button>
+                                <span class="button1"><a href = "{% url  'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=3 %}">Cancel Process </a></span>
                               </div>
                             </form>
                             </div>
