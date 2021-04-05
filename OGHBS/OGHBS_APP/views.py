@@ -157,7 +157,6 @@ def cancel_booking(request, pk):
 
     return redirect('booking_history',pk=request.user.pk)
 
-
 def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
@@ -409,13 +408,12 @@ def user_login(request):
         form = LoginForm()
         return render(request, 'OGHBS_APP/login/index.html', {'form': form, 'flag':True})
 
-
 @login_required(login_url='/login/')
 def user_logout(request):
     logout(request)
     return redirect('home')
 
-
+#function to activate user OGHBS accounts from the links send through a validates emails 
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -436,6 +434,7 @@ def activate(request, uidb64, token):
             }
         return render(request, 'OGHBS_APP/login/index.html', context)
 
+#User dashboard with basic profile view and links to booking history and edit profile 
 def dashboard(request,pk):
     user = User.objects.get(pk=pk)
     num1=Student.objects.filter(user=user).count()
@@ -474,6 +473,7 @@ def dashboard(request,pk):
     }
     return render(request, 'OGHBS_APP/dashboard/index.html', context)
 
+#generates list of bookings of the current user with all the details
 def booking_history(request,pk):
     user=get_object_or_404(User, pk=pk)
     bookings = Booking.objects.filter(customer=user).order_by('-id')
@@ -534,6 +534,7 @@ def booking_history(request,pk):
     }
     return render(request, 'OGHBS_APP/booking_history/index.html', context)
 
+#Allows users to edit their profiles(full name, department, roll no. or address)
 def edit_profile(request, pk, cat):
     if request.method == 'POST':
         print(request.POST)
@@ -611,6 +612,7 @@ def edit_profile(request, pk, cat):
         }
     return render(request, 'OGHBS_APP/profile/index.html', context)
 
+#generates booking object based on a booking form posted by the user 
 @login_required(login_url='/login/')
 def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
     if request.method == 'POST':
@@ -702,6 +704,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
         
     return render(request, 'OGHBS_APP/book/index.html', {'form':form})
 
+#generates payment form after booking details are confirmed
 def payment(request,check_in_date,check_out_date):
     check_in_date=check_in_date.strftime('%Y-%m-%d')
     check_out_date=check_out_date.strftime('%Y-%m-%d')
@@ -711,6 +714,7 @@ def payment(request,check_in_date,check_out_date):
     }
     return render(request, 'OGHBS_APP/payment/index.html',context)
 
+#calculates cost after booking form is filled
 def calculate_cost(booking):
     food_cost=0
     rent=0
@@ -740,25 +744,7 @@ def calculate_cost(booking):
     total_rent=rent*int(no_of_days.days)+food_cost
     return total_rent
 
-def booking_details(request,check_in_date,check_out_date):
-    user=get_object_or_404(User,username=request.user)
-    booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
-    data=[]
-    data.append(booking.customer)
-    data.append(booking.guest_house.name)
-    data.append(booking.room_type)
-    data.append(booking.visitors_count)
-    data.append(booking.visitors_name)
-    if booking.food is True:
-        data.append("Yes")
-    else:
-        data.append("No")
-    cost=calculate_cost(booking)
-    data.append(booking.check_in_date)
-    data.append(booking.check_out_date)
-    data.append(cost)
-    return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
-    
+#generates feedback form for user booking with check-out =1
 def feedback(request,pk,userid):
     user=get_object_or_404(User,pk=userid)
     booking=get_object_or_404(Booking,pk=pk)
