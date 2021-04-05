@@ -30,6 +30,10 @@ class StudentAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
 
+class UserAdmin(admin.ModelAdmin):
+    def has_change_permission(self, request, obj=None):
+        return False
+
 class ProfessorAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'department', 'address']
     def has_change_permission(self, request, obj=None):
@@ -155,6 +159,17 @@ class BookingAdmin(NoDeleteAdminMixin,admin.ModelAdmin):
 class GuestHouseAdmin(admin.ModelAdmin):
     list_display = ['name', 'food_availability', 'description', 'address', 'cost_of_food']
 
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ['view_user','view_guest_house','comfort_of_stay', 'room_cleanliness', 'service_quality', 'additional_feedback']
+
+    def view_user(self, obj):
+        return obj.booking.customer
+
+    def view_guest_house(self,obj):
+        return obj.booking.guest_house.name
+
+    view_user.short_description = "User"
+    view_guest_house.short_description = "Guest House"
 
 my_admin_site.register(Student, StudentAdmin)
 my_admin_site.register(Professor, ProfessorAdmin)
@@ -168,8 +183,8 @@ my_admin_site.register(ACDormitory, ACDormitoryAdmin)
 my_admin_site.register(NACDormitory, NACDormitoryAdmin)
 my_admin_site.register(GuestHouse, GuestHouseAdmin)
 my_admin_site.register(Booking, BookingAdmin)
-my_admin_site.register(Feedback)
-my_admin_site.register(User)
+my_admin_site.register(Feedback,FeedbackAdmin)
+my_admin_site.register(User,UserAdmin)
 
 @receiver(post_delete, sender=Student)
 def post_delete_user(sender, instance, *args, **kwargs):
