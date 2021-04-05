@@ -116,13 +116,13 @@ class LoginForm(forms.Form):
 
 
 class EditStudentForm(forms.Form):
-    user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))
+    # user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))
     full_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Full Name'}))
     roll_no = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Roll No'}))
     department = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Department'}))
     # address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Address'}))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
+    # password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
+    # password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -140,21 +140,21 @@ class EditStudentForm(forms.Form):
     #         raise ValidationError(_("Please enter your institute Email ID"))
     #     return data
 
-    def clean_user_name(self):
-        data = self.cleaned_data['user_name']
-        user = User.objects.filter(username=data)
-        if len(user) != 0:
-            raise ValidationError(_("Username is already taken"))
-        return data
+    # def clean_user_name(self):
+    #     data = self.cleaned_data['user_name']
+    #     user = User.objects.filter(username=data)
+    #     if len(user) != 0:
+    #         raise ValidationError(_("Username is already taken"))
+    #     return data
 
 class EditProfessorForm(forms.Form):
-    user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))
+    # user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))
     full_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Full Name'}))
     # email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'input-line full-width', 'placeholder': 'Email'}))
     department = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Department'}))
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Address'}))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
+    # password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
+    # password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -172,12 +172,12 @@ class EditProfessorForm(forms.Form):
     #         raise ValidationError(_("Please enter your institute Email ID"))
     #     return data
 
-    def clean_user_name(self):
-        data = self.cleaned_data['user_name']
-        user = User.objects.filter(username=data)
-        if len(user) != 0:
-            raise ValidationError(_("Username is already taken"))
-        return data
+    # def clean_user_name(self):
+    #     data = self.cleaned_data['user_name']
+    #     user = User.objects.filter(username=data)
+    #     if len(user) != 0:
+    #         raise ValidationError(_("Username is already taken"))
+    #     return data
 
 class BookingForm(forms.Form):
     user_name = forms.CharField(label="User Name ",widget=forms.TextInput(attrs={'class': 'input-line full-width','readonly':'true'}))
@@ -191,11 +191,11 @@ class BookingForm(forms.Form):
     
     def __init__(self,room_type, *args, **kwargs):
         super(BookingForm, self).__init__(*args, **kwargs)
-        if room_type=="AC 1 Bed" or room_type=='Non-AC 1 Bed':
+        if room_type=="AC 1 Bed" or room_type=='NAC 1 Bed':
             self.n=1
-        elif room_type=="AC 2 Bed" or room_type=='Non-AC 2 Bed':
+        elif room_type=="AC 2 Bed" or room_type=='NAC 2 Bed':
             self.n=2
-        elif room_type=="AC 3 Bed" or room_type=='Non-AC 3 Bed':
+        elif room_type=="AC 3 Bed" or room_type=='NAC 3 Bed':
             self.n=3
         else:
             self.n=1
