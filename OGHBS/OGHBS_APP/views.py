@@ -47,9 +47,6 @@ def hall_list(request):
 
 def hall_details(request, pk):
     guest_house = get_object_or_404(GuestHouse, pk=pk)
-    
-    guest_house1 = serializers.serialize('json', [guest_house])
-    # return JsonResponse(json.loads(guest_house1), safe=False)
     context={
         'pk':pk,
         'Name':guest_house.name,
@@ -101,7 +98,10 @@ def clear_queue():
         else:
             room_booking(booking, booking.guest_house.NACDormitory)
 
+# Function to allot room_id for a booking
 def room_booking(booking, room):
+    # Get all the rooms ids for active bookings that have non-zero overlapping with the 
+    # queried interval of booking.These rooms cannot be alloted
     booked_room_ids = Booking.objects.filter(guest_house__id=booking.guest_house.id,
                                              room_type=booking.room_type,
                                              booking_status=0,
@@ -111,21 +111,27 @@ def room_booking(booking, room):
                                                                  ).order_by('room_id').values_list('room_id').distinct()
 
     booked_room_ids = [x[0] for x in booked_room_ids]
+    # ID range of available rooms
     start_id = room.initial_room_id
     end_id = room.initial_room_id + room.total_number - 1
 
+    # All rooms empty
     if len(booked_room_ids) == 0:
         booking.booking_status = 0
         booking.room_id = start_id
         booking.checked_out = 0
         booking.save()
+    # All rooms booked. Set the booking status to 'In-Queue'
     elif len(booked_room_ids) == room.total_number:
         booking.booking_status = 1
         booking.room_id = None
         booking.checked_out = 0
         booking.save()
+
+    # Some rooms available
     else:
-        
+        #  Allot a room_id that doesn't exist in booked_room_ids
+        # Booking status = confirmed
         for _id in range(start_id, end_id+1):
             if _id not in booked_room_ids:
                 booking.booking_status = 0
@@ -134,20 +140,26 @@ def room_booking(booking, room):
                 booking.save()
                 return
 
+
+# Function to cancel booking
 def cancel_room_booking(booking):
     booking.booking_status = 3
     booking.checked_out = 0
     booking.save()
     clear_queue()
 
+
+# View function to cancel booking. Requires login
 @login_required(login_url='/login/')
 def cancel_booking(request, pk):
     booking = get_object_or_404(Booking, pk=pk)
+    # If booking is In-Queue total paid amount is refunded and booking status = Refund
     if booking.booking_status == '1':
         cancel_room_booking(booking)
         booking.refund_amount = booking.paid_amount
         booking.booking_status = 2
         booking.save()
+    # If booking is In-Queue 50% of total paid amount is refunded and booking status = Cancelled
     else:
         cancel_room_booking(booking)
         booking.refund_amount = booking.paid_amount/2
@@ -156,7 +168,10 @@ def cancel_booking(request, pk):
     return redirect('booking_history',pk=request.user.pk)
 
 
+# Function to calculate check availability of each room
 def check_availability(room, check_in, check_out, gh_id):
+    # Get all the rooms ids for active bookings that have non-zero overlapping with the 
+    # queried interval of booking. These rooms cannot be alloted
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
                                              booking_status=0,
@@ -167,6 +182,7 @@ def check_availability(room, check_in, check_out, gh_id):
 
     booked_room_ids = [x[0] for x in booked_room_ids]
     return room.total_number - len(booked_room_ids)
+
 
 def search(request, gh_id):
     guest_house = get_object_or_404(GuestHouse, pk=gh_id)
