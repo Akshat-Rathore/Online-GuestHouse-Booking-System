@@ -21,9 +21,9 @@
       <link rel='stylesheet' id='wp-block-library-css' href='{% static "css/wp-includes/css/dist/block-library/style.mine23c.css" %}' type='text/css' media='all'/>
       <link rel="canonical" href="index.html"/>
       <style>
-         <style>
-/* body {font-family: Arial, Helvetica, sans-serif;}
-* {box-sizing: border-box;} */
+        
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
 
 /* Set a style for all buttons */
 button {
@@ -184,9 +184,9 @@ hr {
                      <h2>Booking History</h2>
                      <!-- <p>The best of local produce, sustainable fish and seafood caught off the South West coast. Our menus change twice daily depending on what the fishermen have brought in to us, so please bear in mind these menus are only a sample of what you might expect on your visit to the Fish House.</p> -->
                   </div>
+                  {%for data in datas %}
                   <div class="doc-list">
                      <div class="doc-item " data-show data-show-move data-show-percentage="10" >
-                        {%for data in datas%}
                         <div>
                         <a href="#"  class="bg-pattern">
                            <table>
@@ -217,7 +217,7 @@ hr {
                               <tr>
                                 
                                  <td> Booking Status : </td>
-                                 <td>{{ data.3 }}</td>
+                                 <td>{{ data.3.0 }}</td>
                                  
                               </tr>
                               <tr>
@@ -281,38 +281,48 @@ hr {
                                  </a>
                               </td>
                               {%endif%}
-                              <td>
-                                 <a  onclick="document.getElementById('id01').style.display='block'" href=""  class="bg-pattern">
-                                    CANCEL BOOKING
-                                 </a>
-                              </td>
+                              {% if data.3 == 1 %}
+                                 <td>
+                                    <a  onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='block'" class="bg-pattern">
+                                       CANCEL BOOKING
+                                    </a>
+                                 </td>
+                              {% elif data.3 == 'Cancelled' %}
+                                 <td>
+                                    <a  onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='block'" class="bg-pattern">
+                                       CANCEL BOOKING
+                                    </a>
+                                 </td>
+                              {% endif %}
                            </tr>
                            
                            
                           
                         </table>
                      </div>
-                        {%endfor%}
+                     
+                        
                      </div>
                   </div>
+                  <div class="id01 modal class-{{data.13}}">
+                     <span onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='none'" class="close" title="Close Modal">×</span>
+                     <form class="modal-content">
+                       <div class="container">
+                         <h1>Delete Account</h1>
+                         <p>Are you sure you want to delete your account?</p>
+                       
+                         <div class="clearfix">
+                           <button type="button" onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='none'" class="cancelbtn">Cancel</button>
+                           <a href="{% url 'cancel' pk=data.13 %}"><button  type="button" class="deletebtn">Delete</button></a>
+                         </div>
+                       </div>
+                     </form>
+                   </div>
+                  {%endfor%}
                </div>
             </div>
          </article>
       </section>
-      <div id="id01" class="modal">
-         <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
-         <form class="modal-content" action="/action_page.php">
-           <div class="container">
-             <h1>Cancel Booking</h1>
-             <p>Are you sure you want to calcel your booking?</p>
-           
-             <div class="clearfix">
-               <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-               <button type="button" onclick="document.getElementById('id01').style.display='none'" class="deletebtn">Delete</button>
-             </div>
-           </div>
-         </form>
-       </div>
       <footer>
          <div class="footer-top bg-secondary bg-pattern">
             <div class="container-fluid">
@@ -348,14 +358,18 @@ hr {
       </footer>
       <script>
          // Get the modal
-         var modal = document.getElementById('id01');
+         var modal = document.getElementsByClassName('id01');
+
+         for(var i=0; i <modal.length;++i){
+            window.onclick = function(event) {
+            if (event.target == modal) {
+               modal.style.display = "none";
+            }
+            }
+         }
          
          // When the user clicks anywhere outside of the modal, close it
-         window.onclick = function(event) {
-           if (event.target == modal) {
-             modal.style.display = "none";
-           }
-         }
+         
          </script>
       <script type='text/javascript' src='{% static "js/js/js.cookied9c4.js" %}' id='cookies-js'></script><script type='text/javascript' src='{% static "js/js/scriptsd9c4.js" %}' id='scripts-js'></script> 
    </body>
