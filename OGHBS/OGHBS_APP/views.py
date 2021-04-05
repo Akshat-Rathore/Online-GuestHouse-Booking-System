@@ -594,21 +594,27 @@ def edit_profile(request, pk, cat):
         if cat==0:
             parentuser=get_object_or_404(Student, user=user)
             initial_dict={
-            'user_name':parentuser.username,
+            'user_name':user.username,
             'fullname':parentuser.full_name,
             'department':parentuser.department,
             'roll_no':parentuser.roll_no}
+            form1=EditStudentForm(request.POST or None, initial = initial_dict)
+            form2=EditProfessorForm()
         else:
             parentuser=get_object_or_404(Professor,user=user)
-        
+            initial_dict={
+            'user_name':user.username,
+            'fullname':parentuser.full_name,
+            'department':parentuser.department,
+            'address':parentuser.address}
+            form1=EditStudentForm()
+            form2=EditProfessorForm(request.POST or None, initial = initial_dict)
 
-
         
-        form1=EditStudentForm()
-        form2=EditProfessorForm()
+        
         context = {
-            'form1': EditStudentForm(),
-            'form2': EditProfessorForm(),
+            'form1': form1,
+            'form2': form2,
             'category': cat,
             'name':user.username,
             'full_name':parentuser.full_name,
