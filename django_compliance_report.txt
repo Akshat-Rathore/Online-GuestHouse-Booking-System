@@ -1,0 +1,146 @@
+Command(to be run in virtual environment with all requirements):
+python manage.py test -v 2
+
+
+
+
+Creating test database for alias 'default' ('test_OGHBS')...
+Operations to perform:
+  Synchronize unmigrated apps: crispy_forms, messages, staticfiles
+  Apply all migrations: OGHBS_APP, admin, auth, contenttypes, django_celery_beat, django_celery_results, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying OGHBS_APP.0001_initial... OK
+  Applying OGHBS_APP.0002_auto_20210404_2039... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying django_celery_beat.0001_initial... OK
+  Applying django_celery_beat.0002_auto_20161118_0346... OK
+  Applying django_celery_beat.0003_auto_20161209_0049... OK
+  Applying django_celery_beat.0004_auto_20170221_0000... OK
+  Applying django_celery_beat.0005_add_solarschedule_events_choices... OK
+  Applying django_celery_beat.0006_auto_20180322_0932... OK
+  Applying django_celery_beat.0007_auto_20180521_0826... OK
+  Applying django_celery_beat.0008_auto_20180914_1922... OK
+  Applying django_celery_beat.0006_auto_20180210_1226... OK
+  Applying django_celery_beat.0006_periodictask_priority... OK
+  Applying django_celery_beat.0009_periodictask_headers... OK
+  Applying django_celery_beat.0010_auto_20190429_0326... OK
+  Applying django_celery_beat.0011_auto_20190508_0153... OK
+  Applying django_celery_beat.0012_periodictask_expire_seconds... OK
+  Applying django_celery_beat.0013_auto_20200609_0727... OK
+  Applying django_celery_beat.0014_remove_clockedschedule_enabled... OK
+  Applying django_celery_beat.0015_edit_solarschedule_events_choices... OK
+  Applying django_celery_results.0001_initial... OK
+  Applying django_celery_results.0002_add_task_name_args_kwargs... OK
+  Applying django_celery_results.0003_auto_20181106_1101... OK
+  Applying django_celery_results.0004_auto_20190516_0412... OK
+  Applying django_celery_results.0005_taskresult_worker... OK
+  Applying django_celery_results.0006_taskresult_date_created... OK
+  Applying django_celery_results.0007_remove_taskresult_hidden... OK
+  Applying django_celery_results.0008_chordcounter... OK
+  Applying sessions.0001_initial... OK
+System check identified some issues:
+
+WARNINGS:
+OGHBS_APP.GuestHouse.customer: (fields.W340) null has no effect on ManyToManyField.
+
+System check identified 1 issue (0 silenced).
+test_additional_feedback_label (OGHBS_APP.tests.test_models.FeedbackModelTest) ... ok
+test_additional_feedback_max_length (OGHBS_APP.tests.test_models.FeedbackModelTest) ... ok
+test_comfort_of_stay_label (OGHBS_APP.tests.test_models.FeedbackModelTest) ... ok
+test_room_cleanliness_label (OGHBS_APP.tests.test_models.FeedbackModelTest) ... ok
+test_service_quality_label (OGHBS_APP.tests.test_models.FeedbackModelTest) ... ok
+test_address_label (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_address_max_length (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_cost_of_food_label (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_description_label (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_description_max_length (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_food_availability_label (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_name_label (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_name_max_length (OGHBS_APP.tests.test_models.GuestHouseModelTest) ... ok
+test_address_help_text (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_address_label (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_adress_max_length (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_department_help_text (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_department_label (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_department_max_length (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_full_name_help_text (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_full_name_label (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_full_name_max_length (OGHBS_APP.tests.test_models.ProfessorModelTest) ... ok
+test_capacity_label (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_cost_label (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_initial_room_id_label (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_is_AC_label (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_room_type_label (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_room_type_max_length (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_total_number_label (OGHBS_APP.tests.test_models.RoomModelTest) ... ok
+test_department_help_text (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_department_label (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_department_max_length (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_full_name_help_text (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_full_name_label (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_full_name_max_length (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_roll_no_help_text (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_roll_no_label (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_roll_no_max_length (OGHBS_APP.tests.test_models.StudentModelTest) ... ok
+test_context (OGHBS_APP.tests.test_views.BookingHistoryTest) ... ok
+test_logged_in_uses_correct_template (OGHBS_APP.tests.test_views.BookingHistoryTest) ... ok
+test_permit_WL_booking_cancellation_if_logged_in (OGHBS_APP.tests.test_views.CancelBookingTest) ... ok
+test_permit_confirmed_booking_cancellation_if_logged_in (OGHBS_APP.tests.test_views.CancelBookingTest) ... ok
+test_redirect_if_not_logged_in (OGHBS_APP.tests.test_views.CancelBookingTest) ... ok
+test_refund_for_wl_bookings (OGHBS_APP.tests.test_views.CancelBookingTest) ... ok
+test_view_url_accessible_by_name (OGHBS_APP.tests.test_views.CancelBookingTest) ... ok
+test_cancel_room_booking (OGHBS_APP.tests.test_views.CancelRoomBookingTest) ... ok
+test_logged_in_uses_correct_template_and_category (OGHBS_APP.tests.test_views.DashboardTest) ... ok
+test_editing_success (OGHBS_APP.tests.test_views.EditProfileTest) ... ok
+test_error_statemants (OGHBS_APP.tests.test_views.EditProfileTest) ... ok
+test_logged_in_uses_correct_template (OGHBS_APP.tests.test_views.EditProfileTest) ... ok
+test_logged_in_uses_correct_template (OGHBS_APP.tests.test_views.FeedbackTest) ... ok
+test_post_data (OGHBS_APP.tests.test_views.FeedbackTest) ... ok
+test_context_all (OGHBS_APP.tests.test_views.HallDetailsTest) ... ok
+test_view_url_accessible_by_name (OGHBS_APP.tests.test_views.HallDetailsTest) ... ok
+test_view_url_exists_at_desired_location (OGHBS_APP.tests.test_views.HallDetailsTest) ... ok
+test_view_uses_correct_template (OGHBS_APP.tests.test_views.HallDetailsTest) ... ok
+test_lists_all_guesthouses (OGHBS_APP.tests.test_views.HallListTest) ... ok
+test_view_url_accessible_by_name (OGHBS_APP.tests.test_views.HallListTest) ... ok
+test_view_url_exists_at_desired_location (OGHBS_APP.tests.test_views.HallListTest) ... ok
+test_view_uses_correct_template (OGHBS_APP.tests.test_views.HallListTest) ... ok
+test_login_failure (OGHBS_APP.tests.test_views.LoginTest) ... ok
+test_login_success (OGHBS_APP.tests.test_views.LoginTest) ... ok
+test_view_url_accessible_by_name (OGHBS_APP.tests.test_views.LoginTest) ... ok
+test_view_url_exists_at_desired_location (OGHBS_APP.tests.test_views.LoginTest) ... ok
+test_view_uses_correct_template (OGHBS_APP.tests.test_views.LoginTest) ... ok
+test_logged_in_uses_correct_template (OGHBS_APP.tests.test_views.PaymentTest) ... ok
+test_register_success (OGHBS_APP.tests.test_views.RegisterTest) ... ok
+test_view_url_accessible_by_name (OGHBS_APP.tests.test_views.RegisterTest) ... ok
+test_view_url_exists_at_desired_location (OGHBS_APP.tests.test_views.RegisterTest) ... ok
+test_view_uses_correct_template (OGHBS_APP.tests.test_views.RegisterTest) ... ok
+test_booking (OGHBS_APP.tests.test_views.RoomBookingTest) ... ok
+test_search_check_in_date_ahead_of_check_out_date (OGHBS_APP.tests.test_views.SearchTest) ... ok
+test_search_date_in_the_past (OGHBS_APP.tests.test_views.SearchTest) ... ok
+test_search_valid_input_1 (OGHBS_APP.tests.test_views.SearchTest) ... ok
+test_search_valid_input_2 (OGHBS_APP.tests.test_views.SearchTest) ... ok
+
+----------------------------------------------------------------------
+Ran 75 tests in 14.112s
+
+OK
+Destroying test database for alias 'default' ('test_OGHBS')...
