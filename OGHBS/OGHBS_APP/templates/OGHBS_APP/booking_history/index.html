@@ -215,10 +215,10 @@ hr {
                                  <td>{{data.1}}</td>
                               </tr>
                               <tr>
-                                 {% ifequal data.1 1  %}
+                                
                                  <td> Booking Status : </td>
-                                 <td>{{ data.3 }}</td>
-                                 {%endifequal%}
+                                 <td>{{ data.3.0 }}</td>
+                                 
                               </tr>
                               <tr>
                                  <td>Name of visitors:</td>
@@ -287,7 +287,7 @@ hr {
                                        CANCEL BOOKING
                                     </a>
                                  </td>
-                              {% elif data.3 == 0%}
+                              {% elif data.3 == 'Cancelled' %}
                                  <td>
                                     <a  onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='block'" class="bg-pattern">
                                        CANCEL BOOKING

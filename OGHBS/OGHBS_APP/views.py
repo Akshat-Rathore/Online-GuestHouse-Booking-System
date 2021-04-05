@@ -181,19 +181,12 @@ def check_availability(room, check_in, check_out, gh_id):
 
 
 def search(request, gh_id):
-    print(str(gh_id)+"ijk")
-    print(request)
     guest_house = get_object_or_404(GuestHouse, pk=gh_id)
     if request.method == 'POST':
-        print("****")
-        print(request.POST)
-        print(str(gh_id)+"ijk")
         form = SearchForm(request.POST)
         if form.is_valid():
             check_in = form.cleaned_data['check_in_date']
             check_out = form.cleaned_data['check_out_date']
-            print("^^^^")
-            print(form)
             guest_house = GuestHouse.objects.get(pk=gh_id)
             avl_rooms = dict()
             ast=[]
@@ -213,8 +206,6 @@ def search(request, gh_id):
             ast.append(avl_rooms['NAC3Bed'])
             avl_rooms['NDorBed'] = check_availability(guest_house.NACDormitory, check_in, check_out, gh_id)
             ast.append(avl_rooms['NDorBed'])
-            print("reaches")
-            print(avl_rooms.items())
             context = {
                 'form': form,
                 'avl_rooms': avl_rooms,
@@ -243,7 +234,6 @@ def search(request, gh_id):
                 "nonac_three_bednum_cost":guest_house.NAC3Bed.cost,
                 "nonac_dor_bednum_cost":guest_house.NACDormitory.cost,
             }
-            print(check_in)
             return render(request, 'OGHBS_APP/vacancies/index.html', context)
 
         context = {
