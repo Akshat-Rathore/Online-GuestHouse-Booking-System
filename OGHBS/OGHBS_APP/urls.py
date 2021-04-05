@@ -34,4 +34,5 @@ urlpatterns = [
     path('payment/<yyyy:check_in_date>/<yyyy:check_out_date>/', payment, name='payment'),
     path('feedback/<int:pk>/<int:userid>/',feedback,name='feedback'),
     path('cancel/<int:pk>/',cancel_booking,name='cancel'),
+    path('cancel-booking-admin/<int:pk>/',admin_cancel_booking,name='cancel-booking-admin'),
 ]

@@ -27,9 +27,13 @@ my_admin_site = MyAdminSite(name='myadmin')
 # Register your models here.
 class StudentAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'roll_no', 'department']
+    def has_change_permission(self, request, obj=None):
+        return False
 
 class ProfessorAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'department', 'address']
+    def has_change_permission(self, request, obj=None):
+        return False
 
 class AC1BedAdmin(admin.ModelAdmin):
     list_display = ['view_guest_house', 'room_type', 'is_AC', 'capacity']
@@ -109,12 +113,15 @@ class MyForm(forms.ModelForm):
         if cleaned_data['check_in_date'] > cleaned_data['check_out_date']:
             raise ValidationError(_("Check out date can't be before check in date"))
 
+class NoDeleteAdminMixin:
+    def has_delete_permission(self, request, obj=None):
+        return False
 
-class BookingAdmin(admin.ModelAdmin):
+class BookingAdmin(NoDeleteAdminMixin,admin.ModelAdmin):
     form = MyForm
     list_display = ['customer', 'guest_house', "date_of_booking", 'room_type', 'room_id', 'check_in_date', 'check_out_date', 'booking_status']
     readonly_fields = ['room_id', 'booking_status', 'checked_out', "refund_amount", "date_of_booking"]
-    # admin.site.disable_action('delete_selected')
+    admin.site.disable_action('delete_selected')
     list_filter = ("guest_house", "date_of_booking", "room_type", "room_id", "booking_status")
 
     def get_queryset(self, request):
@@ -125,34 +132,24 @@ class BookingAdmin(admin.ModelAdmin):
         return qs
 
     def save_model(self, request, obj, form, change):
-        if change:
-            if True:
-                obj.save()
-                return
-            # print(form.changed_data)
-            # if 'guest_house' in form.changed_data or 'room_type' in form.changed_data:
-            # if obj.room_type == 'AC 1 Bed':
-            #     room_booking(obj, obj.guest_house.AC1Bed)
-            # elif obj.room_type == 'AC 2 Bed':
-            #     room_booking(obj, obj.guest_house.AC2Bed)
-            # elif obj.room_type == 'AC 3 Bed':
-            #     room_booking(obj, obj.guest_house.AC3Bed)
-        else:
+        if not change:
             if obj.room_type == 'AC 1 Bed':
                 room_booking(obj, obj.guest_house.AC1Bed)
             elif obj.room_type == 'AC 2 Bed':
                 room_booking(obj, obj.guest_house.AC2Bed)
             elif obj.room_type == 'AC 3 Bed':
                 room_booking(obj, obj.guest_house.AC3Bed)
+            elif obj.room_type == "NAC 1 Bed":
+                room_booking(obj, obj.guest_house.NAC1Bed)
+            elif obj.room_type == "NAC 2 Bed":
+                room_booking(obj, obj.guest_house.NAC2Bed)
+            elif obj.room_type == "NAC 3 Bed":
+                room_booking(obj, obj.guest_house.NAC3Bed)
+            elif obj.room_type == "ACDormitory":
+                room_booking(obj, obj.guest_house.ACDormitory)
+            else:
+                room_booking(obj, obj.guest_house.NACDormitory)
         obj.save()
-
-    # def delete_model(self, request, obj):
-    #     if obj.room_type == 'AC 1 Bed':
-    #         cancel_room_booking(obj)
-    #     elif obj.room_type == 'AC 2 Bed':
-    #         cancel_room_booking(obj)
-    #     elif obj.room_type == 'AC 3 Bed':
-    #         cancel_room_booking(obj)
 
 
 class GuestHouseAdmin(admin.ModelAdmin):

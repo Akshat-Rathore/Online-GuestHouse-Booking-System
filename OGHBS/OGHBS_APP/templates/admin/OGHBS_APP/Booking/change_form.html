@@ -1,0 +1,19 @@
+{% extends "admin/change_form.html" %}
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    {% if original %} {# Only show if changing #}
+        {% if original.booking_status == '0' or original.booking_status == '1' %}
+            {% if original.checked_out == 0%}
+                <div class="submit-row">
+                    <a href="{% url 'cancel-booking-admin' original.pk %}" style="height: 35px;line-height: 15px;margin: 0 0 0 5px;background: #e44d4d;padding: 10px 15px;border: none;
+                    border-radius: 4px;
+                    color: #fff;
+                    cursor: pointer;
+                    text-decoration: none;">
+                        Cancel Booking
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock %}
