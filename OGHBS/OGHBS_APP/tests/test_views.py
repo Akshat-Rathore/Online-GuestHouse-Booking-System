@@ -313,9 +313,13 @@ class RoomBookingTest(TestCase):
 
         # b1,b2 and b3 all should get confirmed but b4 should be in queue
         self.assertEqual(b1.booking_status,0)
+        self.assertEqual(b1.room_id,1)
         self.assertEqual(b3.booking_status,0)
+        self.assertEqual(b3.room_id,2)
         self.assertEqual(b2.booking_status,0)
+        self.assertEqual(b3.room_id,None)
         self.assertEqual(b4.booking_status,1)
+        self.assertEqual(b3.room_id,None)
 
 class CancelRoomBookingTest(TestCase):
 

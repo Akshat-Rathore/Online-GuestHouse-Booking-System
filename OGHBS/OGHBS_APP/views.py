@@ -617,12 +617,7 @@ def edit_profile(request, pk, cat):
         }
     return render(request, 'OGHBS_APP/profile/index.html', context)
 
-<<<<<<< HEAD
-
-@login_required(login_url='login/')
-=======
 @login_required(login_url='/login/')
->>>>>>> c2a4a68a632cc2e82ac9ae84490236d6fbb631e2
 def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
     if request.method == 'POST':
         print(request.POST)
