@@ -195,15 +195,6 @@
                            {%endif%}
 
                            <br>
-<<<<<<< HEAD
-                           
-                           {% if ast.1 %}
-                           <a href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
-                           <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Two-Beds : </strong>{{ast.1}}
-                           <p>Cost per room: {{ac_two_bednum_cost}}</p>
-                           <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
-                              <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-=======
                            {% if ast.1 %}
                            <a href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                            <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Two-Beds : </strong>{{ast.1}}
@@ -225,17 +216,7 @@
                            {%endif%}
 
                            
->>>>>>> 1c0ad1e042bbe2efaa42d68ee2f09ad66da21843
-                           <br></a>
-                           {%else%}
-                           <a href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
-                              <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Two-Beds : </strong>{{ast.1}}
-                              <p>Cost per room: {{ac_two_bednum_cost}}</p>
-                              <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
-                                 <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                              <br></a>
-                           {%endif%}
-                           <br>
+                           
 
                            {% if ast.5 %}
                            <a href="{% url 'book' pk=gh_id room_type=nonac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
