@@ -10,34 +10,43 @@ class SearchTest(TestCase):
 
     def setUp(self):
         # Create a Guest House
-        ac1bed = AC1Bed.objects.create(
+        self.ac1bed = AC1Bed.objects.create(
             total_number=2,
             cost=500,
             initial_room_id=1,
         )
+        self.ac1bed.save()
 
-        ac2bed = AC2Bed.objects.create(
+        self.ac2bed = AC2Bed.objects.create(
             total_number=2,
             cost=1000,
             initial_room_id=3,
         )
 
-        ac3bed = AC3Bed.objects.create(
+        self.ac2bed.save()
+
+        self.ac3bed = AC3Bed.objects.create(
             total_number=2,
             cost=1500,
             initial_room_id=5,
         )
 
-        nac1bed = NAC1Bed.objects.create(
+        self.ac3bed.save()
+        self.nac1bed = NAC1Bed.objects.create(
             total_number=2,
             cost=250,
             initial_room_id=7,
         )
+        self.nac1bed.save()
         
-        nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
-        acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
-        nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
-        nac2bed = NAC2Bed.objects.create(total_number=2, cost=50,initial_room_id=9)
+        self.nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
+        self.nacdormitory.save()
+        self.acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
+        self.acdormitory.save()
+        self.nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
+        self.nac3bed.save()
+        self.nac2bed = NAC2Bed.objects.create(total_number=2, cost=50,initial_room_id=9)
+        self.nac2bed.save()
 
         self.gh = GuestHouse()
         self.gh.name = "test guest house"
@@ -45,20 +54,27 @@ class SearchTest(TestCase):
         self.gh.cost_of_food = 500
         self.gh.address = "IIT Kharagpur/Kharagpur"
         self.gh.description = "The guest house of your dream"
-        self.gh.AC1Bed = ac1bed
-        self.gh.AC2Bed = ac2bed
-        self.gh.AC3Bed = ac3bed
-        self.gh.NAC1Bed = nac1bed
-        self.gh.NAC2Bed = nac2bed
-        self.gh.NAC3Bed = nac3bed
-        self.gh.ACDormitory = acdormitory
-        self.gh.NACDormitory = nacdormitory
+        self.gh.AC1Bed = self.ac1bed
+        self.gh.AC2Bed = self.ac2bed
+        self.gh.AC3Bed = self.ac3bed
+        self.gh.NAC1Bed = self.nac1bed
+        self.gh.NAC2Bed = self.nac2bed
+        self.gh.NAC3Bed = self.nac3bed
+        self.gh.ACDormitory = self.acdormitory
+        self.gh.NACDormitory = self.nacdormitory
         self.gh.save()
         
         self.test_user1 = User.objects.create(
             username='Ani',
             password='ABCDEFGH'
         )
+        
+        self.test_user1.save()
+        self.test_user2 = User.objects.create(
+            username='Ani01',
+            password='ABCDEFGH'
+        )
+        self.test_user2.save()
 
     def test_search_date_in_the_past(self):
         check_in_date1 = datetime.date(2021, 4, 1) 
@@ -84,7 +100,7 @@ class SearchTest(TestCase):
             'Invalid date - Check-out date cannot be before Check-in Date'
         )
 
-    def test_search_valid_input(self):
+    def test_search_valid_input_1(self):
         check_in_date = datetime.date(2021, 4, 8)
         check_out_date = datetime.date(2021, 4, 10)
         response = self.client.post(reverse('search_room', kwargs={'gh_id': self.gh.pk}), {'check_in_date': check_in_date,'check_out_date':check_out_date})
@@ -92,6 +108,71 @@ class SearchTest(TestCase):
         vacancies = [2,2,2,2,2,2,2,2]
         for i in range(8):
             self.assertEqual(vacancies[i], response.context['ast'][i])
+
+
+    def test_search_valid_input_2(self):
+        # Create two bookings for AC1 bed and One booking for AC2 Bed
+        b1 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 8),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Anindya",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b1.save()
+        room_booking(b1, self.ac1bed)
+
+        b3 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 9),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Akshat",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b3.save()
+        room_booking(b3, self.ac1bed)
+
+        b2 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 2 Bed',
+            check_in_date = datetime.date(2021, 4, 6),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "KD",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b2.save()
+        room_booking(b2, self.ac2bed)
+
+        check_in_date = datetime.date(2021, 4, 8)
+        check_out_date = datetime.date(2021, 4, 10)
+        response = self.client.post(reverse('search_room', kwargs={'gh_id': self.gh.pk}), {'check_in_date': check_in_date,'check_out_date':check_out_date})
+        self.assertEqual(response.status_code, 200)
+
+        # Golder O/P
+        vacancies = [0,1,2,2,2,2,2,2]
+        for i in range(8):
+            self.assertEqual(vacancies[i], response.context['ast'][i])
+
 
 class HallListTest(TestCase):
 
@@ -410,13 +491,18 @@ class EditProfileTest(TestCase):
     
     def test_logged_in_uses_correct_template(self):
         login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
-        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.student.pk, 'cat':0}))
-        # Check our user is logged in
-        self.assertEqual(str(response.context['name']), 'testuser1')
+        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/profile/index.html')
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/profile/index.html')
+        login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user2.pk, 'cat':1}))
         # Check that we got a response "success"
         self.assertEqual(response.status_code, 200)
 
         # Check we used correct template
-        self.assertTemplateUsed(response, 'OGHBS_APP/edit_profile/index.html')
+        self.assertTemplateUsed(response, 'OGHBS_APP/profile/index.html')
         
 

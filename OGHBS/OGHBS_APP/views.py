@@ -35,20 +35,11 @@ def hall_list(request):
         data1.append(house.description)
         data.append(data1)
 
-    print(data)
     context = {
         'data': data,
     }
     
     return render(request, 'OGHBS_APP/index.html', context)
-
-def update_booking(gh_id):
-    guest_house = GuestHouse.objects.get(pk=gh_id)
-    if guest_house.last_update == datetime.date.today():
-        print("OKAY")
-    else:
-        print("NOT-OKAY")
-    return HttpResponse("<h1>HH</h1>")
 
 # displays details of hall with id=pk
 
@@ -89,8 +80,6 @@ def hall_details(request, pk):
 def clear_queue():
     # Get all the queued bookings and order them by their ID (temporal ordering)
     queued_bookings = Booking.objects.filter(booking_status=1,check_in_date__gte=datetime.today()).order_by('pk')
-    print("&&&")
-    print(queued_bookings)
     # Check for each queued booking
     for booking in queued_bookings:
         if booking.room_type == 'AC 1 Bed':
@@ -122,7 +111,7 @@ def room_booking(booking, room):
     booked_room_ids = [x[0] for x in booked_room_ids]
     start_id = room.initial_room_id
     end_id = room.initial_room_id + room.total_number - 1
-    print(booked_room_ids)
+
     if len(booked_room_ids) == 0:
         booking.booking_status = 0
         booking.room_id = start_id
@@ -174,7 +163,6 @@ def check_availability(room, check_in, check_out, gh_id):
                                                                  ).order_by('room_id').values_list('room_id').distinct()
 
     booked_room_ids = [x[0] for x in booked_room_ids]
-    print(booked_room_ids, room.room_type)
     return room.total_number - len(booked_room_ids)
 
 def search(request, gh_id):
@@ -290,7 +278,6 @@ def branching(request,check_in_date,check_out_date,booking_status):
     
 def user_register(request):
     if request.method == 'POST':
-        print(request.POST)
         roll_no = request.POST.get('roll_no', -1)
         password =request.POST.get('password1', -1)
         category = 1
