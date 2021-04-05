@@ -110,7 +110,6 @@ def clear_queue():
         else:
             room_booking(booking, booking.guest_house.NACDormitory)
 
-
 def room_booking(booking, room):
     booked_room_ids = Booking.objects.filter(guest_house__id=booking.guest_house.id,
                                              room_type=booking.room_type,
@@ -143,7 +142,6 @@ def room_booking(booking, room):
                 booking.save()
                 return
 
-
 def cancel_room_booking(booking):
     booking.booking_status = 3
     booking.checked_out = 0
@@ -163,7 +161,6 @@ def cancel_booking(request,pk ):
         booking.refund_amount = booking.paid_amount/2
         booking.save()
 
-
 def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
@@ -176,7 +173,6 @@ def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = [x[0] for x in booked_room_ids]
     print(booked_room_ids, room.room_type)
     return room.total_number - len(booked_room_ids)
-
 
 def search(request, gh_id):
     print(str(gh_id)+"ijk")
@@ -298,8 +294,6 @@ def branching(request,check_in_date,check_out_date,booking_status):
     booking.save()
     return redirect('home')
     
-
-
 def user_register(request):
     if request.method == 'POST':
         print(request.POST)
@@ -600,14 +594,25 @@ def edit_profile(request, pk, cat):
                 professor.save()
                 return redirect('dashboard',pk=pk)
             return render(request, 'OGHBS_APP/profile/index.html',
-                          {'form1': form1, 'form2': form2, 'category': cat})
+                          {'form1': form1, 'form2': form2, 'category': cat,'name':user.username})
 
     elif request.method == 'GET':
         user=get_object_or_404(User, pk=pk)
         if cat==0:
             parentuser=get_object_or_404(Student, user=user)
+            initial_dict={
+            'user_name':parentuser.username,
+            'fullname':parentuser.full_name,
+            'department':parentuser.department,
+            'roll_no':parentuser.roll_no}
         else:
             parentuser=get_object_or_404(Professor,user=user)
+        
+
+
+        
+        form1=EditStudentForm()
+        form2=EditProfessorForm()
         context = {
             'form1': EditStudentForm(),
             'form2': EditProfessorForm(),
@@ -743,7 +748,6 @@ def calculate_cost(booking):
     no_of_days=check_out-check_in
     total_rent=rent*int(no_of_days.days)+food_cost
     return total_rent
-
 
 def booking_details(request,check_in_date,check_out_date):
     user=get_object_or_404(User,username=request.user)
