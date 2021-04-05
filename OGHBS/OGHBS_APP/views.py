@@ -145,7 +145,7 @@ def cancel_room_booking(booking):
 @login_required(login_url='login/')
 def cancel_booking(request, pk):
     booking = get_object_or_404(Booking, pk=pk)
-    if booking.booking_status == 1:
+    if booking.booking_status == '1':
         cancel_room_booking(booking)
         booking.refund_amount = booking.paid_amount
         booking.booking_status = 2
@@ -279,7 +279,7 @@ def branching(request,check_in_date,check_out_date,booking_status):
         booking.payment_status=True
     
     booking.save()
-    return redirect('home')
+    return redirect('booking_history',pk=request.user.pk)
     
 def user_register(request):
     if request.method == 'POST':
@@ -410,7 +410,7 @@ def user_login(request):
         return render(request, 'OGHBS_APP/login/index.html', {'form': form, 'flag':True})
 
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def user_logout(request):
     logout(request)
     return redirect('home')
@@ -545,9 +545,9 @@ def edit_profile(request, pk, cat):
                 print(form1.cleaned_data)
                 user =  get_object_or_404(User, pk=pk)
                 # user.email = form1.cleaned_data.get('email')
-                user.username = form1.cleaned_data.get('user_name')
-                user.set_password(form1.cleaned_data.get('password1'))
-                user.save()
+                # user.username = form1.cleaned_data.get('user_name')
+                # user.set_password(form1.cleaned_data.get('password1'))
+                # user.save()
                 student = get_object_or_404(Student, user=user)
                 student.full_name = form1.cleaned_data.get('full_name')
                 student.department = form1.cleaned_data.get('department')
@@ -565,9 +565,9 @@ def edit_profile(request, pk, cat):
                 print(form2.cleaned_data)
                 user = get_object_or_404(User, pk=pk)
                 # user.email = form2.cleaned_data.get('email')
-                user.username = form2.cleaned_data.get('user_name')
-                user.set_password(form2.cleaned_data.get('password1'))
-                user.save()
+                # user.username = form2.cleaned_data.get('user_name')
+                # user.set_password(form2.cleaned_data.get('password1'))
+                # user.save()
                 professor = get_object_or_404(Professor, user=user)
                 professor.full_name = form2.cleaned_data.get('full_name')
                 professor.department = form2.cleaned_data.get('department')
@@ -583,7 +583,6 @@ def edit_profile(request, pk, cat):
         if cat==0:
             parentuser=get_object_or_404(Student, user=user)
             initial_dict={
-            'user_name':user.username,
             'full_name':parentuser.full_name,
             'department':parentuser.department,
             'roll_no':parentuser.roll_no}
@@ -592,7 +591,6 @@ def edit_profile(request, pk, cat):
         else:
             parentuser=get_object_or_404(Professor,user=user)
             initial_dict={
-            'user_name':user.username,
             'full_name':parentuser.full_name,
             'department':parentuser.department,
             'address':parentuser.address}
@@ -613,6 +611,7 @@ def edit_profile(request, pk, cat):
         }
     return render(request, 'OGHBS_APP/profile/index.html', context)
 
+@login_required(login_url='/login/')
 def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
     if request.method == 'POST':
         print(request.POST)
@@ -650,7 +649,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.feedback=None
             booking.room_id=None
             cost=calculate_cost(booking)
-            booking.paid_amount=cost
+            booking.paid_amount=int(cost*0.2)
             booking.save()
             print(booking.visitors_name)
             guest_house=get_object_or_404(GuestHouse,pk=pk)
@@ -668,14 +667,17 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             else:
                 data.append("No")
             cost=calculate_cost(booking)
+            cost1=0.2*cost
+            cost1=int(cost1)
             data.append(check_in_date)
             data.append(check_out_date)
             data.append(cost)
+            data.append(cost1)
             print("data.6")
             print(data[6])
             print(check_in_date)
             print(booking.check_in_date)
-            print(data,"&&&&&&");
+            print(data,"&&&&&&")
             return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
     elif request.method == 'GET':
         guest_house=get_object_or_404(GuestHouse,pk=pk)

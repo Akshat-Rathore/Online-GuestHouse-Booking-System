@@ -774,9 +774,9 @@ input[type="text"], input[type="email"], input[type="number"], input[type="tel"]
                                     </div>
                                   </div>
                                 </div>
-                                <span class="button1"><a href = "{% url 'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=0 %}">PAY </a></span>
+                                <a href = "{% url 'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=0 %}"><span class="button1">PAY </span></a>
                                 <br>
-                                <span class="button1"><a href = "{% url  'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=3 %}">Cancel Process </a></span>
+                                <a href = "{% url  'buffer' check_in_date=check_in_date check_out_date=check_out_date booking_status=3 %}"><span class="button1">Cancel Process</span> </a>
                               </div>
                             </form>
                             </div>
