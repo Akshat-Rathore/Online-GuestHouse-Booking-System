@@ -17,6 +17,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from .utils import token_generator
 from django.utils.timezone import datetime
+from django.http import HttpResponseRedirect
+
 # Create your views here.
 
 # displays all the guest houses in the home page
@@ -80,7 +82,6 @@ def hall_details(request, pk):
 def clear_queue():
     # Get all the queued bookings and order them by their ID (temporal ordering)
     queued_bookings = Booking.objects.filter(booking_status=1,check_in_date__gte=datetime.today()).order_by('pk')
-    print(queued_bookings)
     # Check for each queued booking
     for booking in queued_bookings:
         if booking.room_type == 'AC 1 Bed':
@@ -108,8 +109,6 @@ def room_booking(booking, room):
                                              ).exclude(check_in_date__gte=booking.check_out_date
                                                        ).exclude(check_out_date__lte=booking.check_in_date
                                                                  ).order_by('room_id').values_list('room_id').distinct()
-    print(booking,room)
-    print(booked_room_ids)
 
     booked_room_ids = [x[0] for x in booked_room_ids]
     start_id = room.initial_room_id
@@ -132,7 +131,6 @@ def room_booking(booking, room):
                 booking.booking_status = 0
                 booking.room_id = _id
                 booking.checked_out = 0
-                print(booking.room_id,"&&&")
                 booking.save()
                 return
 
@@ -142,7 +140,7 @@ def cancel_room_booking(booking):
     booking.save()
     clear_queue()
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def cancel_booking(request, pk):
     booking = get_object_or_404(Booking, pk=pk)
     if booking.booking_status == '1':
@@ -248,7 +246,6 @@ def book_room(request, gh_id):
 def branching(request,check_in_date,check_out_date,booking_status):
     print("Hello")
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
-    print(booking)
     if booking_status==3:
         booking.booking_status='Cancelled'
     elif booking_status=='In-Queue':
@@ -794,6 +791,22 @@ def feedback(request,pk,userid):
         form=FeedbackForm()
     return render(request, 'OGHBS_APP/feedback/index.html', {'form':form})
 
+def admin_cancel_booking(request, pk):
+    booking = Booking.objects.get(pk=pk)
+    if booking.booking_status == '1':
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount
+        booking.booking_status = 2
+        booking.save()
+    else:
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount/2
+        booking.save()
+
+    messages.info(request, 'Booking cancelled successfully!')
+    return HttpResponseRedirect(
+       reverse('admin:OGHBS_APP_booking_change', args=[pk])
+    )
 
 
 
