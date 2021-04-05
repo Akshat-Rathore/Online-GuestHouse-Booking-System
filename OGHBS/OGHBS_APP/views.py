@@ -161,12 +161,9 @@ def cancel_booking(request, pk):
         booking.refund_amount = booking.paid_amount/2
         booking.save()
 
-<<<<<<< HEAD
     return redirect('booking_history',pk=request.user.pk)
 
 
-=======
->>>>>>> b111e306e7ad166609e02f3c62365b06b77c0466
 def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
