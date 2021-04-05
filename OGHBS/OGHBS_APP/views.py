@@ -17,6 +17,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from .utils import token_generator
 from django.utils.timezone import datetime
+from django.http import HttpResponseRedirect
+
 # Create your views here.
 
 # displays all the guest houses in the home page
@@ -45,9 +47,6 @@ def hall_list(request):
 
 def hall_details(request, pk):
     guest_house = get_object_or_404(GuestHouse, pk=pk)
-    
-    guest_house1 = serializers.serialize('json', [guest_house])
-    # return JsonResponse(json.loads(guest_house1), safe=False)
     context={
         'pk':pk,
         'Name':guest_house.name,
@@ -80,7 +79,6 @@ def hall_details(request, pk):
 def clear_queue():
     # Get all the queued bookings and order them by their ID (temporal ordering)
     queued_bookings = Booking.objects.filter(booking_status=1,check_in_date__gte=datetime.today()).order_by('pk')
-    print(queued_bookings)
     # Check for each queued booking
     for booking in queued_bookings:
         if booking.room_type == 'AC 1 Bed':
@@ -100,7 +98,10 @@ def clear_queue():
         else:
             room_booking(booking, booking.guest_house.NACDormitory)
 
+# Function to allot room_id for a booking
 def room_booking(booking, room):
+    # Get all the rooms ids for active bookings that have non-zero overlapping with the 
+    # queried interval of booking.These rooms cannot be alloted
     booked_room_ids = Booking.objects.filter(guest_house__id=booking.guest_house.id,
                                              room_type=booking.room_type,
                                              booking_status=0,
@@ -108,48 +109,57 @@ def room_booking(booking, room):
                                              ).exclude(check_in_date__gte=booking.check_out_date
                                                        ).exclude(check_out_date__lte=booking.check_in_date
                                                                  ).order_by('room_id').values_list('room_id').distinct()
-    print(booking,room)
-    print(booked_room_ids)
 
     booked_room_ids = [x[0] for x in booked_room_ids]
+    # ID range of available rooms
     start_id = room.initial_room_id
     end_id = room.initial_room_id + room.total_number - 1
 
+    # All rooms empty
     if len(booked_room_ids) == 0:
         booking.booking_status = 0
         booking.room_id = start_id
         booking.checked_out = 0
         booking.save()
+    # All rooms booked. Set the booking status to 'In-Queue'
     elif len(booked_room_ids) == room.total_number:
         booking.booking_status = 1
         booking.room_id = None
         booking.checked_out = 0
         booking.save()
+
+    # Some rooms available
     else:
-        
+        #  Allot a room_id that doesn't exist in booked_room_ids
+        # Booking status = confirmed
         for _id in range(start_id, end_id+1):
             if _id not in booked_room_ids:
                 booking.booking_status = 0
                 booking.room_id = _id
                 booking.checked_out = 0
-                print(booking.room_id,"&&&")
                 booking.save()
                 return
 
+
+# Function to cancel booking
 def cancel_room_booking(booking):
     booking.booking_status = 3
     booking.checked_out = 0
     booking.save()
     clear_queue()
 
-@login_required(login_url='login/')
+
+# View function to cancel booking. Requires login
+@login_required(login_url='/login/')
 def cancel_booking(request, pk):
     booking = get_object_or_404(Booking, pk=pk)
+    # If booking is In-Queue total paid amount is refunded and booking status = Refund
     if booking.booking_status == '1':
         cancel_room_booking(booking)
         booking.refund_amount = booking.paid_amount
         booking.booking_status = 2
         booking.save()
+    # If booking is In-Queue 50% of total paid amount is refunded and booking status = Cancelled
     else:
         cancel_room_booking(booking)
         booking.refund_amount = booking.paid_amount/2
@@ -157,8 +167,14 @@ def cancel_booking(request, pk):
 
     return redirect('booking_history',pk=request.user.pk)
 
+<<<<<<< HEAD
+=======
 
+# Function to calculate check availability of each room
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def check_availability(room, check_in, check_out, gh_id):
+    # Get all the rooms ids for active bookings that have non-zero overlapping with the 
+    # queried interval of booking. These rooms cannot be alloted
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
                                              booking_status=0,
@@ -169,6 +185,7 @@ def check_availability(room, check_in, check_out, gh_id):
 
     booked_room_ids = [x[0] for x in booked_room_ids]
     return room.total_number - len(booked_room_ids)
+
 
 def search(request, gh_id):
     guest_house = get_object_or_404(GuestHouse, pk=gh_id)
@@ -248,7 +265,6 @@ def book_room(request, gh_id):
 def branching(request,check_in_date,check_out_date,booking_status):
     print("Hello")
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
-    print(booking)
     if booking_status==3:
         booking.booking_status='Cancelled'
     elif booking_status=='In-Queue':
@@ -409,13 +425,12 @@ def user_login(request):
         form = LoginForm()
         return render(request, 'OGHBS_APP/login/index.html', {'form': form, 'flag':True})
 
-
 @login_required(login_url='/login/')
 def user_logout(request):
     logout(request)
     return redirect('home')
 
-
+#function to activate user OGHBS accounts from the links send through a validates emails 
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -436,6 +451,12 @@ def activate(request, uidb64, token):
             }
         return render(request, 'OGHBS_APP/login/index.html', context)
 
+<<<<<<< HEAD
+#User dashboard with basic profile view and links to booking history and edit profile 
+=======
+
+@login_required(login_url='login/')
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def dashboard(request,pk):
     user = User.objects.get(pk=pk)
     num1=Student.objects.filter(user=user).count()
@@ -474,6 +495,12 @@ def dashboard(request,pk):
     }
     return render(request, 'OGHBS_APP/dashboard/index.html', context)
 
+<<<<<<< HEAD
+#generates list of bookings of the current user with all the details
+=======
+
+@login_required(login_url='login/')
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def booking_history(request,pk):
     user=get_object_or_404(User, pk=pk)
     bookings = Booking.objects.filter(customer=user).order_by('-id')
@@ -534,6 +561,12 @@ def booking_history(request,pk):
     }
     return render(request, 'OGHBS_APP/booking_history/index.html', context)
 
+<<<<<<< HEAD
+#Allows users to edit their profiles(full name, department, roll no. or address)
+=======
+
+@login_required(login_url='login/')
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def edit_profile(request, pk, cat):
     if request.method == 'POST':
         print(request.POST)
@@ -611,6 +644,7 @@ def edit_profile(request, pk, cat):
         }
     return render(request, 'OGHBS_APP/profile/index.html', context)
 
+#generates booking object based on a booking form posted by the user 
 @login_required(login_url='/login/')
 def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
     if request.method == 'POST':
@@ -702,6 +736,13 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
         
     return render(request, 'OGHBS_APP/book/index.html', {'form':form})
 
+<<<<<<< HEAD
+#generates payment form after booking details are confirmed
+=======
+
+
+@login_required(login_url='login/')
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def payment(request,check_in_date,check_out_date):
     check_in_date=check_in_date.strftime('%Y-%m-%d')
     check_out_date=check_out_date.strftime('%Y-%m-%d')
@@ -711,6 +752,12 @@ def payment(request,check_in_date,check_out_date):
     }
     return render(request, 'OGHBS_APP/payment/index.html',context)
 
+<<<<<<< HEAD
+#calculates cost after booking form is filled
+=======
+
+
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def calculate_cost(booking):
     food_cost=0
     rent=0
@@ -740,6 +787,11 @@ def calculate_cost(booking):
     total_rent=rent*int(no_of_days.days)+food_cost
     return total_rent
 
+<<<<<<< HEAD
+#generates feedback form for user booking with check-out =1
+=======
+
+@login_required(login_url='login/')
 def booking_details(request,check_in_date,check_out_date):
     user=get_object_or_404(User,username=request.user)
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
@@ -758,7 +810,10 @@ def booking_details(request,check_in_date,check_out_date):
     data.append(booking.check_out_date)
     data.append(cost)
     return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
-    
+
+
+@login_required(login_url='login/')
+>>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def feedback(request,pk,userid):
     user=get_object_or_404(User,pk=userid)
     booking=get_object_or_404(Booking,pk=pk)
@@ -779,6 +834,22 @@ def feedback(request,pk,userid):
         form=FeedbackForm()
     return render(request, 'OGHBS_APP/feedback/index.html', {'form':form})
 
+def admin_cancel_booking(request, pk):
+    booking = Booking.objects.get(pk=pk)
+    if booking.booking_status == '1':
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount
+        booking.booking_status = 2
+        booking.save()
+    else:
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount/2
+        booking.save()
+
+    messages.info(request, 'Booking cancelled successfully!')
+    return HttpResponseRedirect(
+       reverse('admin:OGHBS_APP_booking_change', args=[pk])
+    )
 
 
 

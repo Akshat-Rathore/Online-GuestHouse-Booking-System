@@ -23,19 +23,20 @@ class SearchForm(forms.Form):
     check_in_date = forms.DateField(label="Enter check-in Date ", required=True, widget=forms.DateInput(attrs={'class': 'datepicker', 'placeholder': '', 'required': 'true'}))
     check_out_date = forms.DateField(label="Enter check-out Date ", required=True, widget=forms.DateInput(attrs={'class': 'datepicker', 'placeholder': '', 'required': 'true'}))
 
+    # Check for check-in-date is before today
     def clean_check_in_date(self):
         data = self.cleaned_data['check_in_date']
 
         if data < datetime.date.today():
             raise ValidationError(_('Invalid date - Check-in date cannot be in the past'))
         return data
-
+    # Check for check-out-date is before today
     def clean_check_out_date(self):
         data = self.cleaned_data['check_out_date']
         if data < datetime.date.today():
             raise ValidationError(_('Invalid date - Check-out date cannot be in the past'))
         return data
-
+    # Check for if check-in-date is after check-out-date
     def clean(self):
         cleaned_data = super(SearchForm, self).clean()
         date1 = cleaned_data.get('check_in_date')
@@ -55,6 +56,7 @@ class StudentForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
 
+    # Check if confirm password and password matches
     def clean(self):
         cleaned_data = super().clean()
         pass1 = cleaned_data.get('password1')
@@ -62,6 +64,7 @@ class StudentForm(forms.Form):
         if pass1 != pass2:
             raise ValidationError(_("Password and Confirm Password don't match with each other"))
 
+    # Check if email is institute email id
     def clean_email(self):
         data = self.cleaned_data['email']
         user = User.objects.filter(email=data)
@@ -71,6 +74,7 @@ class StudentForm(forms.Form):
             raise ValidationError(_("Please enter your institute Email ID"))
         return data
 
+    # Check if username already exists and raise error
     def clean_user_name(self):
         data = self.cleaned_data['user_name']
         user = User.objects.filter(username=data)
@@ -87,6 +91,7 @@ class ProfessorForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
 
+    # Check if confirm password and password matches
     def clean(self):
         cleaned_data = super().clean()
         pass1 = cleaned_data.get('password1')
@@ -94,6 +99,7 @@ class ProfessorForm(forms.Form):
         if pass1 != pass2:
             raise ValidationError(_("Password and Confirm Password don't match with each other"))
 
+    # Check if email is institute email id
     def clean_email(self):
         data = self.cleaned_data['email']
         user = User.objects.filter(email=data)
@@ -103,6 +109,7 @@ class ProfessorForm(forms.Form):
             raise ValidationError(_("Please enter your institute Email ID"))
         return data
 
+    # Check if username already exists and raise error
     def clean_user_name(self):
         data = self.cleaned_data['user_name']
         user = User.objects.filter(username=data)
@@ -116,14 +123,10 @@ class LoginForm(forms.Form):
 
 
 class EditStudentForm(forms.Form):
-    # user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))
     full_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Full Name'}))
     roll_no = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Roll No'}))
     department = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Department'}))
-    # address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Address'}))
-    # password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
-    # password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
-
+    
     def clean(self):
         cleaned_data = super().clean()
         pass1 = cleaned_data.get('password1')
@@ -131,53 +134,18 @@ class EditStudentForm(forms.Form):
         if pass1 != pass2:
             raise ValidationError(_("Password and Confirm Password don't match with each other"))
 
-    # def clean_email(self):
-    #     data = self.cleaned_data['email']
-    #     user = User.objects.filter(email=data)
-    #     if len(user) != 0:
-    #         raise ValidationError(_("User is already registered"))
-    #     elif len(data) < 12 or data[-12:] != "iitkgp.ac.in":
-    #         raise ValidationError(_("Please enter your institute Email ID"))
-    #     return data
-
-    # def clean_user_name(self):
-    #     data = self.cleaned_data['user_name']
-    #     user = User.objects.filter(username=data)
-    #     if len(user) != 0:
-    #         raise ValidationError(_("Username is already taken"))
-    #     return data
 
 class EditProfessorForm(forms.Form):
-    # user_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Username'}))
     full_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Full Name'}))
-    # email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'input-line full-width', 'placeholder': 'Email'}))
     department = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Department'}))
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-line full-width', 'placeholder': 'Address'}))
-    # password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Password'}))
-    # password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-line full-width', 'placeholder': 'Confirm Password'}))
-
+    
     def clean(self):
         cleaned_data = super().clean()
         pass1 = cleaned_data.get('password1')
         pass2 = cleaned_data.get('password2')
         if pass1 != pass2:
             raise ValidationError(_("Password and Confirm Password don't match with each other"))
-
-    # def clean_email(self):
-    #     data = self.cleaned_data['email']
-    #     user = User.objects.filter(email=data)
-    #     if len(user) != 0:
-    #         raise ValidationError(_("User is already registered"))
-    #     elif len(data) < 12 or data[-12:] != "iitkgp.ac.in":
-    #         raise ValidationError(_("Please enter your institute Email ID"))
-    #     return data
-
-    # def clean_user_name(self):
-    #     data = self.cleaned_data['user_name']
-    #     user = User.objects.filter(username=data)
-    #     if len(user) != 0:
-    #         raise ValidationError(_("Username is already taken"))
-    #     return data
 
 class BookingForm(forms.Form):
     user_name = forms.CharField(label="User Name ",widget=forms.TextInput(attrs={'class': 'input-line full-width','readonly':'true'}))
@@ -200,13 +168,14 @@ class BookingForm(forms.Form):
         else:
             self.n=1
 
-
+    # Visitor number should not be more than capacity
     def clean(self):
         cleaned_data = super().clean()
         visitor_num = self.cleaned_data.get('visitor_num')
         if visitor_num>self.n:
             raise ValidationError(_("Number of vistors cannot be more than "+str(self.n)+" for one booking"))
     
+    # Visitor number should not be more than capacity
     def clean_visitor_names(self):
         names = self.cleaned_data.get('visitor_names')
         num = int(self.cleaned_data.get('visitor_num'))

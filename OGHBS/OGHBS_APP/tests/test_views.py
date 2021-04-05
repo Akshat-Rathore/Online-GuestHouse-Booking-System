@@ -312,10 +312,19 @@ class RoomBookingTest(TestCase):
         room_booking(b4, self.ac1bed)
 
         # b1,b2 and b3 all should get confirmed but b4 should be in queue
+        # Check their room_id
         self.assertEqual(b1.booking_status,0)
+        self.assertEqual(b1.room_id,1)
+
         self.assertEqual(b3.booking_status,0)
+        self.assertEqual(b3.room_id,2)
+
         self.assertEqual(b2.booking_status,0)
+        self.assertEqual(b2.room_id,1)
+
         self.assertEqual(b4.booking_status,1)
+        self.assertEqual(b4.room_id,None)
+
 
 class CancelRoomBookingTest(TestCase):
 
@@ -462,12 +471,172 @@ class CancelRoomBookingTest(TestCase):
 
         # b3 should have confirmed status now and b4 should not get confirmed
         # as b3 was done before b4 (priority wrt date of booking)
+        # Also check their room_id
         self.b3 = Booking.objects.get(pk=self.b3.pk)
         self.b4 = Booking.objects.get(pk=self.b4.pk)
         self.assertEqual(self.b3.booking_status,'0')
+        self.assertEqual(self.b3.room_id,1)
+
         self.assertEqual(self.b4.booking_status,'1')
-        # self.assertEqual(self.b3.booking_status,0)
-        # self.assertEqual(self.b4.booking_status,1)
+        self.assertEqual(self.b4.room_id,None)
+
+
+class CancelBookingTest(TestCase):
+    def setUp(self):
+        self.ac1bed = AC1Bed.objects.create(
+            total_number=2,
+            cost=500,
+            initial_room_id=1,
+        )
+        self.ac1bed.save()
+
+        self.ac2bed = AC2Bed.objects.create(
+            total_number=2,
+            cost=1000,
+            initial_room_id=3,
+        )
+
+        self.ac2bed.save()
+
+        self.ac3bed = AC3Bed.objects.create(
+            total_number=2,
+            cost=1500,
+            initial_room_id=5,
+        )
+
+        self.ac3bed.save()
+        self.nac1bed = NAC1Bed.objects.create(
+            total_number=2,
+            cost=250,
+            initial_room_id=7,
+        )
+        self.nac1bed.save()
+        
+        self.nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
+        self.nacdormitory.save()
+        self.acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
+        self.acdormitory.save()
+        self.nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
+        self.nac3bed.save()
+        self.nac2bed = NAC2Bed.objects.create(total_number=2, cost=50,initial_room_id=9)
+        self.nac2bed.save()
+
+        self.gh = GuestHouse()
+        self.gh.name = "test guest house"
+        self.gh.food_availability = 1
+        self.gh.cost_of_food = 500
+        self.gh.address = "IIT Kharagpur/Kharagpur"
+        self.gh.description = "The guest house of your dream"
+        self.gh.AC1Bed = self.ac1bed
+        self.gh.AC2Bed = self.ac2bed
+        self.gh.AC3Bed = self.ac3bed
+        self.gh.NAC1Bed = self.nac1bed
+        self.gh.NAC2Bed = self.nac2bed
+        self.gh.NAC3Bed = self.nac3bed
+        self.gh.ACDormitory = self.acdormitory
+        self.gh.NACDormitory = self.nacdormitory
+        self.gh.save()
+        
+        self.test_user1 = User.objects.create_user(
+            username='Ani',
+            password='ABCDEFGH'
+        )
+        self.test_user1.save()
+
+        self.test_user2 = User.objects.create_user(
+            username='Ani01',
+            password='ABCDEFGH'
+        )
+        self.test_user2.save()
+
+        self.b1 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 8),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Anindya",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b1.save()
+        room_booking(self.b1, self.ac1bed)
+
+        self.b2 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 9),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "KD",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b2.save()
+        room_booking(self.b2, self.ac1bed)
+
+        self.b3 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 6),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Akshat",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b3.save()
+        room_booking(self.b3, self.ac1bed)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(f'/cancel/{self.b1.pk}/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/login/?next=/cancel/17/')
+
+    def test_permit_WL_booking_cancellation_if_logged_in(self):
+        login_user = self.client.login(username='Ani', password='ABCDEFGH')
+        response = self.client.get(reverse('cancel', kwargs={'pk': self.b3.pk}))
+        self.assertEqual(response.status_code, 302)
+
+        self.b3 = Booking.objects.get(pk=self.b3.pk)
+        # check if the booking get refund status and refund amount is proper
+        self.assertEqual(self.b3.booking_status, '2')
+        self.assertEqual(self.b3.refund_amount, self.b3.paid_amount)
+        # Check correct redirect url
+        self.assertRedirects(response, reverse('booking_history',kwargs={'pk':self.test_user1.pk}))
+
+    def test_permit_confirmed_booking_cancellation_if_logged_in(self):
+        login_user = self.client.login(username='Ani', password='ABCDEFGH')
+        response = self.client.get(reverse('cancel', kwargs={'pk': self.b1.pk}))
+        self.assertEqual(response.status_code, 302)
+
+        self.b1 = Booking.objects.get(pk=self.b1.pk)
+        # check if the booking get cancelled
+        self.assertEqual(self.b1.booking_status, '3')
+        self.assertEqual(self.b1.refund_amount, self.b1.paid_amount//2)
+        # Check correct redirect url
+        self.assertRedirects(response, reverse('booking_history',kwargs={'pk':self.test_user1.pk}))
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('cancel', kwargs={'pk':self.b1.pk}))
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_refund_for_wl_bookings(self):
+        pass
+
 
 class HallListTest(TestCase):
 
@@ -804,6 +973,9 @@ class EditProfileTest(TestCase):
         response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
         pass1="1X<ISRUkw+tuK"
         repeat_pass1="1X<ISRUkw+tuK_diff"
+
+        #Following section is only tested when password edditing is allowed in editing forms
+
         # sform = EditStudentForm({
         #     'password1':pass1,
         #     'password2':repeat_pass1
@@ -849,16 +1021,13 @@ class EditProfileTest(TestCase):
         response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
         pass1="newpass"
         response = self.client.post(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}), {
-            'user_name':'new_user',
             'full_name':'new_full_name',
             'department':'new_department',
             'roll_no':'new_roll_no',
-            'password1':pass1,
-            'password2':pass1
+            
         })
         self.assertEqual(response.status_code, 302)
-        print("response")
-        print(response)
+        
         
 class FeedbackTest(TestCase):
     def setUp(self):
@@ -1033,7 +1202,6 @@ class PaymentTest(TestCase):
             else:
                 booking_status="Cancelled"
             check_in_date = datetime.date(2020, 4, i+1)
-            cost=calculate_cost(booking)
             check_out_date = datetime.date(2020, 5, i+1)
             booking=Booking.objects.create(
                 guest_house=self.gh1,
@@ -1051,8 +1219,100 @@ class PaymentTest(TestCase):
                 date_of_booking=datetime.date.today
                 )
             booking.save()
-            cost=int(calculate_cost(booking)*0.2)
             self.booking.append(booking)
+
+    def test_logged_in_uses_correct_template(self):
+        login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('payment', kwargs={'check_in_date':self.booking[0].check_in_date,'check_out_date': self.booking[0].check_out_date}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
+        login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('payment', kwargs={'check_in_date':self.booking[1].check_in_date,'check_out_date': self.booking[1].check_out_date}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
+
+
+class LoginTest(TestCase):
+
+    def setUp(self):
+        self.test_user1 = User.objects.create_user(username='testuser1', password='1X<ISRUkw+tuK')
+        self.test_user2 = User.objects.create_user(username='testuser2', password='2HJ1vRV0Z&3iD')
+        self.test_user1.save()
+        self.test_user2.save()
+        
+        self.student=Student.objects.create(
+            user=self.test_user1,
+            full_name="Test User1",
+            roll_no="19XXABCDE",
+            department="XX"
+        )
+        self.student.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/login/index.html')
+
+    def test_login_success(self):
+        response = self.client.post(reverse('login'), {
+            'user_name':'testuser1',
+            'password':'1X<ISRUkw+tuK'
+        })
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_failure(self):
+        response = self.client.post(reverse('login'), {
+            'user_name':'testuser1_diff',
+            'password':'1X<ISRUkw+tuK'
+        })
+        self.assertEqual(response.status_code, 200)
+
+class RegisterTest(TestCase):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/register/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/register/index.html')
+    def test_register_success(self):
+        response = self.client.post(reverse('register'),
+        {
+            'user_name':'user_name',
+            'full_name':'full_name',
+            'email':'user@iitkgp.ac.in',
+            'roll_no':'19XXABCDE',
+            'department':'XX',
+            'address':'earth/testing',
+            'password1':"1X<ISRUkw+tuK",
+            'password2':'1X<ISRUkw+tuK'
+        })
+        self.assertEqual(response.status_code, 302)
+
+
+
+
+
+
 
 
 
