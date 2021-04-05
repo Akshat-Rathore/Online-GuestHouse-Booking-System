@@ -255,7 +255,7 @@ def search(request, gh_id):
 
 
 def branching(request,check_in_date,check_out_date,booking_status):
-    print("Hello")
+    # print("Hello")
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
     if booking_status==3:
         booking.booking_status='Cancelled'
@@ -300,7 +300,7 @@ def user_register(request):
             form1 = StudentForm(request.POST)
             form2 = ProfessorForm()
             if form1.is_valid():
-                print(form1.cleaned_data)
+                # print(form1.cleaned_data)
                 user = User()
                 user.email = form1.cleaned_data.get('email')
                 user.username = form1.cleaned_data.get('user_name')
@@ -347,7 +347,7 @@ def user_register(request):
             form2 = ProfessorForm(request.POST)
             form1 = StudentForm()
             if form2.is_valid():
-                print(form2.cleaned_data)
+                # print(form2.cleaned_data)
                 user = User()
                 user.email = form2.cleaned_data.get('email')
                 user.username = form2.cleaned_data.get('user_name')
@@ -393,7 +393,7 @@ def user_login(request):
         if user is not None:
             login(request, user)
            
-            print("printed")
+            # print("printed")
             return redirect('home')
         else:
             try:
@@ -410,8 +410,8 @@ def user_login(request):
                 'error': error_msg,
                 'flag': flag
             }
-            print(request.user)
-            print("printed")
+            # print(request.user)
+            # print("printed")
             return render(request, 'OGHBS_APP/login/index.html', context)
     else:
         form = LoginForm()
@@ -443,7 +443,8 @@ def activate(request, uidb64, token):
             }
         return render(request, 'OGHBS_APP/login/index.html', context)
 
-# User dashboard with basic profile view and links to booking history and edit profile 
+# User dashboard with basic profile view and links to booking history and edit profile
+ 
 @login_required(login_url='/login/')
 def dashboard(request,pk):
     user = User.objects.get(pk=pk)
@@ -537,8 +538,8 @@ def booking_history(request,pk):
         data1.append(pk)
         data1.append(i.id)
         data.append(data1)
-        print(i.feedback)
-        print(check_feedback)
+        # print(i.feedback)
+        # print(check_feedback)
     context={
         'datas':data,
         'name': user.username,
@@ -549,13 +550,13 @@ def booking_history(request,pk):
 @login_required(login_url='/login/')
 def edit_profile(request, pk, cat):
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         password =request.POST.get('password1', -1)
         if cat == 0:
             form1 = EditStudentForm(request.POST)
             form2 = EditProfessorForm()
             if form1.is_valid():
-                print(form1.cleaned_data)
+                # print(form1.cleaned_data)
                 user =  get_object_or_404(User, pk=pk)
                 # user.email = form1.cleaned_data.get('email')
                 # user.username = form1.cleaned_data.get('user_name')
@@ -575,7 +576,7 @@ def edit_profile(request, pk, cat):
             form2 = EditProfessorForm(request.POST)
             form1 = EditStudentForm()
             if form2.is_valid():
-                print(form2.cleaned_data)
+                # print(form2.cleaned_data)
                 user = get_object_or_404(User, pk=pk)
                 # user.email = form2.cleaned_data.get('email')
                 # user.username = form2.cleaned_data.get('user_name')
@@ -628,17 +629,17 @@ def edit_profile(request, pk, cat):
 @login_required(login_url='/login/')
 def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         POST=request.POST.copy()
-        print("check")
-        print(check_in_date)
+        # print("check")
+        # print(check_in_date)
         check_in_date=check_in_date.strftime('%Y-%m-%d')
         check_out_date=check_out_date.strftime('%Y-%m-%d')
         POST['check_in_date']=check_in_date
         POST['check_out_date']=check_out_date
         form=BookingForm(room_type=room_type,data=POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            # print(form.cleaned_data)
             booking=Booking()
             booking.guest_house=get_object_or_404(GuestHouse,pk=pk)
             booking.customer=request.user
@@ -665,7 +666,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             cost=calculate_cost(booking)
             booking.paid_amount=int(cost*0.2)
             booking.save()
-            print(booking.visitors_name)
+            # print(booking.visitors_name)
             guest_house=get_object_or_404(GuestHouse,pk=pk)
             # user=User.objects.get(username=request.user)
             user=get_object_or_404(User,username=request.user)
@@ -687,20 +688,20 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             data.append(check_out_date)
             data.append(cost)
             data.append(cost1)
-            print("data.6")
-            print(data[6])
-            print(check_in_date)
-            print(booking.check_in_date)
-            print(data,"&&&&&&")
+            # print("data.6")
+            # print(data[6])
+            # print(check_in_date)
+            # print(booking.check_in_date)
+            # print(data,"&&&&&&")
             return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
     elif request.method == 'GET':
         guest_house=get_object_or_404(GuestHouse,pk=pk)
         user=User.objects.get(username=request.user)
-        print("get")
-        print(check_in_date)
+        # print("get")
+        # print(check_in_date)
         check_in_date=check_in_date.strftime('%Y-%m-%d')
         check_out_date=check_out_date.strftime('%Y-%m-%d')
-        print(check_in_date)
+        # print(check_in_date)
         initial_dict={
             'user_name':user.username,
             'guesthouse':guest_house.name,
@@ -711,13 +712,13 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
 
         }
 
-        print(initial_dict)
+        # print(initial_dict)
         form = BookingForm(request.POST or None, initial = initial_dict)
         
     return render(request, 'OGHBS_APP/book/index.html', {'form':form})
 
 #generates payment form after booking details are confirmed
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def payment(request,check_in_date,check_out_date):
     check_in_date=check_in_date.strftime('%Y-%m-%d')
     check_out_date=check_out_date.strftime('%Y-%m-%d')
@@ -757,33 +758,12 @@ def calculate_cost(booking):
     total_rent=rent*int(no_of_days.days)+food_cost
     return total_rent
 
-
-@login_required(login_url='/login/')
-def booking_details(request,check_in_date,check_out_date):
-    user=get_object_or_404(User,username=request.user)
-    booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
-    data=[]
-    data.append(booking.customer)
-    data.append(booking.guest_house.name)
-    data.append(booking.room_type)
-    data.append(booking.visitors_count)
-    data.append(booking.visitors_name)
-    if booking.food is True:
-        data.append("Yes")
-    else:
-        data.append("No")
-    cost=calculate_cost(booking)
-    data.append(booking.check_in_date)
-    data.append(booking.check_out_date)
-    data.append(cost)
-    return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
-
-
+#generates feedback form for user booking with check-out =1
 @login_required(login_url='/login/')
 def feedback(request,pk,userid):
     user=get_object_or_404(User,pk=userid)
     booking=get_object_or_404(Booking,pk=pk)
-    print(booking.feedback)
+    # print(booking.feedback)
     if request.method == 'POST':
         form=FeedbackForm(request.POST)
         if form.is_valid():
