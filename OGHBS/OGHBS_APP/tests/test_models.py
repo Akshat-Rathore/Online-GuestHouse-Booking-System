@@ -2,6 +2,7 @@ from django.test import TestCase
 
 # Create your tests here.
 from OGHBS_APP.models import *
+import datetime
 
 class StudentModelTest(TestCase):
     @classmethod
@@ -223,5 +224,3 @@ class FeedbackModelTest(TestCase):
         feedback = Feedback.objects.get(id=1)
         max_length = feedback._meta.get_field('additional_feedback').max_length
         self.assertEqual(max_length, 1000)
-
-    
