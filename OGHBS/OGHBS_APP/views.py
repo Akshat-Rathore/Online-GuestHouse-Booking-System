@@ -602,7 +602,7 @@ def edit_profile(request, pk, cat):
             parentuser=get_object_or_404(Student, user=user)
             initial_dict={
             'user_name':user.username,
-            'fullname':parentuser.full_name,
+            'full_name':parentuser.full_name,
             'department':parentuser.department,
             'roll_no':parentuser.roll_no}
             form1=EditStudentForm(request.POST or None, initial = initial_dict)
@@ -611,7 +611,7 @@ def edit_profile(request, pk, cat):
             parentuser=get_object_or_404(Professor,user=user)
             initial_dict={
             'user_name':user.username,
-            'fullname':parentuser.full_name,
+            'full_name':parentuser.full_name,
             'department':parentuser.department,
             'address':parentuser.address}
             form1=EditStudentForm()
