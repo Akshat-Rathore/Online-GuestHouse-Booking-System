@@ -973,6 +973,9 @@ class EditProfileTest(TestCase):
         response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
         pass1="1X<ISRUkw+tuK"
         repeat_pass1="1X<ISRUkw+tuK_diff"
+
+        #Following section is only tested when password edditing is allowed in editing forms
+
         # sform = EditStudentForm({
         #     'password1':pass1,
         #     'password2':repeat_pass1
@@ -1018,16 +1021,13 @@ class EditProfileTest(TestCase):
         response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
         pass1="newpass"
         response = self.client.post(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}), {
-            'user_name':'new_user',
             'full_name':'new_full_name',
             'department':'new_department',
             'roll_no':'new_roll_no',
-            'password1':pass1,
-            'password2':pass1
+            
         })
         self.assertEqual(response.status_code, 302)
-        print("response")
-        print(response)
+        
         
 class FeedbackTest(TestCase):
     def setUp(self):
@@ -1202,7 +1202,6 @@ class PaymentTest(TestCase):
             else:
                 booking_status="Cancelled"
             check_in_date = datetime.date(2020, 4, i+1)
-            cost=calculate_cost(booking)
             check_out_date = datetime.date(2020, 5, i+1)
             booking=Booking.objects.create(
                 guest_house=self.gh1,
@@ -1220,8 +1219,100 @@ class PaymentTest(TestCase):
                 date_of_booking=datetime.date.today
                 )
             booking.save()
-            cost=int(calculate_cost(booking)*0.2)
             self.booking.append(booking)
+
+    def test_logged_in_uses_correct_template(self):
+        login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('payment', kwargs={'check_in_date':self.booking[0].check_in_date,'check_out_date': self.booking[0].check_out_date}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
+        login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('payment', kwargs={'check_in_date':self.booking[1].check_in_date,'check_out_date': self.booking[1].check_out_date}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
+
+
+class LoginTest(TestCase):
+
+    def setUp(self):
+        self.test_user1 = User.objects.create_user(username='testuser1', password='1X<ISRUkw+tuK')
+        self.test_user2 = User.objects.create_user(username='testuser2', password='2HJ1vRV0Z&3iD')
+        self.test_user1.save()
+        self.test_user2.save()
+        
+        self.student=Student.objects.create(
+            user=self.test_user1,
+            full_name="Test User1",
+            roll_no="19XXABCDE",
+            department="XX"
+        )
+        self.student.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/login/index.html')
+
+    def test_login_success(self):
+        response = self.client.post(reverse('login'), {
+            'user_name':'testuser1',
+            'password':'1X<ISRUkw+tuK'
+        })
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_failure(self):
+        response = self.client.post(reverse('login'), {
+            'user_name':'testuser1_diff',
+            'password':'1X<ISRUkw+tuK'
+        })
+        self.assertEqual(response.status_code, 200)
+
+class RegisterTest(TestCase):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/register/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/register/index.html')
+    def test_register_success(self):
+        response = self.client.post(reverse('register'),
+        {
+            'user_name':'user_name',
+            'full_name':'full_name',
+            'email':'user@iitkgp.ac.in',
+            'roll_no':'19XXABCDE',
+            'department':'XX',
+            'address':'earth/testing',
+            'password1':"1X<ISRUkw+tuK",
+            'password2':'1X<ISRUkw+tuK'
+        })
+        self.assertEqual(response.status_code, 302)
+
+
+
+
+
+
 
 
 

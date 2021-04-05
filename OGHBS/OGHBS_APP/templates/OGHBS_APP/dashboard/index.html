@@ -182,8 +182,13 @@
                   <div class="flex-col footer-nav">
                      <nav>
                         <ul>
+                           {% if not user.is_authenticated %}
                            <li id="menu-item-1557" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1557"><a href="{% url 'login' %}">LOGIN</a></li>
+                           
                            <li id="menu-item-1897" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1897"><a href="{% url 'register' %}">REGISTER</a></li>
+                           {% else %}
+                           <li id="menu-item-1511" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1511"><a href="{% url 'dashboard' pk=user.pk %}">Dashboard</a></li>
+                           {% endif %}
                           <!-- <li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267"><a href="privacy-policy/index.html">Privacy Policy</a></li>-->
                         </ul>
                      </nav>
