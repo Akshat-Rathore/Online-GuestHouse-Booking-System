@@ -177,7 +177,7 @@
                         <h4>Food Availability : {% if food%}Yes{%else%}No {% endif%}</h4>
                         <p>Cost of Food : Rs {{cost_of_food}}</p>
                         <!-- <p>An avid collector of vintage silver and copperware, Mark’s ‘Vintage Kitchenalia’ will also be sold from the truck including copper pans and silver cocktail shakers.</p> -->
-                        <a class="text-button" href="https://www.facebook.com/Hixoysterandfishtruck/" target="_blank"> Visit on Facebook<i class="fal fa-long-arrow-right"></i> </a> 
+                        <a class="text-button" href="{% url 'search_room' gh_id=pk %}" target="_blank"> Check Availability<i class="fal fa-long-arrow-right"></i> </a> 
                      </div>
                   </div>
                </div>
@@ -210,11 +210,10 @@
                </div>
             </div>
             
-            <div class="widget-container widget-container--bleed fullwidth-cta-widget">
+            <!--<div class="widget-container widget-container--bleed fullwidth-cta-widget">
                <a href="{% url 'search_room' gh_id=pk %}" class="cta-wrap bg-primary--dark bg-pattern bg-pattern--light">
                   <div class="text">
                      <div data-show data-show-move data-show-percentage="20">
-                        <!-- <span class="subtitle text-secondary"> British seasonal food </span>  -->
                         <h2 class="h1 text-white">Check Availability</h2>
                      </div>
                      <div class="arrow">
@@ -222,7 +221,7 @@
                      </div>
                   </div>
                </a>
-            </div>
+            </div>-->
          </article>
       </section>
       <footer>
