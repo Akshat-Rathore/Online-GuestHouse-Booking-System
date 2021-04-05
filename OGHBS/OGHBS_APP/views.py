@@ -571,7 +571,7 @@ def edit_profile(request, pk, cat):
                 professor.save()
                 return redirect('dashboard',pk=pk)
             return render(request, 'OGHBS_APP/profile/index.html',
-                          {'form1': form1, 'form2': form2, 'category': cat,'name':user.username})
+                          {'form1': form1, 'form2': form2, 'category': cat,'name':request.user.username})
 
     elif request.method == 'GET':
         user=get_object_or_404(User, pk=pk)

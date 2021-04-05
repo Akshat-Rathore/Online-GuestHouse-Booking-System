@@ -136,7 +136,7 @@
                         <p>
                             <a href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
                                 <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong> </strong>
-                                <p></p></p><br></a>
+                                <p></p></p></a>
 
                            {% if ast.0%}
                            <a href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}">
@@ -145,14 +145,14 @@
                            Cost per room: {{ac_one_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0 %}" target="_blank">
                                <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {% else %}
                            <a href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Single-Beds : </strong>{{ast.0 }}
                               <p>Cost per room: {{ac_one_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}" target="_blank">
                                   <p style="color: {% if ast.0%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE </p></a> </p>
-                              <br></a>
+                              </a>
                            {% endif %}
                            <br>
                            
@@ -162,14 +162,14 @@
                            <p>Cost per room: {{nonac_one_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.4%}#16a63c{% else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                          <br></a>
+                          </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}">
                               <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Single-Beds : </strong>{{ast.4}}
                               <p>Cost per room: {{nonac_one_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_one_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.4%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                             <br></a>
+                             </a>
                            {%endif%}
 
                            <br>
@@ -180,14 +180,14 @@
                            <p>Cost per room: {{ac_two_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Two-Beds : </strong>{{ast.1}}
                               <p>Cost per room: {{ac_two_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.1%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                              <br></a>
+                              </a>
                            {%endif%}
                            <br>
 
@@ -197,14 +197,14 @@
                            <p>Cost per room: {{nonac_two_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.5%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=nonac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.5%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Two-Beds : </strong>{{ast.5}}
                               <p>Cost per room: {{nonac_two_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_two_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.5%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                              <br></a>
+                              </a>
                            {%endif%}
                            <br>
 
@@ -214,14 +214,14 @@
                            <p>Cost per room: {{ac_three_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.2%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=ac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.2%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Three-Beds : </strong>{{ast.2}}
                               <p>Cost per room: {{ac_three_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.2%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                              <br></a>
+                              </a>
                            {%endif%}
                            <br>
 
@@ -231,14 +231,14 @@
                            <p>Cost per room: {{nonac_three_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.6%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=nonac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.6%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Three-Beds : </strong>{{ast.6}}
                               <p>Cost per room: {{nonac_three_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_three_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.6%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK  IN WAITING QUEUE</p></a> </p>
-                                 <br></a>
+                                 </a>
                            {%endif%}
                            <br>
 
@@ -248,14 +248,14 @@
                            <p>Cost per bed: {{ac_dor_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.3%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=ac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.3%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>AC Dormatories : </strong>{{ast.3}}
                               <p>Cost per bed: {{ac_dor_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.3%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                              <br></a>
+                              </a>
                            {%endif%}
                            <br>
 
@@ -265,22 +265,21 @@
                            <p>Cost per bed: {{nonac_dor_bednum_cost}}</p>
                            <a class="text-button" href="{% url 'book' pk=gh_id room_type=ac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=0  %}" target="_blank">
                               <p style="color: {% if ast.7%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK A ROOM</p></a> </p>
-                           <br></a>
+                           </a>
                            {%else%}
                            <a href="{% url 'book' pk=gh_id room_type=nonac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1 %}">
                               <p style="color: {% if ast.7%}#16a63c{%else%} #3da2e0{%endif%} ;"><strong>Non-AC Dormatories : </strong>{{ast.7}}
                               <p>Cost per bed: {{nonac_dor_bednum_cost}}</p>
                               <a class="text-button" href="{% url 'book' pk=gh_id room_type=nonac_dor_bed.room_type check_in_date=check_in check_out_date=check_out booking_status=1  %}" target="_blank">
                                  <p style="color: {% if ast.7%}#16a63c{%else%} #3da2e0{%endif%} ;">BOOK IN WAITING QUEUE</p></a> </p>
-                              <br></a>
+                              </a>
                            {%endif%}
-                        </p>
-                        <br><br>
+                           </p>
                         <h4>Food Availability : {% if food%}Yes{%else%}No {% endif%}</h4>
                         {% if food%}<p>Cost of Food : Rs {{cost_of_food}}</p>{%else%}<p></p> {% endif%}
                         
                         <!-- <p>An avid collector of vintage silver and copperware, Mark’s ‘Vintage Kitchenalia’ will also be sold from the truck including copper pans and silver cocktail shakers.</p> -->
-                        <a class="text-button" href="https://www.facebook.com/Hixoysterandfishtruck/" target="_blank"> Visit on Facebook<i class="fal fa-long-arrow-right"></i> </a> 
+                       <!-- <a class="text-button" href="https://www.facebook.com/Hixoysterandfishtruck/" target="_blank"> Visit on Facebook<i class="fal fa-long-arrow-right"></i> </a> -->
                      </div>
                   </div>
                </div>

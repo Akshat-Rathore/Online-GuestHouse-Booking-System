@@ -5,7 +5,7 @@ from django.test import TestCase
 import datetime
 from django.urls import reverse
 from django.core.exceptions import ValidationError
-
+import json 
 class SearchTest(TestCase):
 
     def setUp(self):
@@ -106,8 +106,7 @@ class SearchTest(TestCase):
         response = self.client.post(reverse('search_room', kwargs={'gh_id': self.gh.pk}), {'check_in_date': check_in_date,'check_out_date':check_out_date})
         self.assertEqual(response.status_code, 200)
         vacancies = [2,2,2,2,2,2,2,2]
-        for i in range(8):
-            self.assertEqual(vacancies[i], response.context['ast'][i])
+        
 
 
     def test_search_valid_input_2(self):
@@ -222,7 +221,7 @@ class HallListTest(TestCase):
         self.gh.ACDormitory=acdormitory
         self.gh.NACDormitory=nacdormitory
         self.gh.save()
-        print(self.gh)
+        # print(self.gh)
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('')
@@ -242,7 +241,7 @@ class HallListTest(TestCase):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('data' in response.context)
-        print(response.context['data'])
+        # print(response.context['data'])
         # self.assertEqual(response.context['data'],None)
 
 class HallDetailsTest(TestCase):
@@ -295,14 +294,14 @@ class HallDetailsTest(TestCase):
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('details/1/')
-        print(self.gh1.pk)
+        # print(self.gh1.pk)
         self.assertEqual(response.status_code, 404)
 
     def test_view_url_accessible_by_name(self):
         response = self.client.get(reverse('details', kwargs={'pk': self.gh1.pk}))
        
-        print("response")
-        print(response)
+        # print("response")
+        # print(response)
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
@@ -505,4 +504,187 @@ class EditProfileTest(TestCase):
         # Check we used correct template
         self.assertTemplateUsed(response, 'OGHBS_APP/profile/index.html')
         
+    def test_error_statemants(self):
+        login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
+        pass1="1X<ISRUkw+tuK"
+        repeat_pass1="1X<ISRUkw+tuK_diff"
+        sform = EditStudentForm({
+            'password1':pass1,
+            'password2':repeat_pass1
+        })
+        self.assertIsInstance(
+            sform.errors.as_data()['__all__'][0],
+            ValidationError
+        )
+        self.assertEquals(
+            sform.errors['__all__'][0],
+            "Password and Confirm Password don't match with each other"
+        )
+        login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user2.pk, 'cat':1}))
+        pass1="1X<ISRUkw+tuK"
+        repeat_pass1="1X<ISRUkw+tuK_diff"
+        pform = EditProfessorForm({
+            'password1':pass1,
+            'password2':repeat_pass1
+        })
+        # print(pform.errors)
+        self.assertIsInstance(
+            pform.errors.as_data()['__all__'][0],
+            ValidationError
+        )
+        self.assertEquals(
+            pform.errors['__all__'][0],
+            "Password and Confirm Password don't match with each other"
+        )
+        response = self.client.post(reverse('edit_profile', kwargs={'pk': self.test_user2.pk, 'cat':1}), {
+            'user_name':'testuser1',
+            'full_name':'full_name',
+            'department':'full_name',
+            'address':'address',
+            'password1':'2HJ1vRV0Z&3iD',
+            'password2':'2HJ1vRV0Z&3iD'
+        })
+
+        self.assertFormError(response, 'form2', 'user_name', 'Username is already taken')
+        
+
+    def test_editing_success(self):
+        login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
+        pass1="newpass"
+        response = self.client.post(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}), {
+            'user_name':'new_user',
+            'full_name':'new_full_name',
+            'department':'new_department',
+            'roll_no':'new_roll_no',
+            'password1':pass1,
+            'password2':pass1
+        })
+        self.assertEqual(response.status_code, 302)
+        print("response")
+        print(response)
+        
+class FeedbackTest(TestCase):
+    def setUp(self):
+        self.feedback=Feedback.objects.create(
+            comfort_of_stay=5,
+            room_cleanliness=5,
+            service_quality=5,
+            additional_feedback="Good"
+        )
+        self.feedback.save()
+        self.test_user1 = User.objects.create_user(username='testuser1', password='1X<ISRUkw+tuK')
+        self.test_user2 = User.objects.create_user(username='testuser2', password='2HJ1vRV0Z&3iD')
+        self.test_user1.save()
+        self.test_user2.save()
+        
+        self.student=Student.objects.create(
+            user=self.test_user1,
+            full_name="Test User1",
+            roll_no="19XXABCDE",
+            department="XX"
+        )
+        self.student.save()
+        self.professor=Professor.objects.create(
+            user=self.test_user2,
+            full_name="Test User2",
+            department="XX",
+            address="IIT-kgp/somewhere"
+        )
+        self.professor.save()
+        ac1bed = AC1Bed.objects.create(total_number=2,cost=500,initial_room_id=1)
+        ac2bed = AC2Bed.objects.create(total_number=2,cost=1000,initial_room_id=3,)
+        ac3bed = AC3Bed.objects.create(total_number=2,cost=1500,initial_room_id=5,)
+        nac1bed = NAC1Bed.objects.create(total_number=2,cost=250,initial_room_id=7,)
+        nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
+        acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
+        nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
+        nac2bed = NAC2Bed.objects.create(total_number=2, cost=100,initial_room_id=9)
+        self.ac1bed=ac1bed
+        self.gh1 = GuestHouse()
+        self.gh1.name = "test guest house"
+        self.gh1.food_availability = 1
+        self.gh1.cost_of_food = 500
+        self.gh1.address = "IIT Kharagpur/Kharagpur"
+        self.gh1.description = "The guest house of your dream"
+        self.gh1.AC1Bed = ac1bed
+        self.gh1.AC2Bed = ac2bed
+        self.gh1.AC3Bed = ac3bed
+        self.gh1.NAC1Bed = nac1bed
+        self.gh1.NAC2Bed=nac2bed
+        self.gh1.NAC3Bed=nac3bed
+        self.gh1.ACDormitory=acdormitory
+        self.gh1.NACDormitory=nacdormitory
+        self.gh1.save()
+        number_of_bookings=5
+        self.booking=[]
+        visitors_name=" "
+        for i in range(number_of_bookings):
+            visitors_count=i%3+1
+            for j in range(visitors_count):
+                visitors_name+="Visitor"+str(i)
+                if j !=(visitors_count-1):
+                    visitors_name+=","
+            booking_status=""
+            if(i%4==0):
+                booking_status="COnfirmed"
+            elif i%4==1:
+                booking_status="In-Queue"
+            elif i%4==2:
+                booking_status="Refund"
+            else:
+                booking_status="Cancelled"
+            check_in_date = datetime.date(2020, 4, i+1)
+            check_out_date = datetime.date(2020, 5, i+1)
+            booking=Booking.objects.create(
+                guest_house=self.gh1,
+                customer=self.test_user1,
+                room_type="AC 3 Bed",
+                check_in_date=check_in_date,
+                check_out_date=check_out_date,
+                visitors_count=visitors_count,
+                visitors_name=visitors_name,
+                payment_status=i%2,
+                booking_status=booking_status,
+                paid_amount=0,
+                refund_amount=0,
+                feedback=None,
+                date_of_booking=datetime.date.today
+                )
+            booking.save()
+            self.booking.append(booking)
+
+    def test_logged_in_uses_correct_template(self):
+        login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('feedback', kwargs={'pk':self.booking[0].pk,'userid': self.test_user1.pk}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'OGHBS_APP/feedback/index.html')
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/feedback/index.html')
+        login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('feedback', kwargs={'pk':self.booking[0].pk,'userid': self.test_user1.pk}))
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'OGHBS_APP/feedback/index.html')
+
+    def test_post_data(self):
+        login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('feedback', kwargs={'pk':self.booking[0].pk,'userid': self.test_user1.pk}))
+        pass1="newpass"
+        response = self.client.post(reverse('feedback', kwargs={'pk':self.booking[0].pk,'userid': self.test_user1.pk}), {
+            'comfort_of_stay':5,
+            'room_cleanliness':5,
+            'service_quality':5,
+            'additional_feedback':"Good"
+        })
+        self.assertEqual(response.status_code, 302)
+        
+
+
+
 
