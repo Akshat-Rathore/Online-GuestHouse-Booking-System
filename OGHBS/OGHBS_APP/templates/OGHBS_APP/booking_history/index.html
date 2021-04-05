@@ -218,6 +218,7 @@ hr {
                                     <td>Not Done</td>
                                  {% endif %}
                               </tr>
+                              {% if data.1 == 1 %}
                               <tr>
                                  {% if data.3 == '0' %}
                                     <td> Booking Status : </td>
@@ -240,6 +241,12 @@ hr {
                                  {% endif %}
                                  
                               </tr>
+                              {%else%}
+                              <tr>
+                                 <td> Booking Status : </td>
+                                 <td>Payment not Done</td>
+                              </tr>
+                              {%endif%}
                               <tr>
                                  <td>Name of visitors:</td>
                                  <td>{{data.2}}</td>
@@ -248,10 +255,17 @@ hr {
                                  <td>Food :</td>
                                  <td>{{data.6}}</td>
                               </tr>
+                              {% if data.1 == 1   %}
                               <tr>
                                  <td>Paid Amount :</td>
                                  <td>{{data.4}}</td>
                               </tr>
+                              {%else%}
+                              <tr>
+                                 <td>Paid Amount :</td>
+                                 <td>Rs 0.00</td>
+                              </tr>
+                              {%endif%}
                               {% if data.3 == '2' or data.3 == '3' %}
                                  <tr>
                                     <td>
@@ -350,8 +364,8 @@ hr {
          <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
          <form class="modal-content" action="/action_page.php">
            <div class="container">
-             <h1>Delete Account</h1>
-             <p>Are you sure you want to delete your account?</p>
+             <h1>Cancel Booking</h1>
+             <p>Are you sure you want to cancel your booking?</p>
            
              <div class="clearfix">
                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>

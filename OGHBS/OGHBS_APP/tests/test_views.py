@@ -172,6 +172,302 @@ class SearchTest(TestCase):
         for i in range(8):
             self.assertEqual(vacancies[i], response.context['ast'][i])
 
+class RoomBookingTest(TestCase):
+
+    def setUp(self):
+        # Create a Guest House
+        self.ac1bed = AC1Bed.objects.create(
+            total_number=2,
+            cost=500,
+            initial_room_id=1,
+        )
+        self.ac1bed.save()
+
+        self.ac2bed = AC2Bed.objects.create(
+            total_number=2,
+            cost=1000,
+            initial_room_id=3,
+        )
+
+        self.ac2bed.save()
+
+        self.ac3bed = AC3Bed.objects.create(
+            total_number=2,
+            cost=1500,
+            initial_room_id=5,
+        )
+
+        self.ac3bed.save()
+        self.nac1bed = NAC1Bed.objects.create(
+            total_number=2,
+            cost=250,
+            initial_room_id=7,
+        )
+        self.nac1bed.save()
+        
+        self.nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
+        self.nacdormitory.save()
+        self.acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
+        self.acdormitory.save()
+        self.nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
+        self.nac3bed.save()
+        self.nac2bed = NAC2Bed.objects.create(total_number=2, cost=50,initial_room_id=9)
+        self.nac2bed.save()
+
+        self.gh = GuestHouse()
+        self.gh.name = "test guest house"
+        self.gh.food_availability = 1
+        self.gh.cost_of_food = 500
+        self.gh.address = "IIT Kharagpur/Kharagpur"
+        self.gh.description = "The guest house of your dream"
+        self.gh.AC1Bed = self.ac1bed
+        self.gh.AC2Bed = self.ac2bed
+        self.gh.AC3Bed = self.ac3bed
+        self.gh.NAC1Bed = self.nac1bed
+        self.gh.NAC2Bed = self.nac2bed
+        self.gh.NAC3Bed = self.nac3bed
+        self.gh.ACDormitory = self.acdormitory
+        self.gh.NACDormitory = self.nacdormitory
+        self.gh.save()
+        
+        self.test_user1 = User.objects.create(
+            username='Ani',
+            password='ABCDEFGH'
+        )
+        
+        self.test_user1.save()
+        self.test_user2 = User.objects.create(
+            username='Ani01',
+            password='ABCDEFGH'
+        )
+        self.test_user2.save()
+
+    def test_booking(self):
+        b1 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 8),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Anindya",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b1.save()
+        room_booking(b1, self.ac1bed)
+
+        b2 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 10),
+            check_out_date = datetime.date(2021, 4, 12),
+            visitors_count = 1,
+            visitors_name = "KD",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b2.save()
+        room_booking(b2, self.ac1bed)
+
+        b3 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 9),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Akshat",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b3.save()
+        room_booking(b3, self.ac1bed)
+
+        b4 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 8),
+            check_out_date = datetime.date(2021, 4, 12),
+            visitors_count = 1,
+            visitors_name = "KD",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        b4.save()
+        room_booking(b4, self.ac1bed)
+
+        # b1,b2 and b3 all should get confirmed but b4 should be in queue
+        self.assertEqual(b1.booking_status,0)
+        self.assertEqual(b3.booking_status,0)
+        self.assertEqual(b2.booking_status,0)
+        self.assertEqual(b4.booking_status,1)
+
+class CancelRoomBookingTest(TestCase):
+
+    def setUp(self):
+        # Create a Guest House
+        self.ac1bed = AC1Bed.objects.create(
+            total_number=2,
+            cost=500,
+            initial_room_id=1,
+        )
+        self.ac1bed.save()
+
+        self.ac2bed = AC2Bed.objects.create(
+            total_number=2,
+            cost=1000,
+            initial_room_id=3,
+        )
+
+        self.ac2bed.save()
+
+        self.ac3bed = AC3Bed.objects.create(
+            total_number=2,
+            cost=1500,
+            initial_room_id=5,
+        )
+
+        self.ac3bed.save()
+        self.nac1bed = NAC1Bed.objects.create(
+            total_number=2,
+            cost=250,
+            initial_room_id=7,
+        )
+        self.nac1bed.save()
+        
+        self.nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
+        self.nacdormitory.save()
+        self.acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
+        self.acdormitory.save()
+        self.nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
+        self.nac3bed.save()
+        self.nac2bed = NAC2Bed.objects.create(total_number=2, cost=50,initial_room_id=9)
+        self.nac2bed.save()
+
+        self.gh = GuestHouse()
+        self.gh.name = "test guest house"
+        self.gh.food_availability = 1
+        self.gh.cost_of_food = 500
+        self.gh.address = "IIT Kharagpur/Kharagpur"
+        self.gh.description = "The guest house of your dream"
+        self.gh.AC1Bed = self.ac1bed
+        self.gh.AC2Bed = self.ac2bed
+        self.gh.AC3Bed = self.ac3bed
+        self.gh.NAC1Bed = self.nac1bed
+        self.gh.NAC2Bed = self.nac2bed
+        self.gh.NAC3Bed = self.nac3bed
+        self.gh.ACDormitory = self.acdormitory
+        self.gh.NACDormitory = self.nacdormitory
+        self.gh.save()
+        
+        self.test_user1 = User.objects.create(
+            username='Ani',
+            password='ABCDEFGH'
+        )
+        
+        self.test_user1.save()
+        self.test_user2 = User.objects.create(
+            username='Ani01',
+            password='ABCDEFGH'
+        )
+        self.test_user2.save()
+
+        self.b1 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 8),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Anindya",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b1.save()
+        room_booking(self.b1, self.ac1bed)
+
+        self.b2 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 9),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "KD",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b2.save()
+        room_booking(self.b2, self.ac1bed)
+
+        self.b3 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 6),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "Akshat",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b3.save()
+        room_booking(self.b3, self.ac1bed)
+
+        self.b4 = Booking.objects.create(
+            guest_house=self.gh,
+            customer=self.test_user1,
+            room_type = 'AC 1 Bed',
+            check_in_date = datetime.date(2021, 4, 7),
+            check_out_date = datetime.date(2021, 4, 10),
+            visitors_count = 1,
+            visitors_name = "KD",
+            payment_status = 1,
+            booking_status = 1,
+            paid_amount = 1000,
+            food = 1,
+            checked_out = 0,
+        )
+        self.b4.save()
+        room_booking(self.b4, self.ac1bed)
+    
+    def test_cancel_room_booking(self):
+        cancel_room_booking(self.b1)
+        self.assertEqual(self.b1.booking_status,3)
+        self.assertEqual(self.b2.booking_status,0)
+
+        # b3 should have confirmed status now and b4 should not get confirmed
+        # as b3 was done before b4 (priority wrt date of booking)
+        self.b3 = Booking.objects.get(pk=self.b3.pk)
+        self.b4 = Booking.objects.get(pk=self.b4.pk)
+        self.assertEqual(self.b3.booking_status,'0')
+        self.assertEqual(self.b4.booking_status,'1')
+        # self.assertEqual(self.b3.booking_status,0)
+        # self.assertEqual(self.b4.booking_status,1)
 
 class HallListTest(TestCase):
 
@@ -450,7 +746,7 @@ class BookingHistoryTest(TestCase):
     
     def test_logged_in_uses_correct_template(self):
         login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
-        response = self.client.get(reverse('booking_history', kwargs={'pk': self.student.pk}))
+        response = self.client.get(reverse('booking_history', kwargs={'pk': self.student.user.pk}))
         # Check our user is logged in
         self.assertEqual(str(response.context['name']), 'testuser1')
         # Check that we got a response "success"
@@ -461,10 +757,9 @@ class BookingHistoryTest(TestCase):
         
     def test_context(self):
         login_student = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
-        response = self.client.get(reverse('booking_history', kwargs={'pk': self.student.pk}))
+        response = self.client.get(reverse('booking_history', kwargs={'pk': self.student.user.pk}))
         self.assertEqual(len(response.context['datas']), 5)
         self.assertEqual(response.context['datas'][0][0],"test guest house")
-
 
 class EditProfileTest(TestCase):
     def setUp(self):
@@ -509,45 +804,44 @@ class EditProfileTest(TestCase):
         response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user1.pk, 'cat':0}))
         pass1="1X<ISRUkw+tuK"
         repeat_pass1="1X<ISRUkw+tuK_diff"
-        sform = EditStudentForm({
-            'password1':pass1,
-            'password2':repeat_pass1
-        })
-        self.assertIsInstance(
-            sform.errors.as_data()['__all__'][0],
-            ValidationError
-        )
-        self.assertEquals(
-            sform.errors['__all__'][0],
-            "Password and Confirm Password don't match with each other"
-        )
-        login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
-        response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user2.pk, 'cat':1}))
-        pass1="1X<ISRUkw+tuK"
-        repeat_pass1="1X<ISRUkw+tuK_diff"
-        pform = EditProfessorForm({
-            'password1':pass1,
-            'password2':repeat_pass1
-        })
-        # print(pform.errors)
-        self.assertIsInstance(
-            pform.errors.as_data()['__all__'][0],
-            ValidationError
-        )
-        self.assertEquals(
-            pform.errors['__all__'][0],
-            "Password and Confirm Password don't match with each other"
-        )
+        # sform = EditStudentForm({
+        #     'password1':pass1,
+        #     'password2':repeat_pass1
+        # })
+        # self.assertIsInstance(
+        #     sform.errors.as_data()['__all__'][0],
+        #     ValidationError
+        # )
+        # self.assertEquals(
+        #     sform.errors['__all__'][0],
+        #     "Password and Confirm Password don't match with each other"
+        # )
+        # login_professor = self.client.login(username='testuser2', password='2HJ1vRV0Z&3iD')
+        # response = self.client.get(reverse('edit_profile', kwargs={'pk': self.test_user2.pk, 'cat':1}))
+        # pass1="1X<ISRUkw+tuK"
+        # repeat_pass1="1X<ISRUkw+tuK_diff"
+        # pform = EditProfessorForm({
+        #     'password1':pass1,
+        #     'password2':repeat_pass1
+        # })
+        # # print(pform.errors)
+        # self.assertIsInstance(
+        #     pform.errors.as_data()['__all__'][0],
+        #     ValidationError
+        # )
+        # self.assertEquals(
+        #     pform.errors['__all__'][0],
+        #     "Password and Confirm Password don't match with each other"
+        # )
         response = self.client.post(reverse('edit_profile', kwargs={'pk': self.test_user2.pk, 'cat':1}), {
-            'user_name':'testuser1',
+            
             'full_name':'full_name',
             'department':'full_name',
             'address':'address',
-            'password1':'2HJ1vRV0Z&3iD',
-            'password2':'2HJ1vRV0Z&3iD'
+            
         })
 
-        self.assertFormError(response, 'form2', 'user_name', 'Username is already taken')
+        # self.assertFormError(response, 'form2', 'user_name', 'Username is already taken')
         
 
     def test_editing_success(self):
@@ -684,7 +978,81 @@ class FeedbackTest(TestCase):
         })
         self.assertEqual(response.status_code, 302)
         
+class PaymentTest(TestCase):
+    def setUp(self):
+        test_user1 = User.objects.create_user(username='testuser1', password='1X<ISRUkw+tuK')
+        test_user1.save()
+        self.student=Student.objects.create(
+            user=test_user1,
+            full_name="Test User1",
+            roll_no="19XXABCDE",
+            department="XX"
+        )
+        self.student.save()
 
+        ac1bed = AC1Bed.objects.create(total_number=2,cost=500,initial_room_id=1)
+        ac2bed = AC2Bed.objects.create(total_number=2,cost=1000,initial_room_id=3,)
+        ac3bed = AC3Bed.objects.create(total_number=2,cost=1500,initial_room_id=5,)
+        nac1bed = NAC1Bed.objects.create(total_number=2,cost=250,initial_room_id=7,)
+        nacdormitory = NACDormitory.objects.create(total_number=2, cost=50,initial_room_id=15)
+        acdormitory = ACDormitory.objects.create(total_number=2, cost=80,initial_room_id=13)
+        nac3bed = NAC3Bed.objects.create(total_number=2, cost=150,initial_room_id=11)
+        nac2bed = NAC2Bed.objects.create(total_number=2, cost=100,initial_room_id=9)
+        self.ac1bed=ac1bed
+        self.gh1 = GuestHouse()
+        self.gh1.name = "test guest house"
+        self.gh1.food_availability = 1
+        self.gh1.cost_of_food = 500
+        self.gh1.address = "IIT Kharagpur/Kharagpur"
+        self.gh1.description = "The guest house of your dream"
+        self.gh1.AC1Bed = ac1bed
+        self.gh1.AC2Bed = ac2bed
+        self.gh1.AC3Bed = ac3bed
+        self.gh1.NAC1Bed = nac1bed
+        self.gh1.NAC2Bed=nac2bed
+        self.gh1.NAC3Bed=nac3bed
+        self.gh1.ACDormitory=acdormitory
+        self.gh1.NACDormitory=nacdormitory
+        self.gh1.save()
+        number_of_bookings=5
+        self.booking=[]
+        visitors_name=" "
+        for i in range(number_of_bookings):
+            visitors_count=i%3+1
+            for j in range(visitors_count):
+                visitors_name+="Visitor"+str(i)
+                if j !=(visitors_count-1):
+                    visitors_name+=","
+            booking_status=""
+            if(i%4==0):
+                booking_status="COnfirmed"
+            elif i%4==1:
+                booking_status="In-Queue"
+            elif i%4==2:
+                booking_status="Refund"
+            else:
+                booking_status="Cancelled"
+            check_in_date = datetime.date(2020, 4, i+1)
+            cost=calculate_cost(booking)
+            check_out_date = datetime.date(2020, 5, i+1)
+            booking=Booking.objects.create(
+                guest_house=self.gh1,
+                customer=test_user1,
+                room_type="AC 3 Bed",
+                check_in_date=check_in_date,
+                check_out_date=check_out_date,
+                visitors_count=visitors_count,
+                visitors_name=visitors_name,
+                payment_status=i%2,
+                booking_status=booking_status,
+                paid_amount=0,
+                refund_amount=0,
+                feedback=None,
+                date_of_booking=datetime.date.today
+                )
+            booking.save()
+            cost=int(calculate_cost(booking)*0.2)
+            self.booking.append(booking)
 
 
 

@@ -54,7 +54,7 @@
             <div class="cookie-message-inner">
                <div class="content">
                   <h3>Cookies</h3>
-                  <p>This website uses cookies as explained in our <a href="privacy-policy/index.html">cookie policy</a>. If you agree to our use of cookies, please accept all, alternatively you can change your settings and decline.</p>
+                  <p>This website uses cookies . If you agree to our use of cookies, please accept all, alternatively you can change your settings and decline.</p>
                </div>
                <div class="buttons"> <a href="#" id="accept-cookies" class="text-button text-button--primary text-primary--dark">Accept all<i class="fal fa-check"></i></a> <a href="#" id="decline-cookies" class="text-button text-button--primary text-primary--dark">Decline<i class="fal fa-times"></i></a> </div>
             </div>
@@ -78,12 +78,12 @@
                   <h1 style="text-align: center;">GUEST HOUSE DETAILS</h1>
                </div>
             </div>
-            
+              
             {% for i in data %}
             <div class="widget-container widget-container--bleed image-text-widget image-text-widget--{% if forloop.counter0|divisibleby:2 %}left{%else%}right{%endif%} bg-secondary">
                <div class="flex-list">
                   <div class="image image-absolute" data-scrollspeed="0.2">
-                     <figure class="img" style="background-image:url({% static 'images/guesthouse/1.jpg' %});"> <img width="1500" height="1500" src="{% static 'images/guesthouse/1.jpg' %}" alt="Lobster claw at The Oyster and fish house"/> </figure>
+                     <figure class="img" style="background-image:url( '../static/images/guesthouse/{{i.0}}.jpg' );"> <img width="1500" height="1500" src="{% static 'images/guesthouse/1.jpg' %}" alt="Lobster claw at The Oyster and fish house"/> </figure>
                   </div>
                   <div class="text flex flex-direction-column flex-justify-center">
                      <div class="text-inner" data-show data-show-move data-show-percentage="20">
