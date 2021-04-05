@@ -436,6 +436,8 @@ def activate(request, uidb64, token):
             }
         return render(request, 'OGHBS_APP/login/index.html', context)
 
+
+@login_required(login_url='login/')
 def dashboard(request,pk):
     user = User.objects.get(pk=pk)
     num1=Student.objects.filter(user=user).count()
@@ -474,6 +476,8 @@ def dashboard(request,pk):
     }
     return render(request, 'OGHBS_APP/dashboard/index.html', context)
 
+
+@login_required(login_url='login/')
 def booking_history(request,pk):
     user=get_object_or_404(User, pk=pk)
     bookings = Booking.objects.filter(customer=user).order_by('-id')
@@ -534,6 +538,8 @@ def booking_history(request,pk):
     }
     return render(request, 'OGHBS_APP/booking_history/index.html', context)
 
+
+@login_required(login_url='login/')
 def edit_profile(request, pk, cat):
     if request.method == 'POST':
         print(request.POST)
@@ -613,6 +619,8 @@ def edit_profile(request, pk, cat):
         }
     return render(request, 'OGHBS_APP/profile/index.html', context)
 
+
+@login_required(login_url='login/')
 def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_status):
     if request.method == 'POST':
         print(request.POST)
@@ -700,6 +708,9 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
         
     return render(request, 'OGHBS_APP/book/index.html', {'form':form})
 
+
+
+@login_required(login_url='login/')
 def payment(request,check_in_date,check_out_date):
     check_in_date=check_in_date.strftime('%Y-%m-%d')
     check_out_date=check_out_date.strftime('%Y-%m-%d')
@@ -708,6 +719,8 @@ def payment(request,check_in_date,check_out_date):
         'check_out_date':check_out_date
     }
     return render(request, 'OGHBS_APP/payment/index.html',context)
+
+
 
 def calculate_cost(booking):
     food_cost=0
@@ -738,6 +751,8 @@ def calculate_cost(booking):
     total_rent=rent*int(no_of_days.days)+food_cost
     return total_rent
 
+
+@login_required(login_url='login/')
 def booking_details(request,check_in_date,check_out_date):
     user=get_object_or_404(User,username=request.user)
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
@@ -756,7 +771,9 @@ def booking_details(request,check_in_date,check_out_date):
     data.append(booking.check_out_date)
     data.append(cost)
     return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
-    
+
+
+@login_required(login_url='login/')
 def feedback(request,pk,userid):
     user=get_object_or_404(User,pk=userid)
     booking=get_object_or_404(Booking,pk=pk)

@@ -318,6 +318,9 @@ class RoomBookingTest(TestCase):
         self.assertEqual(b4.booking_status,1)
 
 
+class PaymentTest(TestCase):
+    
+
 class CancelRoomBookingTest(TestCase):
 
     def setUp(self):
@@ -467,8 +470,6 @@ class CancelRoomBookingTest(TestCase):
         self.b4 = Booking.objects.get(pk=self.b4.pk)
         self.assertEqual(self.b3.booking_status,'0')
         self.assertEqual(self.b4.booking_status,'1')
-        # self.assertEqual(self.b3.booking_status,0)
-        # self.assertEqual(self.b4.booking_status,1)
 
 
 class HallListTest(TestCase):
