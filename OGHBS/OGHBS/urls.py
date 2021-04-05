@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from OGHBS_APP.admin import my_admin_site
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', my_admin_site.urls),
     path('', include('OGHBS_APP.urls')),
 
 ]

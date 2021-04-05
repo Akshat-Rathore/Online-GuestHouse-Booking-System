@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib import messages
+
 # Create your models here.
 
 
@@ -15,11 +17,11 @@ ROOM_TYPES = (
 )
 
 RATING_CHOICES = (
-    ('1', '1'),
-    ('2', '2'),
-    ('3', '3'),
-    ('4', '4'),
-    ('5', '5'),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
 )
 
 BOOKING_STATUS = (
@@ -168,9 +170,16 @@ class Booking(models.Model):
     checked_out = models.BooleanField(default=0, blank=True)
     refund_amount = models.IntegerField(default=0, null=True, blank=True)
     feedback = models.OneToOneField(Feedback, null=True, on_delete=models.CASCADE, blank=True)
+    date_of_booking = models.DateField(auto_now_add=True, null=True)
+
+    class Meta:
+        ordering = ['-date_of_booking']  # Sort in desc order
 
     def __str__(self):
         return f"Booking-{self.id}"
+
+
+
 
 
 

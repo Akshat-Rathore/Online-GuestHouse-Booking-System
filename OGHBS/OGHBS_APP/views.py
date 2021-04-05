@@ -5,7 +5,7 @@ import json
 from django.core import serializers
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm, EditProfessorForm, EditStudentForm,BookingForm
+from .forms import SearchForm, StudentForm, ProfessorForm, LoginForm, EditProfessorForm, EditStudentForm,BookingForm,FeedbackForm
 from django.contrib.auth import authenticate, login, logout
 import datetime
 from django.contrib.auth.decorators import login_required
@@ -114,7 +114,8 @@ def clear_queue():
 def room_booking(booking, room):
     booked_room_ids = Booking.objects.filter(guest_house__id=booking.guest_house.id,
                                              room_type=booking.room_type,
-                                             booking_status=0
+                                             booking_status=0,
+                                             checked_out=0
                                              ).exclude(check_in_date__gt=booking.check_out_date
                                                        ).exclude(check_out_date__lt=booking.check_in_date
                                                                  ).order_by('room_id').values_list('room_id').distinct()
@@ -149,11 +150,25 @@ def cancel_room_booking(booking):
     booking.save()
     clear_queue()
 
+@login_required(login_url='login/')
+def cancel_booking(request,pk ):
+    booking = get_object_or_404(Booking, pk=pk)
+    if booking.booking_status == 1:
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount
+        booking.booking_status = 2
+        booking.save()
+    else:
+        cancel_room_booking(booking)
+        booking.refund_amount = booking.paid_amount/2
+        booking.save()
+
 
 def check_availability(room, check_in, check_out, gh_id):
     booked_room_ids = Booking.objects.filter(guest_house__id=gh_id,
                                              room_type=room.room_type,
-                                             booking_status=0
+                                             booking_status=0,
+                                             checked_out=0
                                              ).exclude(check_in_date__gt=check_out
                                                        ).exclude(check_out_date__lt=check_in
                                                                  ).order_by('room_id').values_list('room_id').distinct()
@@ -175,6 +190,8 @@ def search(request, gh_id):
         if form.is_valid():
             check_in = form.cleaned_data['check_in_date']
             check_out = form.cleaned_data['check_out_date']
+            print("^^^^")
+            print(form)
             guest_house = GuestHouse.objects.get(pk=gh_id)
             avl_rooms = dict()
             ast=[]
@@ -256,27 +273,28 @@ def branching(request,check_in_date,check_out_date,booking_status):
     else:
         booking.booking_status='Confirmed'
         room_type=booking.room_type
-        # if room_type == 'AC 1 Bed':
-        #     room=guest_house.AC1Bed
-        # elif room_type == 'AC 2 Bed':
-        #     room=guest_house.AC2Bed
-        # elif room_type == 'AC 3 Bed':
-        #     room=guest_house.AC3Bed
-        # elif room_type == 'NAC 1 Bed':
-        #     room=guest_house.NAC1Bed
-        # elif room_type == 'NAC 2 Bed':
-        #     room=guest_house.NAC2Bed
-        # elif room_type == 'NAC 3 Bed':
-        #     room=guest_house.NAC3Bed
-        # elif room_type == 'ACDormitory':
-        #     room=guest_house.ACDormitory
-        # elif room_type == 'NACDormitory':
-        #     room=guest_house.NACDormitory
-        # room_booking(booking,room)
+        if room_type == 'AC 1 Bed':
+            room=booking.guest_house.AC1Bed
+        elif room_type == 'AC 2 Bed':
+            room=booking.guest_house.AC2Bed
+        elif room_type == 'AC 3 Bed':
+            room=booking.guest_house.AC3Bed
+        elif room_type == 'NAC 1 Bed':
+            room=booking.guest_house.NAC1Bed
+        elif room_type == 'NAC 2 Bed':
+            room=booking.guest_house.NAC2Bed
+        elif room_type == 'NAC 3 Bed':
+            room=booking.guest_house.NAC3Bed
+        elif room_type == 'ACDormitory':
+            room=booking.guest_house.ACDormitory
+        elif room_type == 'NACDormitory':
+            room=booking.guest_house.NACDormitory
+        room_booking(booking,room)
     if booking_status==3:
         booking.payment_status=False
     else:
         booking.payment_status=True
+    
     booking.save()
     return redirect('home')
     
@@ -499,7 +517,7 @@ def booking_history(request,pk):
             s="refunded"
         else:
             s="cancelled"
-        if i.payment_status==0:
+        if i.payment_status==True:
             s1="No"
         else:
             s1="Yes"
@@ -512,27 +530,28 @@ def booking_history(request,pk):
         data1.append(house.name)
         data1.append(i.payment_status)
         data1.append(i.visitors_name)
-        data1.append(s)
+        data1.append(i.booking_status)
         data1.append(i.paid_amount)
         data1.append(i.room_id)
         data1.append(s2)
         data1.append(i.refund_amount)
-        data1.append(str(i.check_in_date))
-        data1.append(str(i.check_out_date))
+        check_in_date=i.check_in_date.strftime('%Y-%m-%d')
+        check_out_date=i.check_out_date.strftime('%Y-%m-%d')
+        data1.append(check_in_date)
+        data1.append(check_out_date)
+        check_feedback=1
+        feedback=[]
         if i.feedback is not None:
-            feedback.append(i.feedback.comfort_of_stay)
-            feedback.append(i.feedback.room_cleanliness)
-            feedback.append(i.feedback.service_quality)
-            feedback.append(i.feedback.additional_feedback)
-        else:
-            feedback.append(" ")
-            feedback.append(" ")
-            feedback.append(" ")
-            feedback.append(" ")
+            check_feedback=0
+        
+        feedback.append(" ")
         data1.append(feedback)
-        data1.append(str(i.check_in_date))
-        data1.append(str(i.check_out_date))
+        data1.append(check_feedback)
+        data1.append(pk)
+        data1.append(i.id)
         data.append(data1)
+        print(i.feedback)
+        print(check_feedback)
     context={
         'datas':data,
         'name': user.username,
@@ -613,6 +632,7 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
         POST['check_out_date']=check_out_date
         form=BookingForm(room_type=room_type,data=POST)
         if form.is_valid():
+            print(form.cleaned_data)
             booking=Booking()
             booking.guest_house=get_object_or_404(GuestHouse,pk=pk)
             booking.customer=request.user
@@ -621,7 +641,8 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.check_out_date=check_out_date
             booking.visitors_count=form.cleaned_data.get('visitor_num')
             booking.visitors_name=form.cleaned_data.get('visitor_names')
-            if form.cleaned_data.get('food')=='YES':
+            print(form.cleaned_data.get('visitor_names'))
+            if form.cleaned_data.get('food')=='1':
                 booking.food=True
             else:
                 booking.food=False
@@ -635,13 +656,16 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
             booking.paid_amount=0
             booking.feedback=None
             booking.room_id=None
+            cost=calculate_cost(booking)
+            booking.paid_amount=cost
             booking.save()
+            print(booking.visitors_name)
             guest_house=get_object_or_404(GuestHouse,pk=pk)
             # user=User.objects.get(username=request.user)
             user=get_object_or_404(User,username=request.user)
             # booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
             data=[]
-            data.append(booking.customer)
+            data.append(booking.customer.username)
             data.append(booking.guest_house.name)
             data.append(booking.room_type)
             data.append(booking.visitors_count)
@@ -740,6 +764,25 @@ def booking_details(request,check_in_date,check_out_date):
     data.append(cost)
     return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
     
+def feedback(request,pk,userid):
+    user=get_object_or_404(User,pk=userid)
+    booking=get_object_or_404(Booking,pk=pk)
+    print(booking.feedback)
+    if request.method == 'POST':
+        form=FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback=Feedback()
+            feedback.additional_feedback=form.cleaned_data.get('additional_feedback')
+            feedback.comfort_of_stay=form.cleaned_data.get('comfort_of_stay')
+            feedback.room_cleanliness=form.cleaned_data.get('room_cleanliness')
+            feedback.service_quality=form.cleaned_data.get('service_quality')
+            feedback.save()
+            booking.feedback=feedback
+            booking.save()
+            return redirect('dashboard',pk=userid)
+    elif request.method=='GET':
+        form=FeedbackForm()
+    return render(request, 'OGHBS_APP/feedback/index.html', {'form':form})
 
 
 
