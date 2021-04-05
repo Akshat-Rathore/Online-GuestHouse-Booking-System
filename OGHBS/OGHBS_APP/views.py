@@ -80,6 +80,7 @@ def hall_details(request, pk):
 def clear_queue():
     # Get all the queued bookings and order them by their ID (temporal ordering)
     queued_bookings = Booking.objects.filter(booking_status=1,check_in_date__gte=datetime.today()).order_by('pk')
+    print(queued_bookings)
     # Check for each queued booking
     for booking in queued_bookings:
         if booking.room_type == 'AC 1 Bed':
@@ -104,9 +105,11 @@ def room_booking(booking, room):
                                              room_type=booking.room_type,
                                              booking_status=0,
                                              checked_out=0
-                                             ).exclude(check_in_date__gt=booking.check_out_date
-                                                       ).exclude(check_out_date__lt=booking.check_in_date
+                                             ).exclude(check_in_date__gte=booking.check_out_date
+                                                       ).exclude(check_out_date__lte=booking.check_in_date
                                                                  ).order_by('room_id').values_list('room_id').distinct()
+    print(booking,room)
+    print(booked_room_ids)
 
     booked_room_ids = [x[0] for x in booked_room_ids]
     start_id = room.initial_room_id
@@ -123,11 +126,13 @@ def room_booking(booking, room):
         booking.checked_out = 0
         booking.save()
     else:
+        
         for _id in range(start_id, end_id+1):
             if _id not in booked_room_ids:
                 booking.booking_status = 0
                 booking.room_id = _id
                 booking.checked_out = 0
+                print(booking.room_id,"&&&")
                 booking.save()
                 return
 
@@ -246,8 +251,8 @@ def branching(request,check_in_date,check_out_date,booking_status):
     print(booking)
     if booking_status==3:
         booking.booking_status='Cancelled'
-    elif booking.booking_status=='In-Queue':
-        booking.booking_status=='In-Queue'
+    elif booking_status=='In-Queue':
+        booking.booking_status='In-Queue'
     else:
         booking.booking_status='Confirmed'
         room_type=booking.room_type
