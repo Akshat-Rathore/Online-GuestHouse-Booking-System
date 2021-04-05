@@ -325,7 +325,6 @@ class RoomBookingTest(TestCase):
         self.assertEqual(b4.booking_status,1)
         self.assertEqual(b4.room_id,None)
 
-
 class CancelRoomBookingTest(TestCase):
 
     def setUp(self):
@@ -479,7 +478,6 @@ class CancelRoomBookingTest(TestCase):
 
         self.assertEqual(self.b4.booking_status,'1')
         self.assertEqual(self.b4.room_id,None)
-
 
 class CancelBookingTest(TestCase):
     def setUp(self):
@@ -636,7 +634,6 @@ class CancelBookingTest(TestCase):
 
     def test_refund_for_wl_bookings(self):
         pass
-
 
 class HallListTest(TestCase):
 
@@ -1027,8 +1024,7 @@ class EditProfileTest(TestCase):
             
         })
         self.assertEqual(response.status_code, 302)
-        
-        
+                
 class FeedbackTest(TestCase):
     def setUp(self):
         self.feedback=Feedback.objects.create(
@@ -1236,7 +1232,6 @@ class PaymentTest(TestCase):
 
         # Check we used correct template
         self.assertTemplateUsed(response, 'OGHBS_APP/payment/index.html')
-
 
 class LoginTest(TestCase):
 
