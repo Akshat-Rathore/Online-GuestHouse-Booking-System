@@ -167,11 +167,8 @@ def cancel_booking(request, pk):
 
     return redirect('booking_history',pk=request.user.pk)
 
-<<<<<<< HEAD
-=======
 
 # Function to calculate check availability of each room
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def check_availability(room, check_in, check_out, gh_id):
     # Get all the rooms ids for active bookings that have non-zero overlapping with the 
     # queried interval of booking. These rooms cannot be alloted
@@ -256,11 +253,6 @@ def search(request, gh_id):
         }
         return render(request, 'OGHBS_APP/search/index.html', context)
 
-@login_required(login_url='login/')
-def book_room(request, gh_id):
-    print(request.GET)
-    clear_queue()
-    return HttpResponse("<h1>Hello {{gh_id}}+{{a}}</h1>")
 
 def branching(request,check_in_date,check_out_date,booking_status):
     print("Hello")
@@ -451,12 +443,8 @@ def activate(request, uidb64, token):
             }
         return render(request, 'OGHBS_APP/login/index.html', context)
 
-<<<<<<< HEAD
-#User dashboard with basic profile view and links to booking history and edit profile 
-=======
-
-@login_required(login_url='login/')
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
+# User dashboard with basic profile view and links to booking history and edit profile 
+@login_required(login_url='/login/')
 def dashboard(request,pk):
     user = User.objects.get(pk=pk)
     num1=Student.objects.filter(user=user).count()
@@ -495,12 +483,8 @@ def dashboard(request,pk):
     }
     return render(request, 'OGHBS_APP/dashboard/index.html', context)
 
-<<<<<<< HEAD
 #generates list of bookings of the current user with all the details
-=======
-
-@login_required(login_url='login/')
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
+@login_required(login_url='/login/')
 def booking_history(request,pk):
     user=get_object_or_404(User, pk=pk)
     bookings = Booking.objects.filter(customer=user).order_by('-id')
@@ -561,12 +545,8 @@ def booking_history(request,pk):
     }
     return render(request, 'OGHBS_APP/booking_history/index.html', context)
 
-<<<<<<< HEAD
 #Allows users to edit their profiles(full name, department, roll no. or address)
-=======
-
-@login_required(login_url='login/')
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
+@login_required(login_url='/login/')
 def edit_profile(request, pk, cat):
     if request.method == 'POST':
         print(request.POST)
@@ -736,13 +716,8 @@ def make_booking(request,pk,room_type,check_in_date,check_out_date,booking_statu
         
     return render(request, 'OGHBS_APP/book/index.html', {'form':form})
 
-<<<<<<< HEAD
 #generates payment form after booking details are confirmed
-=======
-
-
 @login_required(login_url='login/')
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def payment(request,check_in_date,check_out_date):
     check_in_date=check_in_date.strftime('%Y-%m-%d')
     check_out_date=check_out_date.strftime('%Y-%m-%d')
@@ -752,12 +727,7 @@ def payment(request,check_in_date,check_out_date):
     }
     return render(request, 'OGHBS_APP/payment/index.html',context)
 
-<<<<<<< HEAD
 #calculates cost after booking form is filled
-=======
-
-
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
 def calculate_cost(booking):
     food_cost=0
     rent=0
@@ -787,11 +757,8 @@ def calculate_cost(booking):
     total_rent=rent*int(no_of_days.days)+food_cost
     return total_rent
 
-<<<<<<< HEAD
-#generates feedback form for user booking with check-out =1
-=======
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def booking_details(request,check_in_date,check_out_date):
     user=get_object_or_404(User,username=request.user)
     booking=Booking.objects.filter(customer=request.user,check_in_date=check_in_date,check_out_date=check_out_date).order_by('-id')[0]
@@ -812,8 +779,7 @@ def booking_details(request,check_in_date,check_out_date):
     return render(request, 'OGHBS_APP/booking_details/index.html', {'data':data})
 
 
-@login_required(login_url='login/')
->>>>>>> b933f4c50a95c06d7344da6dfa681b6bc1e4debf
+@login_required(login_url='/login/')
 def feedback(request,pk,userid):
     user=get_object_or_404(User,pk=userid)
     booking=get_object_or_404(Booking,pk=pk)
