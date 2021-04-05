@@ -60,9 +60,6 @@ class SearchTest(TestCase):
             password='ABCDEFGH'
         )
 
-        for i in range(8):
-            self.test
-
     def test_search_date_in_the_past(self):
         check_in_date1 = datetime.date(2021, 4, 1) 
         check_out_date1 = datetime.date(2021, 4, 3)
