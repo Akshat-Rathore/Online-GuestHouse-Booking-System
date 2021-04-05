@@ -184,7 +184,7 @@ hr {
                      <h2>Booking History</h2>
                      <!-- <p>The best of local produce, sustainable fish and seafood caught off the South West coast. Our menus change twice daily depending on what the fishermen have brought in to us, so please bear in mind these menus are only a sample of what you might expect on your visit to the Fish House.</p> -->
                   </div>
-                  {%for data in datas %}
+                  {% for data in datas %}
                   <div class="doc-list">
                      <div class="doc-item " data-show data-show-move data-show-percentage="10" >
                         <div>
@@ -211,13 +211,33 @@ hr {
                                  </td>
                               </tr>
                               <tr>
-                                 <td>Payment Done :</td>
-                                 <td>{{data.1}}</td>
+                                 <td>Payment Status :</td>
+                                 {% if data.1 %}
+                                    <td>Done</td>
+                                 {% else %}
+                                    <td>Not Done</td>
+                                 {% endif %}
                               </tr>
                               <tr>
-                                
-                                 <td> Booking Status : </td>
-                                 <td>{{ data.3.0 }}</td>
+                                 {% if data.3 == '0' %}
+                                    <td> Booking Status : </td>
+                                    <td>Confirmed</td>
+                                 {% endif %}
+
+                                 {% if data.3 == '1' %}
+                                    <td> Booking Status : </td>
+                                    <td>In-Queue</td>
+                                 {% endif %}
+
+                                 {% if data.3 == '2' %}
+                                    <td> Booking Status : </td>
+                                    <td>Cancelled (Full Refund)</td>
+                                 {% endif %}
+
+                                 {% if data.3 == '3' %}
+                                    <td> Booking Status : </td>
+                                    <td>Cancelled (Partial Refund)</td>
+                                 {% endif %}
                                  
                               </tr>
                               <tr>
@@ -232,17 +252,19 @@ hr {
                                  <td>Paid Amount :</td>
                                  <td>{{data.4}}</td>
                               </tr>
+                              {% if data.3 == '2' or data.3 == '3' %}
+                                 <tr>
+                                    <td>
+                                       Refunded Amount :
+                                    </td>
+                                    <td>
+                                       {{data.7}}
+                                    </td>
+                                 </tr>
+                              {% endif %}
                               <tr>
                                  <td>
-                                    Refunded Amount :
-                                 </td>
-                                 <td>
-                                    {{data.7}}
-                                 </td>
-                              </tr>
-                              <tr>
-                                 <td>
-                                    Rooms Booked :
+                                    Alloted Room No :
                                  </td>
                                  <td>
                                     {{data.5}}
@@ -275,19 +297,20 @@ hr {
                         <table>
                            <tr>
                               {% if data.11 %}
-                              <td>
-                                 <a href="{% url 'feedback' pk=data.13 userid=data.12  %}"  class="bg-pattern">
-                                    GIVE FEEDBACK
-                                 </a>
-                              </td>
+                                 <td>
+                                    <a href="{% url 'feedback' pk=data.13 userid=data.12  %}"  class="bg-pattern">
+                                       GIVE FEEDBACK
+                                    </a>
+                                 </td>
                               {%endif%}
-                              {% if data.3 == 1 %}
+                              {% if data.3 == '0' %}
                                  <td>
                                     <a  onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='block'" class="bg-pattern">
                                        CANCEL BOOKING
                                     </a>
                                  </td>
-                              {% elif data.3 == 'Cancelled' %}
+                              {% endif %}
+                              {% if data.3 == '1' %}
                                  <td>
                                     <a  onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='block'" class="bg-pattern">
                                        CANCEL BOOKING
@@ -309,11 +332,11 @@ hr {
                      <form class="modal-content">
                        <div class="container">
                          <h1>Delete Account</h1>
-                         <p>Are you sure you want to delete your account?</p>
+                         <p>Are you sure you want to cancel this booking?</p>
                        
                          <div class="clearfix">
-                           <button type="button" onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='none'" class="cancelbtn">Cancel</button>
-                           <a href="{% url 'cancel' pk=data.13 %}"><button  type="button" class="deletebtn">Delete</button></a>
+                           <button type="button" onclick="document.getElementsByClassName('class-{{data.13}}')[0].style.display='none'" class="cancelbtn">Exit</button>
+                           <a href="{% url 'cancel' pk=data.13 %}"><button  type="button" class="deletebtn">Cancel Booking</button></a>
                          </div>
                        </div>
                      </form>

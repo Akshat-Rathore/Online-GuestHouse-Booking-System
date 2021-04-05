@@ -59,31 +59,9 @@
                <div class="waves"></div>
             </div>
          </a>
-         <div class="drawer">
-            <div class="drawer-inner bg-secondary bg-pattern">
-               <div class="drawer-inner-content">
-                  <span class="subtitle text-primary">The Oyster &amp; Fish House</span>
-                  <nav class="main-nav">
-                     <ul>
-                        <li id="menu-item-1528" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1528"><a href="{% url 'home' %}">Hall Details</a></li><br>
-                        <li id="menu-item-1510" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1510"><a href="{% url 'login' %}">Login</a></li><br>
-                        <li id="menu-item-1511" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1511"><a href="{% url 'register' %}">Register</a></li><br>
-                        
-                        <li id="menu-item-1549" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1549"><a href="contact-us/index.html">Contact us</a></li>   
-                     </ul>
-                  </nav>
-                  <ul class='social-media'>
-                     <li><a href="https://www.facebook.com/oysterandfishhouse" target="_blank"><i class=" fab fa-facebook"></i></a></li>
-                     <li><a href="https://www.instagram.com/theoysterandfishhouse/" target="_blank"><i class=" fab fa-instagram"></i></a></li>
-                     <li><a href="https://www.youtube.com/channel/UCS0QB3Q2hsM0pg01q2zKVGg" target="_blank"><i class=" fab fa-youtube"></i></a></li>
-                  </ul>
-               </div>
-            </div>
-            <a class="close-btn close-menu-btn flex flex-align-center flex-justify-center">
-               <div class="close-menu-line close-menu-line--left"></div>
-               <div class="close-menu-line close-menu-line--right"></div>
-            </a>
-         </div>
+         <header class="header header-narrow bg-secondary bg-pattern">
+            {% include 'OGHBS_APP/header.html' %}
+         </header>
          <!-- <div class="cookie-message cookie-message--box">
             <div class="cookie-message-inner">
                <div class="content">
@@ -93,7 +71,7 @@
                <div class="buttons"> <a href="#" id="accept-cookies" class="text-button text-button--primary text-primary--dark">Accept all<i class="fal fa-check"></i></a> <a href="#" id="decline-cookies" class="text-button text-button--primary text-primary--dark">Decline<i class="fal fa-times"></i></a> </div>
             </div>
          </div> -->
-      </header>
+  
       <section class="main-body">
          <article class="main-content">
             <div class="widget-container widget-container--bleed booking-widget booking-widget--center bg-primary--alt ">

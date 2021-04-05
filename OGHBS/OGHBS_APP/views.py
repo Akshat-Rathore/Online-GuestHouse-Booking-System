@@ -471,7 +471,7 @@ def dashboard(request,pk):
 
 def booking_history(request,pk):
     user=get_object_or_404(User, pk=pk)
-    bookings = Booking.objects.filter(customer=user)
+    bookings = Booking.objects.filter(customer=user).order_by('-id')
     count=Booking.objects.all().count()
     data=[]
     s=""
@@ -512,7 +512,7 @@ def booking_history(request,pk):
         data1.append(check_out_date)
         check_feedback=1
         feedback=[]
-        if i.feedback is not None:
+        if i.feedback is not None or i.booking_status !=0 or (i.booking_status==1 and i.check_out_date<datetime.date.today()):
             check_feedback=0
         
         feedback.append(" ")
@@ -767,7 +767,7 @@ def feedback(request,pk,userid):
             feedback.save()
             booking.feedback=feedback
             booking.save()
-            return redirect('dashboard',pk=userid)
+            return redirect('booking_history',pk=request.user.pk)
     elif request.method=='GET':
         form=FeedbackForm()
     return render(request, 'OGHBS_APP/feedback/index.html', {'form':form})
